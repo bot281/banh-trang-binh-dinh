@@ -83,6 +83,16 @@ h2.sec{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:
 .radios.col label{min-width:0}
 .shipok{color:var(--green);font-weight:700}
 .mbox{display:none;background:#F1F8EE;border:1.5px solid var(--green);border-radius:14px;padding:12px;margin-bottom:14px;font-size:14.5px;line-height:1.5}
+.lovechk{color:var(--ink)!important;font-size:15px!important;background:#FFF0F3;border:1.5px solid #F4B6C2;border-radius:14px;padding:12px;margin:0!important}
+.love{display:none;background:#FFF7F9;border:1.5px solid #F4B6C2;border-top:0;border-radius:0 0 14px 14px;padding:12px;margin-top:-8px}
+#lovef.on .lovechk{border-radius:14px 14px 0 0}#lovef.on .love{display:block}
+.occ{font-weight:800;color:#C2185B;margin:4px 0 8px}
+#tpl .chip[aria-pressed="true"]{background:#C2185B;border-color:#C2185B}
+.love .row2{grid-template-columns:1fr 1fr;margin-bottom:8px}
+.love textarea{min-height:120px}
+.lcount{font-size:12px;color:var(--muted);margin:4px 0 10px}
+.card{background:linear-gradient(135deg,#fff 0%,#FFF0F3 100%);border:1px dashed #E91E63;border-radius:16px;padding:16px 16px 14px;text-align:center;font-size:15px;line-height:1.55;white-space:pre-wrap;color:#6A1B3A;box-shadow:0 4px 14px rgba(233,30,99,.10)}
+.card .ctop{font-size:28px;margin-bottom:4px}
 .grpbanner{background:var(--green);color:#fff;text-align:center;font-weight:700;padding:9px 16px;font-size:14px;display:none}
 .opt-label{font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
@@ -205,6 +215,15 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
     <div class="f"><label class="l">Thanh toán</label>
       <div class="radios"><label><input type="radio" name="pay" value="Tiền mặt khi nhận" checked> 💵 Tiền mặt khi nhận</label><label><input type="radio" name="pay" value="Chuyển khoản"> 🏦 Chuyển khoản</label></div>
       <p class="note" id="paynote" style="display:none;margin-top:8px">TPBank · 2842 8121 985 — mã QR có sẵn số tiền hiện ra ngay sau khi bấm Đặt hàng.</p></div>
+    <div class="f" id="lovef"><label class="chk lovechk"><input type="checkbox" id="love"> 💌 <b>Gửi kèm lời nhắn yêu thương</b> cho người nhận</label>
+      <div class="love" id="lovebox">
+        <div class="occ" id="occ"></div>
+        <div class="chips" id="tpl"></div>
+        <div class="row2"><input id="lto" type="text" maxlength="40" placeholder="Gửi tới (vd: Mẹ, chị Lan)"><input id="lfrom" type="text" maxlength="40" placeholder="Từ (tên bạn)"></div>
+        <textarea id="lmsg" maxlength="350" placeholder="Viết lời nhắn của bạn…"></textarea>
+        <div class="lcount"><span id="lcnt">0</span>/350 · bạn sửa thoải mái, shop gửi kèm đúng lời nhắn này cùng phần bánh</div>
+        <div class="card"><div class="ctop" id="cicon">💌</div><div id="cprev"></div></div>
+      </div></div>
     <div class="f"><label class="l" for="note">Ghi chú cho shop</label>
       <textarea id="note" placeholder="Vd: để riêng ruốc, gọi trước khi giao…"></textarea></div>
     <div class="f"><label class="l" for="grp">Đặt chung (gom đơn) — không bắt buộc</label>
@@ -230,7 +249,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 <script>
 const FORM="https://docs.google.com/forms/d/e/1FAIpQLSd3Z--C-uV6XJTzCdUzjuWeOQz8hOhmRHwPUtUA-ojLWfNP7w/formResponse";
 const E={name:"entry.1617320443",phone:"entry.1296680432",addr:"entry.1127379480",when:"entry.325322427",items:"entry.1094612916",
-  qty:"entry.1589417355",total:"entry.682908208",code:"entry.1726601081",pay:"entry.1691158886",note:"entry.1448708004",grp:"entry.594608824",km:"entry.205361310",ship:"entry.529968166",shipby:"entry.1659168980",grand:"entry.1501035833"};
+  qty:"entry.1589417355",total:"entry.682908208",code:"entry.1726601081",pay:"entry.1691158886",note:"entry.1448708004",grp:"entry.594608824",km:"entry.205361310",ship:"entry.529968166",shipby:"entry.1659168980",grand:"entry.1501035833",love:"entry.2143315422"};
 const KITCHEN=[106.6520,10.8436]; // 370/2 Nguyễn Văn Khối, Gò Vấp (toạ độ gần đúng)
 // Ước tính theo hãng CAO NHẤT (so 10/2026): GrabExpress 16k/2km + 5k/km (Xanh SM 14k+5k, Ahamove siêu tốc ~15,7k/2km, Lalamove 13,5k + ~4,3k/km, beBike 14,5k + 4,9k/km)
 // + phí nền tảng 3k; giờ cao điểm (giả định) ×1,3: 7:00–9:00, 11:00–13:00, 16:30–19:30 và thứ 7, CN 11:00–13:00 · 17:00–20:00
@@ -328,19 +347,48 @@ $("#f").onsubmit=async e=>{
   const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
   const fd=new URLSearchParams();
   [[E.name,name],[E.phone,phone],[E.addr,addr],[E.when,when],[E.items,items],[E.qty,qtyText(T)],[E.total,String(T.t)],[E.code,code],
-   [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":sb],[E.grand,String(grand())]]
+   [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":sb],[E.grand,String(grand())],[E.love,loveText()]]
    .forEach(([k,v])=>fd.append(k,v));
   const btn=$("#go");btn.disabled=true;btn.textContent="Đang gửi…";
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
     $("#okcode").textContent="Mã đơn: "+code;
     $("#bank").innerHTML=document.querySelector('input[name=pay]:checked').value==="Chuyển khoản"?bankBox(grand(),code):"";
-    $("#oksum").textContent=`${$("#grp").value.trim()?"Nhóm: "+$("#grp").value.trim().toUpperCase()+"\n":""}${items}\n\nTiền hàng: ${vnd(T.t)}\nPhí ship: ${pick?"Tự đến lấy":sb.startsWith("Cộng")?(geo?vnd(geo.fee)+" (ước tính, cộng vào đơn)":"shop báo sau"):sb.startsWith("Khách")?(geo?"~"+vnd(geo.fee)+" trả tài xế":"trả tài xế"):"nhóm trả"}\nTổng thanh toán: ${vnd(grand())}\nNhận: ${when}\n${addr}`;
+    $("#oksum").textContent=`${$("#grp").value.trim()?"Nhóm: "+$("#grp").value.trim().toUpperCase()+"\n":""}${items}${loveText()?"\n\n💌 Lời nhắn:\n"+loveText():""}\n\nTiền hàng: ${vnd(T.t)}\nPhí ship: ${pick?"Tự đến lấy":sb.startsWith("Cộng")?(geo?vnd(geo.fee)+" (ước tính, cộng vào đơn)":"shop báo sau"):sb.startsWith("Khách")?(geo?"~"+vnd(geo.fee)+" trả tài xế":"trả tài xế"):"nhóm trả"}\nTổng thanh toán: ${vnd(grand())}\nNhận: ${when}\n${addr}`;
     $("#ok").classList.add("show");MENU.forEach(m=>st[m.id]=[]);document.querySelectorAll(".dish").forEach(renderDish);renderCart();$("#note").value="";
   }catch(err){toast("Gửi không được, vui lòng thử lại hoặc gọi 039 982 6178")}
   btn.disabled=false;btn.textContent="Đặt hàng";
 };
 $("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,behavior:"smooth"})};
 renderMenu();renderCart();
+// ===== LỜI NHẮN YÊU THƯƠNG: mỗi dịp lễ 1 bộ văn mẫu (from/to = MM-DD, hiện trong khoảng này) =====
+const OCC=[
+ {name:"Mẫu 20/10 — Ngày Phụ nữ Việt Nam",icon:"🌷",from:"10-01",to:"10-21",t:[
+  ["Bạn bè, chị em","Gửi {to} 🌷\nNhân ngày Phụ nữ Việt Nam 20/10, chúc {to} luôn xinh đẹp, vui tươi và thật hạnh phúc. Cảm ơn vì đã luôn mang năng lượng tích cực đến cho mọi người. Một phần bánh tráng nhỏ thay lời chúc nhé! 💐\n— {from}"],
+  ["Mẹ","Gửi {to} yêu 💕\n20/10 này con chúc {to} luôn mạnh khoẻ, an vui và cười thật nhiều. Cảm ơn {to} vì bao năm tháng hy sinh thầm lặng. Con thương {to} nhiều lắm!\n— {from}"],
+  ["Đồng nghiệp","Gửi {to} 🌸\nChúc mừng ngày 20/10! Chúc mọi người luôn rạng rỡ, công việc thuận lợi và tràn đầy niềm vui. Ăn bánh tráng cho có sức chiến tiếp nha!\n— {from}"],
+  ["Người yêu","Gửi {to} ❤️\nChúc em một ngày 20/10 thật ngọt ngào. Cảm ơn em đã luôn ở bên anh. Hôm nay để anh lo phần ăn vặt cho em nhé!\n— {from}"]]},
+ {name:"Mẫu 20/11 — Ngày Nhà giáo Việt Nam",icon:"📚",from:"11-01",to:"11-21",t:[
+  ["Thầy cô","Kính gửi {to} 🌹\nNhân ngày Nhà giáo Việt Nam 20/11, em kính chúc {to} luôn mạnh khoẻ, hạnh phúc và tràn đầy nhiệt huyết. Cảm ơn {to} vì những bài học quý giá!\n— {from}"]]},
+];
+const DAILY={name:"Lời nhắn yêu thương",icon:"💌",t:[
+  ["Cảm ơn","Gửi {to} 💛\nCảm ơn {to} vì đã luôn quan tâm và giúp đỡ. Một phần bánh tráng nhỏ gửi {to} ăn vui nhé!\n— {from}"],
+  ["Sinh nhật","Gửi {to} 🎂\nChúc mừng sinh nhật! Chúc {to} tuổi mới thật nhiều sức khoẻ, niềm vui và may mắn.\n— {from}"],
+  ["Động viên","Gửi {to} 💪\nCố lên nhé! Nghỉ tay ăn chút bánh tráng lấy sức rồi chiến tiếp, mọi chuyện rồi sẽ ổn thôi.\n— {from}"]]};
+const cur=(()=>{const n=new Date(),md=String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");
+  const o=OCC.find(o=>md>=o.from&&md<=o.to);return o?{...o,t:[...o.t,...DAILY.t]}:DAILY})();
+let tplIdx=0,lastGen="";
+function genMsg(){const t=cur.t[tplIdx];if(!t)return "";const to=$("#lto").value.trim()||"bạn",fr=$("#lfrom").value.trim()||$("#name").value.trim()||"…";
+  return t[1].replaceAll("{to}",to).replaceAll("{from}",fr)}
+function applyTpl(force){const g=genMsg();if(force||$("#lmsg").value===lastGen){$("#lmsg").value=g}lastGen=g;prevLove()}
+function prevLove(){$("#cprev").textContent=$("#lmsg").value||"Lời nhắn sẽ hiện ở đây";$("#lcnt").textContent=$("#lmsg").value.length}
+function loveText(){if(!$("#love").checked||!$("#lmsg").value.trim())return "";return `Gửi: ${$("#lto").value.trim()||"(không ghi)"} · Từ: ${$("#lfrom").value.trim()||$("#name").value.trim()||"(không ghi)"}\n${$("#lmsg").value.trim()}`}
+$("#occ").textContent=cur.icon+" "+cur.name+" — chọn mẫu rồi sửa theo ý bạn";$("#cicon").textContent=cur.icon;
+$("#tpl").innerHTML=cur.t.map((t,i)=>`<button type="button" class="chip" data-i="${i}" aria-pressed="${i===0}">${t[0]}</button>`).join("")+`<button type="button" class="chip" data-i="-1" aria-pressed="false">✍️ Tự viết</button>`;
+$("#tpl").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{tplIdx=+b.dataset.i;$("#tpl").querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  if(tplIdx<0){$("#lmsg").value="";lastGen="";prevLove();$("#lmsg").focus()}else applyTpl(true)});
+$("#love").onchange=e=>{$("#lovef").classList.toggle("on",e.target.checked);if(e.target.checked&&!$("#lmsg").value)applyTpl(true)};
+["#lto","#lfrom","#name"].forEach(k=>$(k).addEventListener("input",()=>{if(tplIdx>=0)applyTpl(false)}));
+$("#lmsg").oninput=prevLove;
 function shipMode(){if($("#pickup").checked)return "pick";const v=(document.querySelector('input[name=shipby]:checked')||{}).value||"";return v.startsWith("Cộng")?"add":v.startsWith("Khách")?"driver":v?"group":""}
 function grand(){const t=totals().t;return t+(shipMode()==="add"&&geo?geo.fee:0)}
 function updSum(){const T=totals(),m=shipMode();$("#bart").textContent=vnd(grand());
