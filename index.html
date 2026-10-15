@@ -72,6 +72,7 @@ h2.sec{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:
 .radios.col{flex-direction:column}
 .radios.col label{min-width:0}
 .shipok{color:var(--green);font-weight:700}
+.mbox{display:none;background:#F1F8EE;border:1.5px solid var(--green);border-radius:14px;padding:12px;margin-bottom:14px;font-size:14.5px;line-height:1.5}
 .grpbanner{background:var(--green);color:#fff;text-align:center;font-weight:700;padding:9px 16px;font-size:14px;display:none}
 .opt-label{font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
@@ -170,6 +171,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 
   <h2 class="sec">Thông tin nhận hàng</h2>
   <form id="f" novalidate>
+    <div class="mbox" id="mbox"></div>
     <div class="f" data-k="name"><label class="l" for="name">Họ tên <i>*</i></label>
       <input id="name" type="text" autocomplete="name" placeholder="Vd: Chị Lan"><div class="err">Vui lòng nhập họ tên</div></div>
     <div class="f" data-k="phone"><label class="l" for="phone">Số điện thoại <i>*</i></label>
@@ -196,8 +198,8 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
       <textarea id="note" placeholder="Vd: để riêng ruốc, gọi trước khi giao…"></textarea></div>
     <div class="f"><label class="l" for="grp">Đặt chung (gom đơn) — không bắt buộc</label>
       <div class="grp"><div class="gl"><input id="grp" type="text" maxlength="12" placeholder="Nhập mã nhóm, vd: NHOM-K7Q2"><button type="button" id="mkgrp">Tạo mã nhóm</button></div>
-      <p class="note" style="margin:8px 0 0">Cả văn phòng / nhóm bạn đặt chung? Một người bấm <b>Tạo mã nhóm</b>, gửi link cho mọi người. Ai đặt bằng link đó sẽ được gom chung 1 lần giao.</p>
-      <div class="share" id="share"></div></div></div>
+      <p class="note" style="margin:8px 0 0">Cả văn phòng / nhóm đặt chung? <b>Người tạo nhóm</b> điền tên, địa chỉ, ngày giờ nhận, chọn trả phí ship, rồi bấm <b>Tạo mã nhóm</b> và gửi link. Người khác mở link chỉ cần chọn món, nhập tên, SĐT — tất cả gom 1 lần giao.</p>
+      <div class="share" id="share"></div><p class="err" id="grperr"></p></div></div>
     <div class="sumbox"><div class="row"><span><b>Tiền hàng</b><br><small id="sumq" style="color:var(--muted)">Chưa chọn món</small></span><b id="sumt">0đ</b></div>
       <div class="row" style="margin-top:6px"><span>Phí ship <small id="shipnote" style="color:var(--muted)"></small></span><b id="sums">—</b></div>
       <div class="row" style="margin-top:8px;border-top:1.5px dashed var(--line);padding-top:8px"><b>Tổng thanh toán</b><span class="v" id="sumg">0đ</span></div>
@@ -330,7 +332,7 @@ function shipMode(){if($("#pickup").checked)return "pick";const v=(document.quer
 function grand(){const t=totals().t;return t+(shipMode()==="add"&&geo?geo.fee:0)}
 function updSum(){const T=totals(),m=shipMode();$("#bart").textContent=vnd(grand());
   let sv="—",sn="";if(m==="pick"){sv="0đ";sn="(tự đến lấy)"}else if(geo){sv=(m==="add"?"":"~")+vnd(geo.fee);sn=m==="add"?"(cộng vào đơn)":m==="driver"?"(trả tài xế, không cộng)":m==="group"?"(nhóm trả, không cộng)":"(ước tính)"}
-  else if(m==="group"){sn="(nhóm trả)"}
+  if(m==="group"){sv="0đ";sn="(người tạo nhóm trả)"}
   $("#sums").textContent=sv;$("#shipnote").textContent=sn;$("#sumg").textContent=vnd(grand());}
 document.querySelectorAll("input[name=shipby]").forEach(r=>r.addEventListener("change",()=>{updSum();bad("ship",false)}));
 $("#pickup").addEventListener("change",()=>{$("#shipf").style.display=$("#pickup").checked?"none":"block";updSum()});
@@ -353,12 +355,36 @@ $("#gps").onclick=()=>{if(!navigator.geolocation){toast("Máy không hỗ trợ 
     ()=>{$("#shipres").textContent="Không lấy được vị trí (chưa cho phép định vị). Bạn nhập địa chỉ rồi bấm Ước tính nhé."},{enableHighAccuracy:true,timeout:10000})};
 $("#addr").addEventListener("change",()=>{geo=null;updSum();if($("#addr").value.trim().length>8)$("#calc").click()});
 const SITE=location.origin+location.pathname;
-function shareGrp(c){$("#share").style.display=c?"block":"none";if(!c)return;const u=`${SITE}?nhom=${encodeURIComponent(c)}`;
-  $("#share").innerHTML=`Link đặt chung nhóm <b>${c}</b>:<br><a href="${u}">${u}</a><br><button type="button" class="cp" data-c="${u}" style="margin-top:6px;border:1px solid var(--green);background:#fff;color:var(--green);border-radius:8px;padding:5px 10px;font-weight:700">Sao chép link gửi nhóm</button>`}
-$("#mkgrp").onclick=()=>{const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="NHOM-";for(let i=0;i<4;i++)c+=a[Math.floor(Math.random()*a.length)];$("#grp").value=c;shareGrp(c)};
+let MEMBER=null; // thông tin nhóm khi mở bằng link đặt chung
+function grpParams(c){const p=new URLSearchParams({nhom:c,ten:$("#name").value.trim(),dc:$("#pickup").checked?"Tự đến lấy":$("#addr").value.trim(),ng:$("#date").value,gio:$("#time").value});return p}
+function shareGrp(c){$("#share").style.display=c?"block":"none";if(!c)return;const u=`${SITE}?${grpParams(c)}`;
+  $("#share").innerHTML=`Link đặt chung nhóm <b>${c}</b> (đã kèm tên bạn, địa chỉ, ngày giờ nhận; phí ship bạn trả):<br><a href="${u}" style="font-size:12px">${u}</a><br><button type="button" class="cp" data-c="${u}" style="margin-top:6px;border:1px solid var(--green);background:#fff;color:var(--green);border-radius:8px;padding:5px 10px;font-weight:700">Sao chép link gửi nhóm</button>
+  <p class="note" style="margin:6px 0 0">Bạn vẫn đặt phần của mình bình thường rồi bấm Đặt hàng. Người khác mở link chỉ cần chọn món, nhập tên, SĐT.</p>`}
+function grpReady(){const m=shipMode();const miss=[];if(!$("#name").value.trim())miss.push("họ tên");
+  if(!$("#pickup").checked&&!$("#addr").value.trim())miss.push("địa chỉ");if(!$("#time").value)miss.push("giờ nhận");
+  if(m!=="driver"&&m!=="add"&&m!=="pick")miss.push("cách trả phí ship (chọn 1 trong 2 ô đầu)");return miss}
+$("#mkgrp").onclick=()=>{const miss=grpReady();if(miss.length){toast("Điền trước: "+miss.join(", "));
+    $("#grperr").textContent="Người tạo nhóm cần điền trước: "+miss.join(", ")+". Link nhóm sẽ mang sẵn các thông tin này.";$("#grperr").style.display="block";return}
+  $("#grperr").style.display="none";
+  const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="NHOM-";for(let i=0;i<4;i++)c+=a[Math.floor(Math.random()*a.length)];$("#grp").value=c;shareGrp(c)};
 $("#grp").oninput=e=>shareGrp(e.target.value.trim().toUpperCase());
-(()=>{const g=new URLSearchParams(location.search).get("nhom");if(g){const c=g.toUpperCase().slice(0,12);$("#grp").value=c;shareGrp(c);
-  $("#gbn").textContent=`🤝 Bạn đang đặt chung nhóm ${c} — đơn sẽ được gom giao cùng nhóm`;$("#gbn").style.display="block"}})();
+["#name","#addr","#date","#time","#pickup"].forEach(k=>$(k).addEventListener("change",()=>{if(!MEMBER&&$("#grp").value.trim())shareGrp($("#grp").value.trim().toUpperCase())}));
+(()=>{const q=new URLSearchParams(location.search),g=q.get("nhom");if(!g)return;const c=g.toUpperCase().slice(0,12);
+  $("#grp").value=c;$("#grp").readOnly=true;$("#mkgrp").style.display="none";
+  const dc=q.get("dc"),ng=q.get("ng"),gio=q.get("gio"),ten=q.get("ten")||"người tạo nhóm";
+  if(dc){MEMBER={c,dc,ng,gio,ten};
+    if(dc==="Tự đến lấy"){$("#pickup").checked=true;$("#addr").value="";}else{$("#addr").value=dc}
+    $("#addr").readOnly=true;$("#pickup").disabled=true;
+    if(ng){$("#date").value=ng;$("#date").readOnly=true;$("#date").style.pointerEvents="none"}
+    if(gio){$("#time").value=gio;$("#time").style.pointerEvents="none";$("#time").tabIndex=-1}
+    const gr=document.querySelectorAll("input[name=shipby]");gr[2].checked=true;gr.forEach(r=>r.disabled=true);
+    $("#shipf").querySelector(".shipbox").innerHTML=`<span class="shipok">✓ Phí ship do ${ten} (người tạo nhóm) trả — bạn không phải trả ship.</span>`;
+    $("#shipf").style.display="block";
+    $("#mbox").innerHTML=`<b>🤝 Đặt chung nhóm ${c}</b> do <b>${ten}</b> tạo<br>Giao tới: ${dc}${ng?`<br>Nhận lúc: ${ng.split("-").reverse().join("/")} ${gio||""}`:""}<br><span class="note">Bạn chỉ cần chọn món, nhập họ tên, số điện thoại và cách thanh toán phần của mình.</span>`;
+    $("#mbox").style.display="block";updSum();
+    ['.f[data-k="addr"]','#shipf','.f[data-k="when"]'].forEach(k=>document.querySelector(k).style.display="none");}
+  $("#gbn").textContent=`🤝 Bạn đang đặt chung nhóm ${c}${dc?" — giao tới "+dc:""}`;$("#gbn").style.display="block";
+  shareGrp(c);if(MEMBER)$("#share").style.display="none"})();
 document.querySelectorAll("input[name=pay]").forEach(r=>r.onchange=()=>{$("#paynote").style.display=r.value==="Chuyển khoản"&&r.checked?"block":"none"});
 </script>
 </body>
