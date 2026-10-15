@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định</title>
+<meta name="description" content="Đặt bánh tráng mì ruốc dừa kiểu Bình Định: chọn món, topping, tự tính tiền. Hotline 039 982 6178.">
+<meta property="og:title" content="Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định">
+<meta property="og:description" content="Bánh tráng mì nướng · Bún mì · Ruốc biển · Dừa nạo. Đặt hàng online, tự tính tiền.">
+<meta property="og:image" content="banner.jpg">
+<meta name="theme-color" content="#C62828">
+<link rel="icon" href="mon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#C62828; --red-d:#A61F1F; --green:#2E7D32; --cream:#FFF6E0; --cream-2:#FBE7B5;
+  --ink:#4A2E1F; --muted:#8A6B55; --line:#EBD6A8; --card:#FFFDF7; --gold:#F2B705;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink);
+  background:var(--cream) radial-gradient(#e9cf95 1px,transparent 1.4px) 0 0/22px 22px;
+  padding-bottom:96px}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+.topbar{height:10px;background:var(--red)}
+header.hero{text-align:center;padding:26px 0 8px;position:relative}
+.hero h1{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:clamp(34px,9vw,58px);
+  line-height:1.1;margin:0;letter-spacing:.5px}
+.badge{display:inline-block;margin:14px 0 10px;background:var(--green);color:#fff;font-weight:800;
+  letter-spacing:.32em;padding:9px 22px 9px 28px;border-radius:999px;font-size:clamp(14px,3.8vw,19px)}
+.tag{color:var(--ink);font-weight:600;font-size:clamp(13px,3.6vw,17px);margin:4px 0 16px}
+.hero-row{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+.photo{width:128px;height:128px;border-radius:50%;object-fit:cover;border:7px solid var(--red);
+  box-shadow:0 0 0 5px var(--gold) inset,0 6px 18px rgba(166,31,31,.25)}
+.hotline{display:inline-flex;flex-direction:column;align-items:center;background:var(--red);color:#fff;text-decoration:none;
+  border-radius:16px;padding:10px 20px;box-shadow:0 5px 0 var(--red-d)}
+.hotline small{font-weight:600;opacity:.95}
+.hotline b{font-size:24px;letter-spacing:.5px}
+h2.sec{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:30px;margin:26px 0 4px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:14px}
+.menu{display:grid;gap:12px}
+.dish{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 14px 12px;transition:border-color .15s,box-shadow .15s}
+.dish.on{border-color:var(--red);box-shadow:0 4px 16px rgba(198,40,40,.12)}
+.d-head{display:flex;gap:12px;align-items:flex-start}
+.d-info{flex:1;min-width:0}
+.d-name{font-weight:800;font-size:17px;margin:0}
+.d-desc{color:var(--muted);font-size:13.5px;margin:3px 0 0}
+.d-price{color:var(--red);font-weight:800;font-size:17px;white-space:nowrap}
+.tagchip{display:inline-block;font-size:11px;font-weight:700;color:var(--green);border:1px solid var(--green);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.step{display:flex;align-items:center;gap:6px;margin-top:10px}
+.step button{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--red);background:#fff;color:var(--red);font-size:22px;font-weight:700;cursor:pointer;line-height:1}
+.step button.plus{background:var(--red);color:#fff}
+.step output{min-width:34px;text-align:center;font-weight:800;font-size:18px}
+.opts{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;display:none}
+.dish .opts{display:block}
+.hint{font-size:13px;color:var(--muted);background:#FFF8E6;border-radius:10px;padding:7px 10px;margin-top:2px}
+.sumbox{background:#fff;border:2px solid var(--red);border-radius:16px;padding:12px 14px;margin:6px 0 14px}
+.sumbox .row{display:flex;justify-content:space-between;align-items:center}
+.sumbox .v{color:var(--red);font-weight:800;font-size:24px}
+.grp{background:#F1F8EE;border:1.5px solid var(--green);border-radius:14px;padding:12px;margin-top:4px}
+.grp .gl{display:flex;gap:8px}
+.grp input{text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.grp button{border:0;background:var(--green);color:#fff;border-radius:12px;padding:0 14px;font-weight:700;font-family:inherit;white-space:nowrap;cursor:pointer}
+.grp .share{display:none;margin-top:10px;font-size:13.5px}
+.grp .share a{color:var(--green);font-weight:700;word-break:break-all}
+.shipbox{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px}
+.shipbox .gl{display:flex;gap:8px;flex-wrap:wrap}
+.shipbox button{border:0;background:var(--red);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700;font-family:inherit;cursor:pointer;font-size:14.5px}
+.shipbox button.ghost{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+.radios.col{flex-direction:column}
+.radios.col label{min-width:0}
+.shipok{color:var(--green);font-weight:700}
+.grpbanner{background:var(--green);color:#fff;text-align:center;font-weight:700;padding:9px 16px;font-size:14px;display:none}
+.opt-label{font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:14px;cursor:pointer;user-select:none;font-family:inherit;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.chip em{font-style:normal;opacity:.8;font-size:12.5px}
+.por{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 10px 2px;margin-bottom:8px}
+.por-h{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}
+.por-h span{color:var(--red);font-weight:800}
+.pnote{width:100%;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:0 0 9px;background:#FFFDF7}
+.pnote:focus{outline:none;border-color:var(--red)}
+.chip.sm{padding:5px 11px;font-size:13px}
+.sl{font-size:12.5px;color:var(--muted);align-self:center}
+.subt{margin-left:auto;font-weight:800;color:var(--red);font-size:15px}
+.copy{width:100%;border:1.5px dashed var(--green);background:#F1F8EE;color:var(--green);font-weight:700;border-radius:12px;padding:9px;margin-bottom:8px;cursor:pointer;font-family:inherit;font-size:13.5px}
+.add{width:100%;margin-top:4px;border:0;border-radius:14px;background:var(--red);color:#fff;font-weight:800;font-size:16px;padding:13px;cursor:pointer;font-family:inherit}
+.add:active{transform:translateY(1px)}
+.cart{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:6px 14px}
+.cart .empty{color:var(--muted);text-align:center;padding:18px 0;font-size:14px}
+.line{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line)}
+.line:last-child{border-bottom:0}
+.line .t{flex:1;font-size:14.5px}
+.line .t b{font-size:15.5px}
+.line .t span{display:block;color:var(--muted);font-size:13px}
+.line .m{font-weight:800;white-space:nowrap}
+.line .x{border:0;background:none;color:var(--red);font-size:20px;cursor:pointer;padding:0 2px}
+.total{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:18px;padding:12px 0 6px;border-top:2px solid var(--red);margin-top:4px}
+.total .v{color:var(--red);font-size:22px}
+.note{font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+form .f{margin-bottom:14px}
+form label.l{display:block;font-weight:700;margin-bottom:6px;font-size:14.5px}
+form label.l i{color:var(--red);font-style:normal}
+input[type=text],input[type=tel],input[type=date],select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:#fff;
+  border:1.5px solid var(--line);border-radius:12px;padding:12px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--red)}
+textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1.2fr 1fr;gap:10px}
+.radios{display:flex;gap:8px;flex-wrap:wrap}
+.radios label{flex:1;min-width:130px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;cursor:pointer;font-size:14.5px;display:flex;gap:8px;align-items:center}
+.radios input{accent-color:var(--red);width:18px;height:18px}
+.radios label:has(input:checked){border-color:var(--red);background:#FFF0EC}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:8px;color:var(--muted)}
+.chk input{accent-color:var(--red);width:18px;height:18px}
+.err{color:var(--red);font-size:13px;margin-top:4px;display:none}
+.f.bad .err{display:block}
+.f.bad input,.f.bad select,.f.bad textarea{border-color:var(--red)}
+.submit{width:100%;border:0;border-radius:16px;background:var(--green);color:#fff;font-weight:800;font-size:18px;padding:16px;cursor:pointer;font-family:inherit;box-shadow:0 5px 0 #1f5a23}
+.submit[disabled]{opacity:.6}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--red);color:#fff;z-index:20;padding:10px 16px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 18px rgba(0,0,0,.15)}
+.bar .in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar .sum{flex:1;line-height:1.2}
+.bar .sum small{display:block;opacity:.9;font-size:12.5px}
+.bar .sum b{font-size:21px}
+.bar a{background:#fff;color:var(--red);font-weight:800;text-decoration:none;border-radius:12px;padding:11px 16px;white-space:nowrap}
+footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
+.modal{position:fixed;inset:0;background:rgba(40,20,10,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.show{display:flex}
+.box{background:var(--card);border-radius:20px;max-width:440px;width:100%;padding:22px 18px;text-align:center;max-height:90vh;overflow:auto}
+.box h3{font-family:"Lobster",cursive;font-weight:400;color:var(--green);font-size:30px;margin:0 0 6px}
+.box .code{display:inline-block;background:var(--cream-2);border-radius:10px;padding:6px 12px;font-weight:800;margin:6px 0 10px;letter-spacing:.5px}
+.box pre{white-space:pre-wrap;text-align:left;font-family:inherit;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0 14px}
+.box button{border:0;border-radius:12px;background:var(--red);color:#fff;font-weight:800;padding:12px 22px;font-size:16px;cursor:pointer;font-family:inherit}
+.qr{width:100%;max-width:280px;border-radius:14px;border:1px solid var(--line);background:#fff;margin:4px auto 6px;display:block}
+.bk{background:#fff;border:1.5px solid var(--red);border-radius:14px;padding:12px;margin:8px 0 6px;text-align:left}
+.bk h4{margin:0 0 6px;color:var(--red);font-size:16px;text-align:center}
+.bk .r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.bk .r:last-child{border-bottom:0}
+.bk .r span{color:var(--muted);font-size:12.5px;display:block}
+.bk .r b{font-size:15px;word-break:break-all}
+.bk .cp{border:1px solid var(--red);background:#fff;color:var(--red);border-radius:8px;padding:5px 10px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.bk .dl{display:block;text-align:center;font-size:13px;color:var(--green);font-weight:700;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:opacity .2s;z-index:30;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+</style>
+</head>
+<body>
+<div class="topbar"></div><div class="grpbanner" id="gbn"></div>
+<div class="wrap">
+  <header class="hero">
+    <h1>Bánh Tráng Mì Ruốc Dừa</h1>
+    <div class="badge">KIỂU BÌNH ĐỊNH</div>
+    <p class="tag">Bánh tráng mì nướng · Bún mì · Ruốc biển · Dừa nạo</p>
+    <div class="hero-row">
+      <img class="photo" src="mon.jpg" alt="Bánh tráng mì ruốc dừa" width="128" height="128">
+      <a class="hotline" href="tel:0399826178"><small>📞 Đặt hàng</small><b>039 982 6178</b></a>
+    </div>
+  </header>
+
+  <h2 class="sec">Thực đơn</h2>
+  <p class="sub">Bấm + để thêm phần, rồi chọn topping, nước chấm, độ cay và ghi chú cho từng phần. Giá chưa gồm phí ship.</p>
+  <div class="menu" id="menu"></div>
+
+  <h2 class="sec" id="don">Đơn của bạn</h2>
+  <div class="cart" id="cart"></div>
+
+  <h2 class="sec">Thông tin nhận hàng</h2>
+  <form id="f" novalidate>
+    <div class="f" data-k="name"><label class="l" for="name">Họ tên <i>*</i></label>
+      <input id="name" type="text" autocomplete="name" placeholder="Vd: Chị Lan"><div class="err">Vui lòng nhập họ tên</div></div>
+    <div class="f" data-k="phone"><label class="l" for="phone">Số điện thoại <i>*</i></label>
+      <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Vd: 0903 123 456"><div class="err">Số điện thoại chưa đúng (10 số)</div></div>
+    <div class="f" data-k="addr"><label class="l" for="addr">Địa chỉ giao hàng <i>*</i></label>
+      <textarea id="addr" autocomplete="street-address" placeholder="Số nhà, đường, phường, quận — công ty/toà nhà nếu có"></textarea>
+      <label class="chk"><input type="checkbox" id="pickup"> Tôi tự đến lấy</label>
+      <div class="err">Vui lòng nhập địa chỉ hoặc chọn tự đến lấy</div></div>
+    <div class="f" id="shipf" data-k="ship"><label class="l">Phí ship <i>*</i></label>
+      <div class="shipbox"><div class="gl"><button type="button" id="calc">🛵 Ước tính phí ship</button><button type="button" id="gps" class="ghost">📍 Dùng vị trí của tôi</button></div>
+      <div id="shipres" class="note" style="margin:8px 0 0">Nhập địa chỉ rồi bấm “Ước tính phí ship”. Tính theo giá Xanh SM giao hàng (14.000đ cho 2 km đầu, 5.000đ mỗi km tiếp theo) từ bếp ở Nguyễn Văn Khối, Gò Vấp.</div></div>
+      <div class="radios col" style="margin-top:10px">
+        <label><input type="radio" name="shipby" value="Khách tự trả tài xế khi nhận"> Tôi trả phí ship trực tiếp cho tài xế khi nhận</label>
+        <label><input type="radio" name="shipby" value="Cộng phí ship vào tiền hàng"> Cộng phí ship vào tiền hàng (trả chung 1 lần)</label>
+        <label><input type="radio" name="shipby" value="Đặt nhóm — ship do người khác trong nhóm trả"> Đặt nhóm — phí ship đã có người trong nhóm trả</label>
+      </div><div class="err" id="shiperr">Vui lòng chọn cách trả phí ship (chọn Đặt nhóm thì nhập mã nhóm ở mục “Đặt chung” bên dưới)</div></div>
+    <div class="f" data-k="when"><label class="l">Ngày giờ nhận <i>*</i></label>
+      <div class="row2"><input id="date" type="date" aria-label="Ngày nhận"><select id="time" aria-label="Giờ nhận"></select></div>
+      <div class="err">Vui lòng chọn ngày và giờ nhận</div></div>
+    <div class="f"><label class="l">Thanh toán</label>
+      <div class="radios"><label><input type="radio" name="pay" value="Tiền mặt khi nhận" checked> 💵 Tiền mặt khi nhận</label><label><input type="radio" name="pay" value="Chuyển khoản"> 🏦 Chuyển khoản</label></div>
+      <p class="note" id="paynote" style="display:none;margin-top:8px">TPBank · 2842 8121 985 — mã QR có sẵn số tiền hiện ra ngay sau khi bấm Đặt hàng.</p></div>
+    <div class="f"><label class="l" for="note">Ghi chú cho shop</label>
+      <textarea id="note" placeholder="Vd: để riêng ruốc, gọi trước khi giao…"></textarea></div>
+    <div class="f"><label class="l" for="grp">Đặt chung (gom đơn) — không bắt buộc</label>
+      <div class="grp"><div class="gl"><input id="grp" type="text" maxlength="12" placeholder="Nhập mã nhóm, vd: NHOM-K7Q2"><button type="button" id="mkgrp">Tạo mã nhóm</button></div>
+      <p class="note" style="margin:8px 0 0">Cả văn phòng / nhóm bạn đặt chung? Một người bấm <b>Tạo mã nhóm</b>, gửi link cho mọi người. Ai đặt bằng link đó sẽ được gom chung 1 lần giao.</p>
+      <div class="share" id="share"></div></div></div>
+    <div class="sumbox"><div class="row"><span><b>Tiền hàng</b><br><small id="sumq" style="color:var(--muted)">Chưa chọn món</small></span><b id="sumt">0đ</b></div>
+      <div class="row" style="margin-top:6px"><span>Phí ship <small id="shipnote" style="color:var(--muted)"></small></span><b id="sums">—</b></div>
+      <div class="row" style="margin-top:8px;border-top:1.5px dashed var(--line);padding-top:8px"><b>Tổng thanh toán</b><span class="v" id="sumg">0đ</span></div>
+      <p class="note" style="margin:6px 0 0" id="sumhint">Phí ship là ước tính, shop xác nhận lại khi gọi.</p></div>
+    <button class="submit" id="go" type="submit">Đặt hàng</button>
+  </form>
+  <footer>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0399826178" style="color:inherit">039 982 6178</a></footer>
+</div>
+
+<div class="bar"><div class="in"><div class="sum"><small id="barq">Chưa chọn món</small><b id="bart">0đ</b></div><a href="#don">Xem đơn ↓</a></div></div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="ok"><div class="box">
+  <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn</div><div class="code" id="okcode"></div>
+  <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp gọi <a href="tel:0399826178">039 982 6178</a>.</p>
+  <button type="button" id="okclose">Đóng</button></div></div>
+
+<script>
+const FORM="https://docs.google.com/forms/d/e/1FAIpQLSd3Z--C-uV6XJTzCdUzjuWeOQz8hOhmRHwPUtUA-ojLWfNP7w/formResponse";
+const E={name:"entry.1617320443",phone:"entry.1296680432",addr:"entry.1127379480",when:"entry.325322427",items:"entry.1094612916",
+  qty:"entry.1589417355",total:"entry.682908208",code:"entry.1726601081",pay:"entry.1691158886",note:"entry.1448708004",grp:"entry.594608824",km:"entry.205361310",ship:"entry.529968166",shipby:"entry.1659168980",grand:"entry.1501035833"};
+const KITCHEN=[106.6520,10.8436]; // 370/2 Nguyễn Văn Khối, Gò Vấp (toạ độ gần đúng)
+const SHIP={base:14000,baseKm:2,perKm:5000}; // giá Xanh Express siêu tốc: 14k/2km đầu + 5k/km
+let geo=null; // {km,fee,label}
+
+const TOP={trung:["Trứng cút",5000],thit:["Thịt luộc",10000],tom:["Tôm nướng",10000],muc:["Mực đại dương nướng",10000],
+  cgchay:["Chả giò chay",10000],chachay:["Chả chay",10000],rong:["Rong biển sấy",5000]};
+const MAN=["trung","thit","tom","muc","cgchay","chachay","rong"], CHAY=["cgchay","chachay","rong"];
+const MENU=[
+ {id:"tt",n:"Truyền thống",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
+ {id:"ttc",n:"Truyền thống chay",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
+ {id:"dbm",n:"Đặc biệt mặn",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
+ {id:"dbh",n:"Đặc biệt hải sản",d:"Trứng cút + tôm nướng + mực nướng",p:45000,top:MAN,sauce:"Mắm"},
+ {id:"dbc",n:"Đặc biệt chay",d:"Chả giò chay + chả chay + rong biển",p:45000,top:CHAY,sauce:"Nước tương",chay:1},
+ {id:"tra",n:"Trà tắc xí muội",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
+];
+const BANK={bin:"TPB",name:"TPBank",acc:"28428121985",accFmt:"2842 8121 985"};
+function bankBox(amount,code){
+  const url=`https://img.vietqr.io/image/${BANK.bin}-${BANK.acc}-compact.png?amount=${amount}&addInfo=${encodeURIComponent(code)}`;
+  const row=(l,v,c)=>`<div class="r"><div><span>${l}</span><b>${v}</b></div>${c!=null?`<button type="button" class="cp" data-c="${c}">Sao chép</button>`:""}</div>`;
+  return `<div class="bk"><h4>Quét mã để chuyển khoản</h4><img class="qr" src="${url}" alt="Mã QR chuyển khoản ${BANK.name}">
+    ${row("Ngân hàng",BANK.name)}${row("Số tài khoản",BANK.accFmt,BANK.acc)}
+    ${row("Số tiền",vnd(amount),amount)}${row("Nội dung chuyển khoản",code,code)}
+    <a class="dl" href="${url}" target="_blank" rel="noopener">⬇ Mở ảnh QR để lưu</a></div>
+    <p class="note">Vui lòng ghi đúng nội dung <b>${code}</b> để shop đối chiếu. Phí ship (nếu có) shop báo sau.</p>`}
+document.addEventListener("click",e=>{const b=e.target.closest(".cp");if(!b)return;
+  (navigator.clipboard?navigator.clipboard.writeText(b.dataset.c):Promise.reject()).then(()=>toast("Đã sao chép"),()=>toast(b.dataset.c))});
+const vnd=n=>n.toLocaleString("vi-VN")+"đ", $=s=>document.querySelector(s);
+const st={}; MENU.forEach(m=>st[m.id]=[]);
+const newP=m=>({tops:[],sauce:m.sauce||"",cay:"Cay",note:""});
+function unit(m,p){return m.p+p.tops.reduce((a,k)=>a+TOP[k][1],0)}
+function chips(m,p,i){
+  return `<div class="por" data-i="${i}"><div class="por-h"><b>Phần ${i+1}</b><span>${vnd(unit(m,p))}</span></div>
+   <div class="chips">${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]} <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
+   <div class="chips sauce"><span class="sl">Nước chấm:</span>${["Mắm","Nước tương"].map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}</button>`).join("")}<span class="sl" style="margin-left:6px">·</span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay":"Không cay"}</button>`).join("")}</div>
+   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú phần ${i+1} (vd: không rau, ít ruốc, để riêng nước chấm)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
+function renderDish(el){
+  const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id], q=P.length, sub=P.reduce((a,p)=>a+unit(m,p),0);
+  el.querySelector("output").textContent=q; el.classList.toggle("on",q>0);
+  el.querySelector(".subt").textContent=q?`${q} ${m.drink?"ly":"phần"} = ${vnd(sub)}`:"";
+  if(m.drink)return;
+  if(!q){el.querySelector(".opts").innerHTML=`<div class="hint">👆 Bấm <b>+</b> để thêm phần — mỗi phần chọn topping, nước chấm, độ cay và ghi chú riêng</div>`;return}
+  el.querySelector(".opts").innerHTML=(q>1?`<button type="button" class="copy">Chép topping, nước chấm, độ cay, ghi chú của phần 1 cho tất cả ${q} phần</button>`:"")+P.map((p,i)=>chips(m,p,i)).join("");
+  el.querySelectorAll(".por").forEach(r=>{const p=P[+r.dataset.i];
+    r.querySelectorAll("[data-top]").forEach(b=>b.onclick=()=>{const k=b.dataset.top,j=p.tops.indexOf(k);
+      j<0?p.tops.push(k):p.tops.splice(j,1);p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y));renderDish(el);renderCart()});
+    r.querySelectorAll("[data-sauce]").forEach(b=>b.onclick=()=>{p.sauce=b.dataset.sauce;renderDish(el);renderCart()});
+    r.querySelectorAll("[data-cay]").forEach(b=>b.onclick=()=>{p.cay=b.dataset.cay;renderDish(el);renderCart()});
+    r.querySelector(".pnote").oninput=e=>{p.note=e.target.value;renderCart()};});
+  const c=el.querySelector(".copy"); if(c)c.onclick=()=>{P.forEach((p,i)=>{if(i){p.tops=[...P[0].tops];p.sauce=P[0].sauce;p.cay=P[0].cay;p.note=P[0].note}});renderDish(el);renderCart();toast("Đã chép cho tất cả phần")};
+}
+function renderMenu(){
+  $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head"><div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}</p><p class="d-desc">${m.d}</p></div><div class="d-price">${vnd(m.p)}</div></div>
+      <div class="step"><button type="button" class="minus" aria-label="Bớt">−</button><output>0</output><button type="button" class="plus" aria-label="Thêm">+</button><span class="subt"></span></div>
+      ${m.drink?"":'<div class="opts"></div>'}</div>`).join("");
+  document.querySelectorAll(".dish").forEach(el=>{
+    const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id];
+    el.querySelector(".plus").onclick=()=>{if(P.length<50)P.push(newP(m));renderDish(el);renderCart()};
+    el.querySelector(".minus").onclick=()=>{P.pop();renderDish(el);renderCart()};
+    renderDish(el);
+  });
+}
+function lines(){const out=[];MENU.forEach(m=>{const g={};st[m.id].forEach(p=>{const k=p.tops.join(",")+"|"+p.sauce+"|"+p.cay+"|"+p.note.trim();(g[k]=g[k]||{p,q:0}).q++});
+  Object.values(g).forEach(({p,q})=>{const u=unit(m,p);out.push({m,q,u,amt:u*q,sauce:p.sauce,cay:m.drink?"":p.cay,note:p.note.trim(),
+    title:m.n+(p.tops.length?" + "+p.tops.map(k=>TOP[k][0]).join(" + "):"")})})});return out}
+function totals(){let t=0,p=0,d=0;lines().forEach(L=>{t+=L.amt;L.m.drink?d+=L.q:p+=L.q});return{t,p,d}}
+function qtyText(T){return [T.p&&T.p+" phần",T.d&&T.d+" ly trà"].filter(Boolean).join(" + ")}
+function renderCart(){
+  const T=totals(),L=lines();
+  $("#cart").innerHTML=L.length?L.map(l=>`<div class="line"><div class="t"><b>${l.q} × ${l.title}</b><span>${[l.sauce&&"Chấm "+l.sauce+(l.cay?" ("+l.cay.toLowerCase()+")":""),l.note&&"📝 "+l.note,vnd(l.u)+"/"+(l.m.drink?"ly":"phần")].filter(Boolean).join(" · ")}</span></div><div class="m">${vnd(l.amt)}</div></div>`).join("")
+    +`<div class="total"><span>Tổng (chưa ship)</span><span class="v">${vnd(T.t)}</span></div>`
+    :`<div class="empty">Chưa có món nào — chọn ở thực đơn phía trên nhé.</div>`;
+  $("#barq").textContent=$("#sumq").textContent=L.length?qtyText(T):"Chưa chọn món"; $("#sumt").textContent=vnd(T.t);updSum();
+}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("show"),1600)}
+// date & time
+(function(){const d=new Date(),p=n=>String(n).padStart(2,"0"),iso=x=>`${x.getFullYear()}-${p(x.getMonth()+1)}-${p(x.getDate())}`;
+  $("#date").min=iso(d);$("#date").value=iso(d);
+  let o='<option value="">Chọn giờ</option>';for(let h=6;h<=20;h++)for(const mm of[0,30]){if(h===20&&mm)break;o+=`<option>${p(h)}:${p(mm)}</option>`}
+  $("#time").innerHTML=o;})();
+$("#pickup").onchange=e=>{$("#addr").disabled=e.target.checked;if(e.target.checked)$("#addr").value=""};
+function bad(k,b){document.querySelector(`.f[data-k="${k}"]`).classList.toggle("bad",b);return b}
+$("#f").onsubmit=async e=>{
+  e.preventDefault();
+  if(!lines().length){toast("Bạn chưa chọn món nào");$("#menu").scrollIntoView({behavior:"smooth"});return}
+  const name=$("#name").value.trim(),phone=$("#phone").value.replace(/[^\d+]/g,""),pick=$("#pickup").checked,
+    addr=pick?"Tự đến lấy":$("#addr").value.trim(),date=$("#date").value,time=$("#time").value;
+  let x=0;x+=bad("name",!name);x+=bad("phone",!/^(\+?84|0)\d{9}$/.test(phone));x+=bad("addr",!addr);x+=bad("when",!date||!time);
+  const sb=(document.querySelector('input[name=shipby]:checked')||{}).value||"";
+  x+=bad("ship",!pick&&(!sb||(sb.startsWith("Đặt nhóm")&&!$("#grp").value.trim())));
+  if(x){document.querySelector(".f.bad").scrollIntoView({behavior:"smooth",block:"center"});return}
+  const [y,mo,da]=date.split("-"),when=`${da}/${mo}/${y} ${time}`,T=totals(),n=new Date(),p2=v=>String(v).padStart(2,"0");
+  const code=`W${p2(n.getDate())}${p2(n.getMonth()+1)}-${p2(n.getHours())}${p2(n.getMinutes())}${String.fromCharCode(65+Math.floor(Math.random()*26))}`;
+  const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
+  const fd=new URLSearchParams();
+  [[E.name,name],[E.phone,phone],[E.addr,addr],[E.when,when],[E.items,items],[E.qty,qtyText(T)],[E.total,String(T.t)],[E.code,code],
+   [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":sb],[E.grand,String(grand())]]
+   .forEach(([k,v])=>fd.append(k,v));
+  const btn=$("#go");btn.disabled=true;btn.textContent="Đang gửi…";
+  try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
+    $("#okcode").textContent="Mã đơn: "+code;
+    $("#bank").innerHTML=document.querySelector('input[name=pay]:checked').value==="Chuyển khoản"?bankBox(grand(),code):"";
+    $("#oksum").textContent=`${$("#grp").value.trim()?"Nhóm: "+$("#grp").value.trim().toUpperCase()+"\n":""}${items}\n\nTiền hàng: ${vnd(T.t)}\nPhí ship: ${pick?"Tự đến lấy":sb.startsWith("Cộng")?(geo?vnd(geo.fee)+" (ước tính, cộng vào đơn)":"shop báo sau"):sb.startsWith("Khách")?(geo?"~"+vnd(geo.fee)+" trả tài xế":"trả tài xế"):"nhóm trả"}\nTổng thanh toán: ${vnd(grand())}\nNhận: ${when}\n${addr}`;
+    $("#ok").classList.add("show");MENU.forEach(m=>st[m.id]=[]);document.querySelectorAll(".dish").forEach(renderDish);renderCart();$("#note").value="";
+  }catch(err){toast("Gửi không được, vui lòng thử lại hoặc gọi 039 982 6178")}
+  btn.disabled=false;btn.textContent="Đặt hàng";
+};
+$("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,behavior:"smooth"})};
+renderMenu();renderCart();
+function shipMode(){if($("#pickup").checked)return "pick";const v=(document.querySelector('input[name=shipby]:checked')||{}).value||"";return v.startsWith("Cộng")?"add":v.startsWith("Khách")?"driver":v?"group":""}
+function grand(){const t=totals().t;return t+(shipMode()==="add"&&geo?geo.fee:0)}
+function updSum(){const T=totals(),m=shipMode();$("#bart").textContent=vnd(grand());
+  let sv="—",sn="";if(m==="pick"){sv="0đ";sn="(tự đến lấy)"}else if(geo){sv=(m==="add"?"":"~")+vnd(geo.fee);sn=m==="add"?"(cộng vào đơn)":m==="driver"?"(trả tài xế, không cộng)":m==="group"?"(nhóm trả, không cộng)":"(ước tính)"}
+  else if(m==="group"){sn="(nhóm trả)"}
+  $("#sums").textContent=sv;$("#shipnote").textContent=sn;$("#sumg").textContent=vnd(grand());}
+document.querySelectorAll("input[name=shipby]").forEach(r=>r.addEventListener("change",()=>{updSum();bad("ship",false)}));
+$("#pickup").addEventListener("change",()=>{$("#shipf").style.display=$("#pickup").checked?"none":"block";updSum()});
+function fee(km){return Math.ceil((SHIP.base+Math.max(0,km-SHIP.baseKm)*SHIP.perKm)/1000)*1000}
+async function route(lon,lat,label){
+  const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${KITCHEN[0]},${KITCHEN[1]};${lon},${lat}?overview=false`).then(r=>r.json());
+  if(!r.routes||!r.routes[0])throw 0;const km=r.routes[0].distance/1000;geo={km,fee:fee(km),label};
+  $("#shipres").innerHTML=`<span class="shipok">✓ ${label}</span><br>Khoảng cách ~${km.toFixed(1)} km · Phí ship ước tính <b>${vnd(geo.fee)}</b> (giá Xanh SM). Sai vị trí? Sửa địa chỉ cụ thể hơn (số nhà, đường, phường) rồi bấm lại.`;updSum()}
+$("#calc").onclick=async()=>{const a=$("#addr").value.trim();if(!a){bad("addr",true);return}
+  $("#shipres").textContent="Đang tìm địa chỉ…";
+  try{const q=/hồ chí minh|hcm|sài gòn|saigon/i.test(a)?a:a+", Hồ Chí Minh";
+    const g=await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=1&lat=10.80&lon=106.68`).then(r=>r.json());
+    const f=g.features&&g.features[0];if(!f)throw 0;const p=f.properties;
+    const label="Tìm thấy: "+[p.housenumber,p.street||p.name,p.district||p.locality,p.city].filter(Boolean).join(", ");
+    await route(f.geometry.coordinates[0],f.geometry.coordinates[1],label)}
+  catch(e){geo=null;updSum();$("#shipres").innerHTML="Chưa tìm được địa chỉ này trên bản đồ. Bạn thử ghi rõ tên đường + phường/quận, hoặc bấm “📍 Dùng vị trí của tôi”. Không sao, shop vẫn nhận đơn và báo phí ship khi gọi xác nhận."}};
+$("#gps").onclick=()=>{if(!navigator.geolocation){toast("Máy không hỗ trợ định vị");return}
+  $("#shipres").textContent="Đang lấy vị trí…";
+  navigator.geolocation.getCurrentPosition(p=>route(p.coords.longitude,p.coords.latitude,"Theo vị trí hiện tại của bạn").catch(()=>{$("#shipres").textContent="Không tính được đường đi, shop sẽ báo phí ship."}),
+    ()=>{$("#shipres").textContent="Không lấy được vị trí (chưa cho phép định vị). Bạn nhập địa chỉ rồi bấm Ước tính nhé."},{enableHighAccuracy:true,timeout:10000})};
+$("#addr").addEventListener("change",()=>{geo=null;updSum();if($("#addr").value.trim().length>8)$("#calc").click()});
+const SITE=location.origin+location.pathname;
+function shareGrp(c){$("#share").style.display=c?"block":"none";if(!c)return;const u=`${SITE}?nhom=${encodeURIComponent(c)}`;
+  $("#share").innerHTML=`Link đặt chung nhóm <b>${c}</b>:<br><a href="${u}">${u}</a><br><button type="button" class="cp" data-c="${u}" style="margin-top:6px;border:1px solid var(--green);background:#fff;color:var(--green);border-radius:8px;padding:5px 10px;font-weight:700">Sao chép link gửi nhóm</button>`}
+$("#mkgrp").onclick=()=>{const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="NHOM-";for(let i=0;i<4;i++)c+=a[Math.floor(Math.random()*a.length)];$("#grp").value=c;shareGrp(c)};
+$("#grp").oninput=e=>shareGrp(e.target.value.trim().toUpperCase());
+(()=>{const g=new URLSearchParams(location.search).get("nhom");if(g){const c=g.toUpperCase().slice(0,12);$("#grp").value=c;shareGrp(c);
+  $("#gbn").textContent=`🤝 Bạn đang đặt chung nhóm ${c} — đơn sẽ được gom giao cùng nhóm`;$("#gbn").style.display="block"}})();
+document.querySelectorAll("input[name=pay]").forEach(r=>r.onchange=()=>{$("#paynote").style.display=r.value==="Chuyển khoản"&&r.checked?"block":"none"});
+</script>
+</body>
+</html>
