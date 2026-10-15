@@ -70,6 +70,7 @@ h2.sec{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:
 .shipbox button{border:0;background:var(--red);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700;font-family:inherit;cursor:pointer;font-size:14.5px}
 .shipbox button.ghost{background:#fff;color:var(--red);border:1.5px solid var(--red)}
 .radios.col{flex-direction:column}
+.rec{display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:700;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px}
 .radios.col label{min-width:0}
 .shipok{color:var(--green);font-weight:700}
 .mbox{display:none;background:#F1F8EE;border:1.5px solid var(--green);border-radius:14px;padding:12px;margin-bottom:14px;font-size:14.5px;line-height:1.5}
@@ -182,10 +183,10 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
       <div class="err">Vui lòng nhập địa chỉ hoặc chọn tự đến lấy</div></div>
     <div class="f" id="shipf" data-k="ship"><label class="l">Phí ship <i>*</i></label>
       <div class="shipbox"><div class="gl"><button type="button" id="calc">🛵 Ước tính phí ship</button><button type="button" id="gps" class="ghost">📍 Dùng vị trí của tôi</button></div>
-      <div id="shipres" class="note" style="margin:8px 0 0">Nhập địa chỉ rồi bấm “Ước tính phí ship”. Tính theo giá Xanh SM giao hàng (14.000đ cho 2 km đầu, 5.000đ mỗi km tiếp theo) từ bếp ở Nguyễn Văn Khối, Gò Vấp.</div></div>
+      <div id="shipres" class="note" style="margin:8px 0 0">Nhập địa chỉ rồi bấm “Ước tính phí ship”. Ước tính từ bếp ở Nguyễn Văn Khối, Gò Vấp, theo hãng giao hàng giá cao nhất, có tính giờ cao điểm.</div></div>
       <div class="radios col" style="margin-top:10px">
-        <label><input type="radio" name="shipby" value="Khách tự trả tài xế khi nhận"> Tôi trả phí ship trực tiếp cho tài xế khi nhận</label>
-        <label><input type="radio" name="shipby" value="Cộng phí ship vào tiền hàng"> Cộng phí ship vào tiền hàng (trả chung 1 lần)</label>
+        <label><input type="radio" name="shipby" value="Khách tự trả tài xế khi nhận" checked> <span><b>Tôi trả ship trực tiếp cho tài xế</b> <span class="rec">Khuyên dùng</span><br><small style="color:var(--muted)">Shop đặt xe hộ, bạn trả đúng giá trên app khi nhận hàng — chính xác nhất, không chênh lệch.</small></span></label>
+        <label><input type="radio" name="shipby" value="Cộng phí ship vào tiền hàng"> <span>Cộng phí ship vào tiền hàng<br><small style="color:var(--muted)">Trả 1 lần theo số ước tính (thường cao hơn giá thật một chút).</small></span></label>
         <label><input type="radio" name="shipby" value="Đặt nhóm — ship do người khác trong nhóm trả"> Đặt nhóm — phí ship đã có người trong nhóm trả</label>
       </div><div class="err" id="shiperr">Vui lòng chọn cách trả phí ship (chọn Đặt nhóm thì nhập mã nhóm ở mục “Đặt chung” bên dưới)</div></div>
     <div class="f" data-k="when"><label class="l">Ngày giờ nhận <i>*</i></label>
@@ -221,7 +222,9 @@ const FORM="https://docs.google.com/forms/d/e/1FAIpQLSd3Z--C-uV6XJTzCdUzjuWeOQz8
 const E={name:"entry.1617320443",phone:"entry.1296680432",addr:"entry.1127379480",when:"entry.325322427",items:"entry.1094612916",
   qty:"entry.1589417355",total:"entry.682908208",code:"entry.1726601081",pay:"entry.1691158886",note:"entry.1448708004",grp:"entry.594608824",km:"entry.205361310",ship:"entry.529968166",shipby:"entry.1659168980",grand:"entry.1501035833"};
 const KITCHEN=[106.6520,10.8436]; // 370/2 Nguyễn Văn Khối, Gò Vấp (toạ độ gần đúng)
-const SHIP={base:14000,baseKm:2,perKm:5000}; // giá Xanh Express siêu tốc: 14k/2km đầu + 5k/km
+// Ước tính theo hãng CAO NHẤT (so 10/2026): GrabExpress 16k/2km + 5k/km (Xanh SM 14k+5k, Ahamove siêu tốc ~15,7k/2km, Lalamove 13,5k + ~4,3k/km, beBike 14,5k + 4,9k/km)
+// + phí nền tảng 3k; giờ cao điểm (giả định) ×1,3: 7:00–9:00, 11:00–13:00, 16:30–19:30 và thứ 7, CN 11:00–13:00 · 17:00–20:00
+const SHIP={base:16000,baseKm:2,perKm:5000,platform:3000,peak:1.3};
 let geo=null; // {km,fee,label}
 
 const TOP={trung:["Trứng cút",5000],thit:["Thịt luộc",10000],tom:["Tôm nướng",10000],muc:["Mực đại dương nướng",10000],
@@ -336,11 +339,15 @@ function updSum(){const T=totals(),m=shipMode();$("#bart").textContent=vnd(grand
   $("#sums").textContent=sv;$("#shipnote").textContent=sn;$("#sumg").textContent=vnd(grand());}
 document.querySelectorAll("input[name=shipby]").forEach(r=>r.addEventListener("change",()=>{updSum();bad("ship",false)}));
 $("#pickup").addEventListener("change",()=>{$("#shipf").style.display=$("#pickup").checked?"none":"block";updSum()});
-function fee(km){return Math.ceil((SHIP.base+Math.max(0,km-SHIP.baseKm)*SHIP.perKm)/1000)*1000}
+function isPeak(){const t=$("#time").value;if(!t)return false;const [h,mi]=t.split(":").map(Number),x=h*60+mi,d=$("#date").value?new Date($("#date").value+"T00:00").getDay():1;
+  const R=(d===0||d===6)?[[660,780],[1020,1200]]:[[420,540],[660,780],[990,1170]];return R.some(([a,b])=>x>=a&&x<b)}
+function fee(km){const f=(SHIP.base+Math.max(0,km-SHIP.baseKm)*SHIP.perKm+SHIP.platform)*(isPeak()?SHIP.peak:1);return Math.ceil(f/1000)*1000}
+function shipText(){if(!geo)return;$("#shipres").innerHTML=`<span class="shipok">✓ ${geo.label}</span><br>Khoảng cách ~${geo.km.toFixed(1)} km · Phí ship ước tính <b>~${vnd(geo.fee)}</b>${isPeak()?" <b style='color:var(--red)'>(giờ cao điểm)</b>":""}.<br>Tính theo hãng giao hàng giá cao nhất${isPeak()?", đã cộng phụ phí giờ cao điểm":""}; trời mưa có thể cao hơn. Giá thật thường thấp hơn số này. Sai vị trí? Sửa địa chỉ cụ thể hơn rồi bấm lại.`}
 async function route(lon,lat,label){
   const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${KITCHEN[0]},${KITCHEN[1]};${lon},${lat}?overview=false`).then(r=>r.json());
-  if(!r.routes||!r.routes[0])throw 0;const km=r.routes[0].distance/1000;geo={km,fee:fee(km),label};
-  $("#shipres").innerHTML=`<span class="shipok">✓ ${label}</span><br>Khoảng cách ~${km.toFixed(1)} km · Phí ship ước tính <b>${vnd(geo.fee)}</b> (giá Xanh SM). Sai vị trí? Sửa địa chỉ cụ thể hơn (số nhà, đường, phường) rồi bấm lại.`;updSum()}
+  if(!r.routes||!r.routes[0])throw 0;const km=r.routes[0].distance/1000;geo={km,label,get fee(){return fee(this.km)}};
+  shipText();updSum()}
+["#date","#time"].forEach(k=>$(k).addEventListener("change",()=>{shipText();updSum()}));
 $("#calc").onclick=async()=>{const a=$("#addr").value.trim();if(!a){bad("addr",true);return}
   $("#shipres").textContent="Đang tìm địa chỉ…";
   try{const q=/hồ chí minh|hcm|sài gòn|saigon/i.test(a)?a:a+", Hồ Chí Minh";
