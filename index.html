@@ -93,6 +93,14 @@ h2.sec{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:
 .lcount{font-size:12px;color:var(--muted);margin:4px 0 10px}
 .card{background:linear-gradient(135deg,#fff 0%,#FFF0F3 100%);border:1px dashed #E91E63;border-radius:16px;padding:16px 16px 14px;text-align:center;font-size:15px;line-height:1.55;white-space:pre-wrap;color:#6A1B3A;box-shadow:0 4px 14px rgba(233,30,99,.10)}
 .card .ctop{font-size:28px;margin-bottom:4px}
+.en{display:block;font-family:"Be Vietnam Pro",system-ui,sans-serif;font-size:.78em;font-weight:500;color:#B8A28E;letter-spacing:.1px;line-height:1.3;margin-top:1px;text-transform:none}
+.en.i{display:inline;margin-left:5px}
+.por-h .en{color:#B8A28E!important;font-weight:500!important}
+h2.sec .en{font-size:13px;margin-top:-2px}
+.badge .en{color:#d7ecd8;letter-spacing:.06em;font-size:11px}
+.chip .en.i{margin-left:3px;font-size:11px}
+.chip[aria-pressed="true"] .en{color:#d9f0da}
+.add .en,.submit .en,.cbtn .en{color:inherit;opacity:.75}
 .grpbanner{background:var(--green);color:#fff;text-align:center;font-weight:700;padding:9px 16px;font-size:14px;display:none}
 .opt-label{font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
@@ -174,77 +182,77 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 <div class="wrap">
   <header class="hero">
     <h1>Bánh Tráng Mì Ruốc Dừa</h1>
-    <div class="badge">KIỂU BÌNH ĐỊNH</div>
-    <p class="tag">Bánh tráng mì nướng · Bún mì · Ruốc biển · Dừa nạo</p>
+    <div class="badge">KIỂU BÌNH ĐỊNH<span class="en">Binh Dinh style</span></div>
+    <p class="tag">Bánh tráng mì nướng · Bún mì · Ruốc biển · Dừa nạo<span class="en">Grilled rice cracker · Noodles · Dried baby shrimp · Grated coconut</span></p>
     <div class="hero-row">
       <img class="photo" src="mon.jpg" alt="Bánh tráng mì ruốc dừa" width="128" height="128">
-      <div class="contact"><div class="hotline"><small>Đặt hàng</small><b>039 982 6178</b></div>
-        <div class="cbtn"><a class="call" href="tel:0399826178">📞 Gọi</a><a class="zalo" href="https://zalo.me/0399826178" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></div></div>
+      <div class="contact"><div class="hotline"><small>Đặt hàng · Order</small><b>039 982 6178</b></div>
+        <div class="cbtn"><a class="call" href="tel:0399826178">📞 Gọi · Call</a><a class="zalo" href="https://zalo.me/0399826178" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></div></div>
     </div>
   </header>
 
-  <h2 class="sec">Thực đơn</h2>
-  <p class="sub">Bấm + để thêm phần, rồi chọn topping, nước chấm, độ cay và ghi chú cho từng phần. Giá chưa gồm phí ship.</p>
+  <h2 class="sec">Thực đơn<span class="en">Menu</span></h2>
+  <p class="sub">Bấm + để thêm phần, rồi chọn topping, nước chấm, độ cay và ghi chú cho từng phần. Giá chưa gồm phí ship.<span class="en">Tap + to add a portion, then pick toppings, sauce, spice level and notes for each. Prices exclude delivery.</span></p>
   <div class="menu" id="menu"></div>
 
-  <h2 class="sec" id="don">Đơn của bạn</h2>
+  <h2 class="sec" id="don">Đơn của bạn<span class="en">Your order</span></h2>
   <div class="cart" id="cart"></div>
 
-  <h2 class="sec">Thông tin nhận hàng</h2>
+  <h2 class="sec">Thông tin nhận hàng<span class="en">Delivery details</span></h2>
   <form id="f" novalidate>
     <div class="mbox" id="mbox"></div>
-    <div class="f" data-k="name"><label class="l" for="name">Họ tên <i>*</i></label>
-      <input id="name" type="text" autocomplete="name" placeholder="Vd: Chị Lan"><div class="err">Vui lòng nhập họ tên</div></div>
-    <div class="f" data-k="phone"><label class="l" for="phone">Số điện thoại <i>*</i></label>
-      <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Vd: 0903 123 456"><div class="err">Số điện thoại chưa đúng (10 số)</div></div>
-    <div class="f" data-k="addr"><label class="l" for="addr">Địa chỉ giao hàng <i>*</i></label>
-      <textarea id="addr" autocomplete="street-address" placeholder="Số nhà, đường, phường, quận — công ty/toà nhà nếu có"></textarea>
-      <label class="chk"><input type="checkbox" id="pickup"> Tôi tự đến lấy</label>
-      <div class="err">Vui lòng nhập địa chỉ hoặc chọn tự đến lấy</div></div>
-    <div class="f" id="shipf" data-k="ship"><label class="l">Phí ship <i>*</i></label>
-      <div class="shipbox"><div class="gl"><button type="button" id="calc">🛵 Ước tính phí ship</button><button type="button" id="gps" class="ghost">📍 Dùng vị trí của tôi</button></div>
-      <div id="shipres" class="note" style="margin:8px 0 0">Nhập địa chỉ rồi bấm “Ước tính phí ship”. Ước tính từ bếp ở Nguyễn Văn Khối, Gò Vấp, theo hãng giao hàng giá cao nhất, có tính giờ cao điểm.</div></div>
+    <div class="f" data-k="name"><label class="l" for="name">Họ tên <i>*</i><span class="en i">Name</span></label>
+      <input id="name" type="text" autocomplete="name" placeholder="Vd / e.g.: Chị Lan"><div class="err">Vui lòng nhập họ tên · Please enter your name</div></div>
+    <div class="f" data-k="phone"><label class="l" for="phone">Số điện thoại <i>*</i><span class="en i">Phone</span></label>
+      <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Vd: 0903 123 456"><div class="err">Số điện thoại chưa đúng (10 số) · Invalid phone number</div></div>
+    <div class="f" data-k="addr"><label class="l" for="addr">Địa chỉ giao hàng <i>*</i><span class="en i">Delivery address</span></label>
+      <textarea id="addr" autocomplete="street-address" placeholder="Số nhà, đường, phường, quận · House no., street, ward, district"></textarea>
+      <label class="chk"><input type="checkbox" id="pickup"> Tôi tự đến lấy<span class="en i">I will pick up</span></label>
+      <div class="err">Vui lòng nhập địa chỉ hoặc chọn tự đến lấy · Please enter an address or choose pick-up</div></div>
+    <div class="f" id="shipf" data-k="ship"><label class="l">Phí ship <i>*</i><span class="en i">Delivery fee</span></label>
+      <div class="shipbox"><div class="gl"><button type="button" id="calc">🛵 Ước tính phí ship<span class="en">Estimate fee</span></button><button type="button" id="gps" class="ghost">📍 Dùng vị trí của tôi<span class="en">Use my location</span></button></div>
+      <div id="shipres" class="note" style="margin:8px 0 0">Nhập địa chỉ rồi bấm “Ước tính phí ship”. Ước tính từ bếp ở Nguyễn Văn Khối, Gò Vấp, theo hãng giao hàng giá cao nhất, có tính giờ cao điểm.<span class="en">Enter your address and tap Estimate. Based on the priciest delivery app, peak hours included.</span></div></div>
       <div class="radios col" style="margin-top:10px">
-        <label><input type="radio" name="shipby" value="Khách tự trả tài xế khi nhận" checked> <span><b>Tôi trả ship trực tiếp cho tài xế</b> <span class="rec">Khuyên dùng</span><br><small style="color:var(--muted)">Shop đặt xe hộ, bạn trả đúng giá trên app khi nhận hàng — chính xác nhất, không chênh lệch.</small></span></label>
-        <label><input type="radio" name="shipby" value="Cộng phí ship vào tiền hàng"> <span>Cộng phí ship vào tiền hàng<br><small style="color:var(--muted)">Trả 1 lần theo số ước tính (thường cao hơn giá thật một chút).</small></span></label>
-        <label><input type="radio" name="shipby" value="Đặt nhóm — ship do người khác trong nhóm trả"> Đặt nhóm — phí ship đã có người trong nhóm trả</label>
+        <label><input type="radio" name="shipby" value="Khách tự trả tài xế khi nhận" checked> <span><b>Tôi trả ship trực tiếp cho tài xế</b> <span class="rec">Khuyên dùng</span><span class="en">I pay the driver directly (recommended)</span><small style="color:var(--muted)">Shop đặt xe hộ, bạn trả đúng giá trên app khi nhận hàng — chính xác nhất, không chênh lệch.</small></span></label>
+        <label><input type="radio" name="shipby" value="Cộng phí ship vào tiền hàng"> <span>Cộng phí ship vào tiền hàng<span class="en">Add delivery fee to my order (estimate)</span><small style="color:var(--muted)">Trả 1 lần theo số ước tính (thường cao hơn giá thật một chút).</small></span></label>
+        <label><input type="radio" name="shipby" value="Đặt nhóm — ship do người khác trong nhóm trả"> <span>Đặt nhóm — phí ship đã có người trong nhóm trả<span class="en">Group order — someone in the group pays delivery</span></span></label>
       </div><div class="err" id="shiperr">Vui lòng chọn cách trả phí ship (chọn Đặt nhóm thì nhập mã nhóm ở mục “Đặt chung” bên dưới)</div></div>
-    <div class="f" data-k="when"><label class="l">Ngày giờ nhận <i>*</i></label>
+    <div class="f" data-k="when"><label class="l">Ngày giờ nhận <i>*</i><span class="en i">Date & time</span></label>
       <div class="row2"><input id="date" type="date" aria-label="Ngày nhận"><select id="time" aria-label="Giờ nhận"></select></div>
-      <div class="err">Vui lòng chọn ngày và giờ nhận</div></div>
-    <div class="f"><label class="l">Thanh toán</label>
-      <div class="radios"><label><input type="radio" name="pay" value="Tiền mặt khi nhận" checked> 💵 Tiền mặt khi nhận</label><label><input type="radio" name="pay" value="Chuyển khoản"> 🏦 Chuyển khoản</label></div>
-      <p class="note" id="paynote" style="display:none;margin-top:8px">TPBank · 2842 8121 985 — mã QR có sẵn số tiền hiện ra ngay sau khi bấm Đặt hàng.</p></div>
-    <div class="f" id="lovef"><label class="chk lovechk"><input type="checkbox" id="love"> 💌 <b>Gửi kèm lời nhắn yêu thương</b> cho người nhận</label>
+      <div class="err">Vui lòng chọn ngày và giờ nhận · Please choose date & time</div></div>
+    <div class="f"><label class="l">Thanh toán<span class="en i">Payment</span></label>
+      <div class="radios"><label><input type="radio" name="pay" value="Tiền mặt khi nhận" checked> <span>💵 Tiền mặt khi nhận<span class="en">Cash on delivery</span></span></label><label><input type="radio" name="pay" value="Chuyển khoản"> <span>🏦 Chuyển khoản<span class="en">Bank transfer</span></span></label></div>
+      <p class="note" id="paynote" style="display:none;margin-top:8px">TPBank · 2842 8121 985 — mã QR có sẵn số tiền hiện ra ngay sau khi bấm Đặt hàng.<span class="en">A QR code with the amount appears after you place the order.</span></p></div>
+    <div class="f" id="lovef"><label class="chk lovechk"><input type="checkbox" id="love"> <span>💌 <b>Gửi kèm lời nhắn yêu thương</b> cho người nhận<span class="en">Add a love note for the recipient</span></span></label>
       <div class="love" id="lovebox">
         <div class="occ" id="occ"></div>
         <div class="chips" id="tpl"></div>
-        <div class="row2"><input id="lto" type="text" maxlength="40" placeholder="Gửi tới (vd: Mẹ, chị Lan)"><input id="lfrom" type="text" maxlength="40" placeholder="Từ (tên bạn)"></div>
+        <div class="row2"><input id="lto" type="text" maxlength="40" placeholder="Gửi tới · To"><input id="lfrom" type="text" maxlength="40" placeholder="Từ · From"></div>
         <textarea id="lmsg" maxlength="350" placeholder="Viết lời nhắn của bạn…"></textarea>
         <div class="lcount"><span id="lcnt">0</span>/350 · bạn sửa thoải mái, shop gửi kèm đúng lời nhắn này cùng phần bánh</div>
         <div class="card"><div class="ctop" id="cicon">💌</div><div id="cprev"></div></div>
       </div></div>
-    <div class="f"><label class="l" for="note">Ghi chú cho shop</label>
+    <div class="f"><label class="l" for="note">Ghi chú cho shop<span class="en i">Note to shop</span></label>
       <textarea id="note" placeholder="Vd: để riêng ruốc, gọi trước khi giao…"></textarea></div>
-    <div class="f"><label class="l" for="grp">Đặt chung (gom đơn) — không bắt buộc</label>
-      <div class="grp"><div class="gl"><input id="grp" type="text" maxlength="12" placeholder="Nhập mã nhóm, vd: NHOM-K7Q2"><button type="button" id="mkgrp">Tạo mã nhóm</button></div>
-      <p class="note" style="margin:8px 0 0">Cả văn phòng / nhóm đặt chung? <b>Người tạo nhóm</b> điền tên, địa chỉ, ngày giờ nhận, chọn trả phí ship, rồi bấm <b>Tạo mã nhóm</b> và gửi link. Người khác mở link chỉ cần chọn món, nhập tên, SĐT — tất cả gom 1 lần giao.</p>
+    <div class="f"><label class="l" for="grp">Đặt chung (gom đơn) — không bắt buộc<span class="en">Group order — optional</span></label>
+      <div class="grp"><div class="gl"><input id="grp" type="text" maxlength="12" placeholder="Nhập mã nhóm, vd: NHOM-K7Q2"><button type="button" id="mkgrp">Tạo mã nhóm<span class="en">Create group</span></button></div>
+      <p class="note" style="margin:8px 0 0">Cả văn phòng / nhóm đặt chung? <b>Người tạo nhóm</b> điền tên, địa chỉ, ngày giờ nhận, chọn trả phí ship, rồi bấm <b>Tạo mã nhóm</b> và gửi link. Người khác mở link chỉ cần chọn món, nhập tên, SĐT — tất cả gom 1 lần giao.<span class="en">Office ordering together? The organiser fills in name, address, time and delivery payment, taps Create group and shares the link. Others just pick dishes and enter name & phone.</span></p>
       <div class="share" id="share"></div><p class="err" id="grperr"></p></div></div>
-    <div class="sumbox"><div class="row"><span><b>Tiền hàng</b><br><small id="sumq" style="color:var(--muted)">Chưa chọn món</small></span><b id="sumt">0đ</b></div>
-      <div class="row" style="margin-top:6px"><span>Phí ship <small id="shipnote" style="color:var(--muted)"></small></span><b id="sums">—</b></div>
-      <div class="row" style="margin-top:8px;border-top:1.5px dashed var(--line);padding-top:8px"><b>Tổng thanh toán</b><span class="v" id="sumg">0đ</span></div>
-      <p class="note" style="margin:6px 0 0" id="sumhint">Phí ship là ước tính, shop xác nhận lại khi gọi.</p></div>
-    <button class="submit" id="go" type="submit">Đặt hàng</button>
+    <div class="sumbox"><div class="row"><span><b>Tiền hàng</b><span class="en i">Subtotal</span><br><small id="sumq" style="color:var(--muted)">Chưa chọn món</small></span><b id="sumt">0đ</b></div>
+      <div class="row" style="margin-top:6px"><span>Phí ship<span class="en i">Delivery</span> <small id="shipnote" style="color:var(--muted)"></small></span><b id="sums">—</b></div>
+      <div class="row" style="margin-top:8px;border-top:1.5px dashed var(--line);padding-top:8px"><span><b>Tổng thanh toán</b><span class="en">Total</span></span><span class="v" id="sumg">0đ</span></div>
+      <p class="note" style="margin:6px 0 0" id="sumhint">Phí ship là ước tính, shop xác nhận lại khi gọi.<span class="en">Delivery fee is an estimate; we confirm by phone.</span></p></div>
+    <button class="submit" id="go" type="submit">Đặt hàng<span class="en">Place order</span></button>
   </form>
   <footer>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0399826178" style="color:inherit">039 982 6178</a> · <a class="zinline" href="https://zalo.me/0399826178" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></footer>
 </div>
 
-<div class="bar"><div class="in"><div class="sum"><small id="barq">Chưa chọn món</small><b id="bart">0đ</b></div><a href="#don">Xem đơn ↓</a></div></div>
+<div class="bar"><div class="in"><div class="sum"><small id="barq">Chưa chọn món</small><b id="bart">0đ</b></div><a href="#don">Xem đơn ↓<span class="en">View order</span></a></div></div>
 <div class="toast" id="toast"></div>
 <div class="modal" id="ok"><div class="box">
-  <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn</div><div class="code" id="okcode"></div>
+  <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn<span class="en">Thank you! We have received your order.</span></div><div class="code" id="okcode"></div>
   <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp: gọi <a href="tel:0399826178">039 982 6178</a> hoặc nhắn <a class="zinline" href="https://zalo.me/0399826178" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a>.</p>
-  <button type="button" id="okclose">Đóng</button></div></div>
+  <button type="button" id="okclose">Đóng · Close</button></div></div>
 
 <script>
 const FORM="https://docs.google.com/forms/d/e/1FAIpQLSd3Z--C-uV6XJTzCdUzjuWeOQz8hOhmRHwPUtUA-ojLWfNP7w/formResponse";
@@ -256,44 +264,44 @@ const KITCHEN=[106.6520,10.8436]; // 370/2 Nguyễn Văn Khối, Gò Vấp (to�
 const SHIP={base:16000,baseKm:2,perKm:5000,platform:3000,peak:1.3};
 let geo=null; // {km,fee,label}
 
-const TOP={trung:["Trứng cút",5000],thit:["Thịt luộc",10000],tom:["Tôm nướng",10000],muc:["Mực đại dương nướng",10000],
-  cgchay:["Chả giò chay",10000],chachay:["Chả chay",10000],rong:["Rong biển sấy",5000]};
+const TOP={trung:["Trứng cút",5000,"quail eggs"],thit:["Thịt luộc",10000,"boiled pork"],tom:["Tôm nướng",10000,"grilled shrimp"],muc:["Mực đại dương nướng",10000,"grilled squid"],
+  cgchay:["Chả giò chay",10000,"veggie spring roll"],chachay:["Chả chay",10000,"veggie sausage"],rong:["Rong biển sấy",5000,"seaweed"]};
 const MAN=["trung","thit","tom","muc","cgchay","chachay","rong"], CHAY=["cgchay","chachay","rong"];
 const MENU=[
- {id:"tt",n:"Truyền thống",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
- {id:"ttc",n:"Truyền thống chay",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
- {id:"dbm",n:"Đặc biệt mặn",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
- {id:"dbh",n:"Đặc biệt hải sản",d:"Trứng cút + tôm nướng + mực nướng",p:45000,top:MAN,sauce:"Mắm"},
- {id:"dbc",n:"Đặc biệt chay",d:"Chả giò chay + chả chay + rong biển",p:45000,top:CHAY,sauce:"Nước tương",chay:1},
- {id:"tra",n:"Trà tắc xí muội",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
+ {id:"tt",n:"Truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
+ {id:"ttc",n:"Truyền thống chay",en:"Traditional (vegetarian)",de:"Fried tofu instead of shrimp",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
+ {id:"dbm",n:"Đặc biệt mặn",en:"Special",de:"Quail eggs + boiled pork + grilled shrimp",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
+ {id:"dbh",n:"Đặc biệt hải sản",en:"Seafood special",de:"Quail eggs + grilled shrimp + grilled squid",d:"Trứng cút + tôm nướng + mực nướng",p:45000,top:MAN,sauce:"Mắm"},
+ {id:"dbc",n:"Đặc biệt chay",en:"Vegetarian special",de:"Veggie spring roll + veggie sausage + seaweed",d:"Chả giò chay + chả chay + rong biển",p:45000,top:CHAY,sauce:"Nước tương",chay:1},
+ {id:"tra",n:"Trà tắc xí muội",en:"Kumquat & salted plum iced tea",de:"Cold, sweet & sour",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
 ];
 const BANK={bin:"TPB",name:"TPBank",acc:"28428121985",accFmt:"2842 8121 985"};
 function bankBox(amount,code){
   const url=`https://img.vietqr.io/image/${BANK.bin}-${BANK.acc}-compact.png?amount=${amount}&addInfo=${encodeURIComponent(code)}`;
-  const row=(l,v,c)=>`<div class="r"><div><span>${l}</span><b>${v}</b></div>${c!=null?`<button type="button" class="cp" data-c="${c}">Sao chép</button>`:""}</div>`;
-  return `<div class="bk"><h4>Quét mã để chuyển khoản</h4><img class="qr" src="${url}" alt="Mã QR chuyển khoản ${BANK.name}">
-    ${row("Ngân hàng",BANK.name)}${row("Số tài khoản",BANK.accFmt,BANK.acc)}
-    ${row("Số tiền",vnd(amount),amount)}${row("Nội dung chuyển khoản",code,code)}
-    <a class="dl" href="${url}" target="_blank" rel="noopener">⬇ Mở ảnh QR để lưu</a></div>
-    <p class="note">Vui lòng ghi đúng nội dung <b>${code}</b> để shop đối chiếu. Phí ship (nếu có) shop báo sau.</p>`}
+  const row=(l,v,c)=>`<div class="r"><div><span>${l}</span><b>${v}</b></div>${c!=null?`<button type="button" class="cp" data-c="${c}">Sao chép · Copy</button>`:""}</div>`;
+  return `<div class="bk"><h4>Quét mã để chuyển khoản<span class="en">Scan to pay by bank transfer</span></h4><img class="qr" src="${url}" alt="Mã QR chuyển khoản ${BANK.name}">
+    ${row("Ngân hàng · Bank",BANK.name)}${row("Số tài khoản · Account no.",BANK.accFmt,BANK.acc)}
+    ${row("Số tiền · Amount",vnd(amount),amount)}${row("Nội dung chuyển khoản · Reference",code,code)}
+    <a class="dl" href="${url}" target="_blank" rel="noopener">⬇ Mở ảnh QR để lưu · Save QR</a></div>
+    <p class="note">Vui lòng ghi đúng nội dung <b>${code}</b> để shop đối chiếu. Phí ship (nếu có) shop báo sau.<span class="en">Please use reference ${code} so we can match your payment.</span></p>`}
 document.addEventListener("click",e=>{const b=e.target.closest(".cp");if(!b)return;
-  (navigator.clipboard?navigator.clipboard.writeText(b.dataset.c):Promise.reject()).then(()=>toast("Đã sao chép"),()=>toast(b.dataset.c))});
+  (navigator.clipboard?navigator.clipboard.writeText(b.dataset.c):Promise.reject()).then(()=>toast("Đã sao chép · Copied"),()=>toast(b.dataset.c))});
 const vnd=n=>n.toLocaleString("vi-VN")+"đ", $=s=>document.querySelector(s);
 const st={}; MENU.forEach(m=>st[m.id]=[]);
 const newP=m=>({tops:[],sauce:m.sauce||"",cay:"Cay",note:""});
 function unit(m,p){return m.p+p.tops.reduce((a,k)=>a+TOP[k][1],0)}
 function chips(m,p,i){
-  return `<div class="por" data-i="${i}"><div class="por-h"><b>Phần ${i+1}</b><span>${vnd(unit(m,p))}</span></div>
-   <div class="chips">${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]} <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
-   <div class="chips sauce"><span class="sl">Nước chấm:</span>${["Mắm","Nước tương"].map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}</button>`).join("")}<span class="sl" style="margin-left:6px">·</span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay":"Không cay"}</button>`).join("")}</div>
-   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú phần ${i+1} (vd: không rau, ít ruốc, để riêng nước chấm)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
+  return `<div class="por" data-i="${i}"><div class="por-h"><b>Phần ${i+1}<span class="en i">Portion ${i+1}</span></b><span>${vnd(unit(m,p))}</span></div>
+   <div class="chips">${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
+   <div class="chips sauce"><span class="sl">Nước chấm<span class="en">Sauce</span></span>${["Mắm","Nước tương"].map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}<span class="en i">${s==="Mắm"?"fish sauce":"soy sauce"}</span></button>`).join("")}<span class="sl" style="margin-left:6px">·</span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay<span class=\"en i\">spicy</span>":"Không cay<span class=\"en i\">mild</span>"}</button>`).join("")}</div>
+   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú phần ${i+1} · Note (vd/e.g.: không rau – no herbs)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
 function renderDish(el){
   const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id], q=P.length, sub=P.reduce((a,p)=>a+unit(m,p),0);
   el.querySelector("output").textContent=q; el.classList.toggle("on",q>0);
   el.querySelector(".subt").textContent=q?`${q} ${m.drink?"ly":"phần"} = ${vnd(sub)}`:"";
   if(m.drink)return;
   if(!q){el.querySelector(".opts").innerHTML=`<div class="hint">👆 Bấm <b>+</b> để thêm phần — mỗi phần chọn topping, nước chấm, độ cay và ghi chú riêng</div>`;return}
-  el.querySelector(".opts").innerHTML=(q>1?`<button type="button" class="copy">Chép topping, nước chấm, độ cay, ghi chú của phần 1 cho tất cả ${q} phần</button>`:"")+P.map((p,i)=>chips(m,p,i)).join("");
+  el.querySelector(".opts").innerHTML=(q>1?`<button type="button" class="copy">Chép topping, nước chấm, độ cay, ghi chú của phần 1 cho tất cả ${q} phần<span class="en">Copy portion 1 to all</span></button>`:"")+P.map((p,i)=>chips(m,p,i)).join("");
   el.querySelectorAll(".por").forEach(r=>{const p=P[+r.dataset.i];
     r.querySelectorAll("[data-top]").forEach(b=>b.onclick=()=>{const k=b.dataset.top,j=p.tops.indexOf(k);
       j<0?p.tops.push(k):p.tops.splice(j,1);p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y));renderDish(el);renderCart()});
@@ -303,7 +311,7 @@ function renderDish(el){
   const c=el.querySelector(".copy"); if(c)c.onclick=()=>{P.forEach((p,i)=>{if(i){p.tops=[...P[0].tops];p.sauce=P[0].sauce;p.cay=P[0].cay;p.note=P[0].note}});renderDish(el);renderCart();toast("Đã chép cho tất cả phần")};
 }
 function renderMenu(){
-  $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head"><div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}</p><p class="d-desc">${m.d}</p></div><div class="d-price">${vnd(m.p)}</div></div>
+  $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head"><div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}<span class="en">${m.en}</span></p><p class="d-desc">${m.d}<span class="en">${m.de}</span></p></div><div class="d-price">${vnd(m.p)}</div></div>
       <div class="step"><button type="button" class="minus" aria-label="Bớt">−</button><output>0</output><button type="button" class="plus" aria-label="Thêm">+</button><span class="subt"></span></div>
       ${m.drink?"":'<div class="opts"></div>'}</div>`).join("");
   document.querySelectorAll(".dish").forEach(el=>{
@@ -321,8 +329,8 @@ function qtyText(T){return [T.p&&T.p+" phần",T.d&&T.d+" ly trà"].filter(Boole
 function renderCart(){
   const T=totals(),L=lines();
   $("#cart").innerHTML=L.length?L.map(l=>`<div class="line"><div class="t"><b>${l.q} × ${l.title}</b><span>${[l.sauce&&"Chấm "+l.sauce+(l.cay?" ("+l.cay.toLowerCase()+")":""),l.note&&"📝 "+l.note,vnd(l.u)+"/"+(l.m.drink?"ly":"phần")].filter(Boolean).join(" · ")}</span></div><div class="m">${vnd(l.amt)}</div></div>`).join("")
-    +`<div class="total"><span>Tổng (chưa ship)</span><span class="v">${vnd(T.t)}</span></div>`
-    :`<div class="empty">Chưa có món nào — chọn ở thực đơn phía trên nhé.</div>`;
+    +`<div class="total"><span>Tổng (chưa ship)<span class="en">Subtotal (excl. delivery)</span></span><span class="v">${vnd(T.t)}</span></div>`
+    :`<div class="empty">Chưa có món nào — chọn ở thực đơn phía trên nhé.<span class="en">Your cart is empty — choose from the menu above.</span></div>`;
   $("#barq").textContent=$("#sumq").textContent=L.length?qtyText(T):"Chưa chọn món"; $("#sumt").textContent=vnd(T.t);updSum();
 }
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("show"),1600)}
@@ -335,7 +343,7 @@ $("#pickup").onchange=e=>{$("#addr").disabled=e.target.checked;if(e.target.check
 function bad(k,b){document.querySelector(`.f[data-k="${k}"]`).classList.toggle("bad",b);return b}
 $("#f").onsubmit=async e=>{
   e.preventDefault();
-  if(!lines().length){toast("Bạn chưa chọn món nào");$("#menu").scrollIntoView({behavior:"smooth"});return}
+  if(!lines().length){toast("Bạn chưa chọn món nào · Please choose a dish");$("#menu").scrollIntoView({behavior:"smooth"});return}
   const name=$("#name").value.trim(),phone=$("#phone").value.replace(/[^\d+]/g,""),pick=$("#pickup").checked,
     addr=pick?"Tự đến lấy":$("#addr").value.trim(),date=$("#date").value,time=$("#time").value;
   let x=0;x+=bad("name",!name);x+=bad("phone",!/^(\+?84|0)\d{9}$/.test(phone));x+=bad("addr",!addr);x+=bad("when",!date||!time);
@@ -349,14 +357,14 @@ $("#f").onsubmit=async e=>{
   [[E.name,name],[E.phone,phone],[E.addr,addr],[E.when,when],[E.items,items],[E.qty,qtyText(T)],[E.total,String(T.t)],[E.code,code],
    [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":sb],[E.grand,String(grand())],[E.love,loveText()]]
    .forEach(([k,v])=>fd.append(k,v));
-  const btn=$("#go");btn.disabled=true;btn.textContent="Đang gửi…";
+  const btn=$("#go");btn.disabled=true;btn.innerHTML="Đang gửi…<span class=en>Sending…</span>";
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
     $("#okcode").textContent="Mã đơn: "+code;
     $("#bank").innerHTML=document.querySelector('input[name=pay]:checked').value==="Chuyển khoản"?bankBox(grand(),code):"";
     $("#oksum").textContent=`${$("#grp").value.trim()?"Nhóm: "+$("#grp").value.trim().toUpperCase()+"\n":""}${items}${loveText()?"\n\n💌 Lời nhắn:\n"+loveText():""}\n\nTiền hàng: ${vnd(T.t)}\nPhí ship: ${pick?"Tự đến lấy":sb.startsWith("Cộng")?(geo?vnd(geo.fee)+" (ước tính, cộng vào đơn)":"shop báo sau"):sb.startsWith("Khách")?(geo?"~"+vnd(geo.fee)+" trả tài xế":"trả tài xế"):"nhóm trả"}\nTổng thanh toán: ${vnd(grand())}\nNhận: ${when}\n${addr}`;
     $("#ok").classList.add("show");MENU.forEach(m=>st[m.id]=[]);document.querySelectorAll(".dish").forEach(renderDish);renderCart();$("#note").value="";
   }catch(err){toast("Gửi không được, vui lòng thử lại hoặc gọi 039 982 6178")}
-  btn.disabled=false;btn.textContent="Đặt hàng";
+  btn.disabled=false;btn.innerHTML="Đặt hàng<span class=en>Place order</span>";
 };
 $("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,behavior:"smooth"})};
 renderMenu();renderCart();
@@ -382,7 +390,7 @@ function genMsg(){const t=cur.t[tplIdx];if(!t)return "";const to=$("#lto").value
 function applyTpl(force){const g=genMsg();if(force||$("#lmsg").value===lastGen){$("#lmsg").value=g}lastGen=g;prevLove()}
 function prevLove(){$("#cprev").textContent=$("#lmsg").value||"Lời nhắn sẽ hiện ở đây";$("#lcnt").textContent=$("#lmsg").value.length}
 function loveText(){if(!$("#love").checked||!$("#lmsg").value.trim())return "";return `Gửi: ${$("#lto").value.trim()||"(không ghi)"} · Từ: ${$("#lfrom").value.trim()||$("#name").value.trim()||"(không ghi)"}\n${$("#lmsg").value.trim()}`}
-$("#occ").textContent=cur.icon+" "+cur.name+" — chọn mẫu rồi sửa theo ý bạn";$("#cicon").textContent=cur.icon;
+$("#occ").innerHTML=cur.icon+" "+cur.name+" — chọn mẫu rồi sửa theo ý bạn<span class=en>Pick a template, then edit it as you like</span>";$("#cicon").textContent=cur.icon;
 $("#tpl").innerHTML=cur.t.map((t,i)=>`<button type="button" class="chip" data-i="${i}" aria-pressed="${i===0}">${t[0]}</button>`).join("")+`<button type="button" class="chip" data-i="-1" aria-pressed="false">✍️ Tự viết</button>`;
 $("#tpl").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{tplIdx=+b.dataset.i;$("#tpl").querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));
   if(tplIdx<0){$("#lmsg").value="";lastGen="";prevLove();$("#lmsg").focus()}else applyTpl(true)});
@@ -400,20 +408,20 @@ $("#pickup").addEventListener("change",()=>{$("#shipf").style.display=$("#pickup
 function isPeak(){const t=$("#time").value;if(!t)return false;const [h,mi]=t.split(":").map(Number),x=h*60+mi,d=$("#date").value?new Date($("#date").value+"T00:00").getDay():1;
   const R=(d===0||d===6)?[[660,780],[1020,1200]]:[[420,540],[660,780],[990,1170]];return R.some(([a,b])=>x>=a&&x<b)}
 function fee(km){const f=(SHIP.base+Math.max(0,km-SHIP.baseKm)*SHIP.perKm+SHIP.platform)*(isPeak()?SHIP.peak:1);return Math.ceil(f/1000)*1000}
-function shipText(){if(!geo)return;$("#shipres").innerHTML=`<span class="shipok">✓ ${geo.label}</span><br>Khoảng cách ~${geo.km.toFixed(1)} km · Phí ship ước tính <b>~${vnd(geo.fee)}</b>${isPeak()?" <b style='color:var(--red)'>(giờ cao điểm)</b>":""}.<br>Tính theo hãng giao hàng giá cao nhất${isPeak()?", đã cộng phụ phí giờ cao điểm":""}; trời mưa có thể cao hơn. Giá thật thường thấp hơn số này. Sai vị trí? Sửa địa chỉ cụ thể hơn rồi bấm lại.`}
+function shipText(){if(!geo)return;$("#shipres").innerHTML=`<span class="shipok">✓ ${geo.label}</span><br>Khoảng cách ~${geo.km.toFixed(1)} km · Phí ship ước tính <b>~${vnd(geo.fee)}</b>${isPeak()?" <b style='color:var(--red)'>(giờ cao điểm)</b>":""}.<br>Tính theo hãng giao hàng giá cao nhất${isPeak()?", đã cộng phụ phí giờ cao điểm":""}; trời mưa có thể cao hơn. Giá thật thường thấp hơn số này. Sai vị trí? Sửa địa chỉ cụ thể hơn rồi bấm lại.<span class="en">~${geo.km.toFixed(1)} km · estimated fee ~${vnd(geo.fee)}${isPeak()?" (peak hour)":""}; actual app price is usually lower.</span>`}
 async function route(lon,lat,label){
   const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${KITCHEN[0]},${KITCHEN[1]};${lon},${lat}?overview=false`).then(r=>r.json());
   if(!r.routes||!r.routes[0])throw 0;const km=r.routes[0].distance/1000;geo={km,label,get fee(){return fee(this.km)}};
   shipText();updSum()}
 ["#date","#time"].forEach(k=>$(k).addEventListener("change",()=>{shipText();updSum()}));
 $("#calc").onclick=async()=>{const a=$("#addr").value.trim();if(!a){bad("addr",true);return}
-  $("#shipres").textContent="Đang tìm địa chỉ…";
+  $("#shipres").textContent="Đang tìm địa chỉ… · Searching…";
   try{const q=/hồ chí minh|hcm|sài gòn|saigon/i.test(a)?a:a+", Hồ Chí Minh";
     const g=await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=1&lat=10.80&lon=106.68`).then(r=>r.json());
     const f=g.features&&g.features[0];if(!f)throw 0;const p=f.properties;
     const label="Tìm thấy: "+[p.housenumber,p.street||p.name,p.district||p.locality,p.city].filter(Boolean).join(", ");
     await route(f.geometry.coordinates[0],f.geometry.coordinates[1],label)}
-  catch(e){geo=null;updSum();$("#shipres").innerHTML="Chưa tìm được địa chỉ này trên bản đồ. Bạn thử ghi rõ tên đường + phường/quận, hoặc bấm “📍 Dùng vị trí của tôi”. Không sao, shop vẫn nhận đơn và báo phí ship khi gọi xác nhận."}};
+  catch(e){geo=null;updSum();$("#shipres").innerHTML="Chưa tìm được địa chỉ này trên bản đồ. Bạn thử ghi rõ tên đường + phường/quận, hoặc bấm “📍 Dùng vị trí của tôi”. Không sao, shop vẫn nhận đơn và báo phí ship khi gọi xác nhận.<span class=en>Address not found on the map — try street + ward, or use your location. We can still take your order.</span>"}};
 $("#gps").onclick=()=>{if(!navigator.geolocation){toast("Máy không hỗ trợ định vị");return}
   $("#shipres").textContent="Đang lấy vị trí…";
   navigator.geolocation.getCurrentPosition(p=>route(p.coords.longitude,p.coords.latitude,"Theo vị trí hiện tại của bạn").catch(()=>{$("#shipres").textContent="Không tính được đường đi, shop sẽ báo phí ship."}),
@@ -424,7 +432,7 @@ let MEMBER=null; // thông tin nhóm khi mở bằng link đặt chung
 function grpParams(c){const p=new URLSearchParams({nhom:c,ten:$("#name").value.trim(),dc:$("#pickup").checked?"Tự đến lấy":$("#addr").value.trim(),ng:$("#date").value,gio:$("#time").value});return p}
 function shareGrp(c){$("#share").style.display=c?"block":"none";if(!c)return;const u=`${SITE}?${grpParams(c)}`;
   $("#share").innerHTML=`Link đặt chung nhóm <b>${c}</b> (đã kèm tên bạn, địa chỉ, ngày giờ nhận; phí ship bạn trả):<br><a href="${u}" style="font-size:12px">${u}</a><br><button type="button" class="cp" data-c="${u}" style="margin-top:6px;border:1px solid var(--green);background:#fff;color:var(--green);border-radius:8px;padding:5px 10px;font-weight:700">Sao chép link gửi nhóm</button>
-  <p class="note" style="margin:6px 0 0">Bạn vẫn đặt phần của mình bình thường rồi bấm Đặt hàng. Người khác mở link chỉ cần chọn món, nhập tên, SĐT.</p>`}
+  <p class="note" style="margin:6px 0 0">Bạn vẫn đặt phần của mình bình thường rồi bấm Đặt hàng. Người khác mở link chỉ cần chọn món, nhập tên, SĐT.<span class="en">Share this link — others only pick dishes and enter name & phone.</span></p>`}
 function grpReady(){const m=shipMode();const miss=[];if(!$("#name").value.trim())miss.push("họ tên");
   if(!$("#pickup").checked&&!$("#addr").value.trim())miss.push("địa chỉ");if(!$("#time").value)miss.push("giờ nhận");
   if(m!=="driver"&&m!=="add"&&m!=="pick")miss.push("cách trả phí ship (chọn 1 trong 2 ô đầu)");return miss}
@@ -443,9 +451,9 @@ $("#grp").oninput=e=>shareGrp(e.target.value.trim().toUpperCase());
     if(ng){$("#date").value=ng;$("#date").readOnly=true;$("#date").style.pointerEvents="none"}
     if(gio){$("#time").value=gio;$("#time").style.pointerEvents="none";$("#time").tabIndex=-1}
     const gr=document.querySelectorAll("input[name=shipby]");gr[2].checked=true;gr.forEach(r=>r.disabled=true);
-    $("#shipf").querySelector(".shipbox").innerHTML=`<span class="shipok">✓ Phí ship do ${ten} (người tạo nhóm) trả — bạn không phải trả ship.</span>`;
+    $("#shipf").querySelector(".shipbox").innerHTML=`<span class="shipok">✓ Phí ship do ${ten} (người tạo nhóm) trả — bạn không phải trả ship.<span class="en">Delivery is paid by the group organiser.</span></span>`;
     $("#shipf").style.display="block";
-    $("#mbox").innerHTML=`<b>🤝 Đặt chung nhóm ${c}</b> do <b>${ten}</b> tạo<br>Giao tới: ${dc}${ng?`<br>Nhận lúc: ${ng.split("-").reverse().join("/")} ${gio||""}`:""}<br><span class="note">Bạn chỉ cần chọn món, nhập họ tên, số điện thoại và cách thanh toán phần của mình.</span>`;
+    $("#mbox").innerHTML=`<b>🤝 Đặt chung nhóm ${c}</b> do <b>${ten}</b> tạo<span class="en">Group order ${c} by ${ten}</span><br>Giao tới: ${dc}${ng?`<br>Nhận lúc: ${ng.split("-").reverse().join("/")} ${gio||""}`:""}<br><span class="note">Bạn chỉ cần chọn món, nhập họ tên, số điện thoại và cách thanh toán phần của mình.<span class="en">Just pick your dishes, enter your name, phone and payment.</span></span>`;
     $("#mbox").style.display="block";updSum();
     ['.f[data-k="addr"]','#shipf','.f[data-k="when"]'].forEach(k=>document.querySelector(k).style.display="none");}
   $("#gbn").textContent=`🤝 Bạn đang đặt chung nhóm ${c}${dc?" — giao tới "+dc:""}`;$("#gbn").style.display="block";
