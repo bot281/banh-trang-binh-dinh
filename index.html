@@ -37,6 +37,15 @@ header.hero{text-align:center;padding:26px 0 8px;position:relative}
 .hotline{display:inline-flex;flex-direction:column;align-items:center;background:var(--red);color:#fff;text-decoration:none;
   border-radius:16px;padding:10px 20px;box-shadow:0 5px 0 var(--red-d)}
 .hotline small{font-weight:600;opacity:.95}
+.contact{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.cbtn{display:flex;gap:8px}
+.cbtn a{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font-weight:800;border-radius:12px;padding:9px 12px;font-size:15px}
+.cbtn .call{background:#fff;color:var(--red);border:2px solid var(--red)}
+.cbtn .zalo{background:#0068FF;color:#fff;border:2px solid #0068FF}
+.cbtn .zalo .zl{width:22px;height:22px}
+.zl{width:18px;height:18px;vertical-align:-4px;border-radius:5px}
+.cbtn .zalo .zl rect{fill:#fff}.cbtn .zalo .zl path{fill:#0068FF}.cbtn .zalo .zl text{fill:#fff}
+.zinline{color:#0068FF;font-weight:700;text-decoration:none;white-space:nowrap}
 .hotline b{font-size:24px;letter-spacing:.5px}
 h2.sec{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:30px;margin:26px 0 4px}
 .sub{color:var(--muted);margin:0 0 14px;font-size:14px}
@@ -159,7 +168,8 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
     <p class="tag">Bánh tráng mì nướng · Bún mì · Ruốc biển · Dừa nạo</p>
     <div class="hero-row">
       <img class="photo" src="mon.jpg" alt="Bánh tráng mì ruốc dừa" width="128" height="128">
-      <a class="hotline" href="tel:0399826178"><small>📞 Đặt hàng</small><b>039 982 6178</b></a>
+      <div class="contact"><div class="hotline"><small>Đặt hàng</small><b>039 982 6178</b></div>
+        <div class="cbtn"><a class="call" href="tel:0399826178">📞 Gọi</a><a class="zalo" href="https://zalo.me/0399826178" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></div></div>
     </div>
   </header>
 
@@ -207,14 +217,14 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
       <p class="note" style="margin:6px 0 0" id="sumhint">Phí ship là ước tính, shop xác nhận lại khi gọi.</p></div>
     <button class="submit" id="go" type="submit">Đặt hàng</button>
   </form>
-  <footer>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0399826178" style="color:inherit">039 982 6178</a></footer>
+  <footer>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0399826178" style="color:inherit">039 982 6178</a> · <a class="zinline" href="https://zalo.me/0399826178" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></footer>
 </div>
 
 <div class="bar"><div class="in"><div class="sum"><small id="barq">Chưa chọn món</small><b id="bart">0đ</b></div><a href="#don">Xem đơn ↓</a></div></div>
 <div class="toast" id="toast"></div>
 <div class="modal" id="ok"><div class="box">
   <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn</div><div class="code" id="okcode"></div>
-  <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp gọi <a href="tel:0399826178">039 982 6178</a>.</p>
+  <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp: gọi <a href="tel:0399826178">039 982 6178</a> hoặc nhắn <a class="zinline" href="https://zalo.me/0399826178" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a>.</p>
   <button type="button" id="okclose">Đóng</button></div></div>
 
 <script>
