@@ -222,8 +222,8 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
       <div class="err">Vui lòng nhập địa chỉ hoặc chọn tự đến lấy · Please enter an address or choose pick-up</div></div>
     <div class="f" id="shipf" data-k="ship"><label class="l">Phí ship <i>*</i><span class="en i">Delivery fee</span></label>
       <div class="shipbox"><div class="gl"><button type="button" id="calc">🛵 Ước tính phí ship<span class="en">Estimate fee</span></button><button type="button" id="gps" class="ghost">📍 Dùng vị trí của tôi<span class="en">Use my location</span></button></div>
-      <div id="shipres" class="note" style="margin:8px 0 0">Nhập địa chỉ rồi bấm “Ước tính phí ship”. Ước tính từ bếp ở Nguyễn Văn Khối, Gò Vấp, theo hãng giao hàng giá cao nhất, có tính giờ cao điểm.<span class="en">Enter your address and tap Estimate. Based on the priciest delivery app, peak hours included.</span></div></div>
-      <div class="radios col" style="margin-top:10px">
+      <div id="shipres" class="note" style="margin:8px 0 0"><b style="color:var(--green)">🎁 Free ship trong bán kính 2 km từ bếp.</b><br>Nhập địa chỉ rồi bấm “Ước tính phí ship”. Ước tính từ bếp ở Nguyễn Văn Khối, Gò Vấp, theo hãng giao hàng giá cao nhất, có tính giờ cao điểm.<span class="en">Free delivery within 2 km. Enter your address and tap Estimate. Based on the priciest delivery app, peak hours included.</span></div></div>
+      <div class="radios col" id="shipbyw" style="margin-top:10px">
         <label><input type="radio" name="shipby" value="Khách tự trả tài xế khi nhận" checked> <span><b>Tôi trả ship trực tiếp cho tài xế</b> <span class="rec">Khuyên dùng</span><span class="en">I pay the driver directly (recommended)</span><small style="color:var(--muted)">Shop đặt xe hộ, bạn trả đúng giá trên app khi nhận hàng — chính xác nhất, không chênh lệch.</small></span></label>
         <label><input type="radio" name="shipby" value="Cộng phí ship vào tiền hàng"> <span>Cộng phí ship vào tiền hàng<span class="en">Add delivery fee to my order (estimate)</span><small style="color:var(--muted)">Trả 1 lần theo số ước tính (thường cao hơn giá thật một chút).</small></span></label>
         <label><input type="radio" name="shipby" value="Đặt nhóm — ship do người khác trong nhóm trả"> <span>Đặt nhóm — phí ship đã có người trong nhóm trả<span class="en">Group order — someone in the group pays delivery</span></span></label>
@@ -273,7 +273,7 @@ const E={name:"entry.1617320443",phone:"entry.1296680432",addr:"entry.1127379480
 const KITCHEN=[106.6520,10.8436]; // 370/2 Nguyễn Văn Khối, Gò Vấp (toạ độ gần đúng)
 // Ước tính theo hãng CAO NHẤT (so 10/2026): GrabExpress 16k/2km + 5k/km (Xanh SM 14k+5k, Ahamove siêu tốc ~15,7k/2km, Lalamove 13,5k + ~4,3k/km, beBike 14,5k + 4,9k/km)
 // + phí nền tảng 3k; giờ cao điểm (giả định) ×1,3: 7:00–9:00, 11:00–13:00, 16:30–19:30 và thứ 7, CN 11:00–13:00 · 17:00–20:00
-const SHIP={base:16000,baseKm:2,perKm:5000,platform:3000,peak:1.3};
+const SHIP={base:16000,baseKm:2,perKm:5000,platform:3000,peak:1.3,freeKm:2};   // freeKm: miễn phí ship trong bán kính này (chị Hiền 16/10 msg 5937)
 let geo=null; // {km,fee,label}
 
 const TOP={trung:["Trứng cút",5000,"quail eggs"],thit:["Thịt luộc",10000,"boiled pork"],tom:["Tôm nướng",10000,"grilled shrimp"],muc:["Mực đại dương nướng",10000,"grilled squid"],
@@ -360,7 +360,7 @@ $("#f").onsubmit=async e=>{
     addr=pick?"Tự đến lấy":$("#addr").value.trim(),date=$("#date").value,time=$("#time").value;
   let x=0;x+=bad("name",!name);x+=bad("phone",!/^(\+?84|0)\d{9}$/.test(phone));x+=bad("addr",!addr);x+=bad("when",!date||!time);
   const sb=(document.querySelector('input[name=shipby]:checked')||{}).value||"";
-  x+=bad("ship",!pick&&(!sb||(sb.startsWith("Đặt nhóm")&&!$("#grp").value.trim())));
+  x+=bad("ship",!pick&&!isFree()&&(!sb||(sb.startsWith("Đặt nhóm")&&!$("#grp").value.trim())));
   if(x){document.querySelector(".f.bad").scrollIntoView({behavior:"smooth",block:"center"});return}
   const [y,mo,da]=date.split("-"),when=`${da}/${mo}/${y} ${time}`,T=totals(),n=new Date(),p2=v=>String(v).padStart(2,"0");
   const RC="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",rc=()=>RC[Math.floor(Math.random()*RC.length)];
@@ -368,7 +368,7 @@ $("#f").onsubmit=async e=>{
   const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
   const fd=new URLSearchParams();
   [[E.name,name],[E.phone,phone],[E.addr,addr],[E.when,when],[E.items,items],[E.qty,qtyText(T)],[E.total,String(T.t)],[E.code,code],
-   [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":sb],[E.grand,String(grand())],[E.love,loveText()]]
+   [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":isFree()?`Free ship ≤ ${SHIP.freeKm} km — shop trả`:sb],[E.grand,String(grand())],[E.love,loveText()]]
    .forEach(([k,v])=>fd.append(k,v));
   const btn=$("#go");btn.disabled=true;btn.innerHTML="Đang gửi…<span class=en>Sending…</span>";
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
@@ -383,6 +383,7 @@ $("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,beh
 renderMenu();renderCart();
 // ===== HÌNH THẬT: thêm ảnh = thêm 1 dòng vào GAL =====
 const GAL=[   // clip: thêm phần tử thứ 4 = ảnh bìa → hiện dạng video
+ ["img/clip2.mp4","Trộn bánh tráng mì ruốc dừa: rưới nước chấm, ruốc, rau — trộn đều là ăn","How to mix: pour the sauce, add shrimp and herbs, toss and enjoy","img/clip2.jpg"],
  ["img/clip1.mp4","Bánh tráng đóng gói tại bếp: bánh, ruốc, dừa, rau và nước chấm để riêng từng túi","Packed fresh in our kitchen: every part in its own bag","img/clip1.jpg"],
  ["img/sp2.jpg","Truyền thống: bánh tráng mì nướng giòn, ruốc biển, hành phi, đậu phộng, rau — kiểu Bình Định chính gốc","Traditional: crispy grilled rice cracker, dried shrimp, fried shallots, peanuts, herbs"],
  ["img/sp3.jpg","Đặc biệt mặn: thịt ba chỉ luộc, tôm, trứng cút, bún mì, rau, cà rốt, xoài xanh","Special: boiled pork belly, shrimp, quail eggs, noodles, herbs, carrot, green mango"],
@@ -423,16 +424,17 @@ $("#love").onchange=e=>{$("#lovef").classList.toggle("on",e.target.checked);if(e
 $("#lmsg").oninput=prevLove;
 function shipMode(){if($("#pickup").checked)return "pick";const v=(document.querySelector('input[name=shipby]:checked')||{}).value||"";return v.startsWith("Cộng")?"add":v.startsWith("Khách")?"driver":v?"group":""}
 function grand(){const t=totals().t;return t+(shipMode()==="add"&&geo?geo.fee:0)}
-function updSum(){const T=totals(),m=shipMode();$("#bart").textContent=vnd(grand());
-  let sv="—",sn="";if(m==="pick"){sv="0đ";sn="(tự đến lấy)"}else if(geo){sv=(m==="add"?"":"~")+vnd(geo.fee);sn=m==="add"?"(cộng vào đơn)":m==="driver"?"(trả tài xế, không cộng)":m==="group"?"(nhóm trả, không cộng)":"(ước tính)"}
-  if(m==="group"){sv="0đ";sn="(người tạo nhóm trả)"}
+function updSum(){const T=totals(),m=shipMode();$("#shipbyw").style.display=isFree()?"none":"";$("#bart").textContent=vnd(grand());
+  let sv="—",sn="";if(m==="pick"){sv="0đ";sn="(tự đến lấy)"}else if(isFree()){sv="0đ";sn="(free ship ≤ "+SHIP.freeKm+" km)"}else if(geo){sv=(m==="add"?"":"~")+vnd(geo.fee);sn=m==="add"?"(cộng vào đơn)":m==="driver"?"(trả tài xế, không cộng)":m==="group"?"(nhóm trả, không cộng)":"(ước tính)"}
+  if(m==="group"&&!isFree()){sv="0đ";sn="(người tạo nhóm trả)"}
   $("#sums").textContent=sv;$("#shipnote").textContent=sn;$("#sumg").textContent=vnd(grand());}
 document.querySelectorAll("input[name=shipby]").forEach(r=>r.addEventListener("change",()=>{updSum();bad("ship",false)}));
 $("#pickup").addEventListener("change",()=>{$("#shipf").style.display=$("#pickup").checked?"none":"block";updSum()});
 function isPeak(){const t=$("#time").value;if(!t)return false;const [h,mi]=t.split(":").map(Number),x=h*60+mi,d=$("#date").value?new Date($("#date").value+"T00:00").getDay():1;
   const R=(d===0||d===6)?[[660,780],[1020,1200]]:[[420,540],[660,780],[990,1170]];return R.some(([a,b])=>x>=a&&x<b)}
-function fee(km){const f=(SHIP.base+Math.max(0,km-SHIP.baseKm)*SHIP.perKm+SHIP.platform)*(isPeak()?SHIP.peak:1);return Math.ceil(f/1000)*1000}
-function shipText(){if(!geo)return;$("#shipres").innerHTML=`<span class="shipok">✓ ${geo.label}</span><br>Khoảng cách ~${geo.km.toFixed(1)} km · Phí ship ước tính <b>~${vnd(geo.fee)}</b>${isPeak()?" <b style='color:var(--red)'>(giờ cao điểm)</b>":""}.<br>Tính theo hãng giao hàng giá cao nhất${isPeak()?", đã cộng phụ phí giờ cao điểm":""}; trời mưa có thể cao hơn. Giá thật thường thấp hơn số này. Sai vị trí? Sửa địa chỉ cụ thể hơn rồi bấm lại.<span class="en">~${geo.km.toFixed(1)} km · estimated fee ~${vnd(geo.fee)}${isPeak()?" (peak hour)":""}; actual app price is usually lower.</span>`}
+function isFree(){return !!geo&&geo.km<=SHIP.freeKm}
+function fee(km){if(km<=SHIP.freeKm)return 0;const f=(SHIP.base+Math.max(0,km-SHIP.baseKm)*SHIP.perKm+SHIP.platform)*(isPeak()?SHIP.peak:1);return Math.ceil(f/1000)*1000}
+function shipText(){if(!geo)return;$("#shipbyw").style.display=isFree()?"none":"";if(isFree()){$("#shipres").innerHTML=`<span class="shipok">✓ ${geo.label}</span><br>Khoảng cách ~${geo.km.toFixed(1)} km · <b style="color:var(--green)">🎁 MIỄN PHÍ SHIP</b> — trong bán kính ${SHIP.freeKm} km từ bếp, shop trả ship cho bạn.<span class="en">~${geo.km.toFixed(1)} km · FREE delivery within ${SHIP.freeKm} km of our kitchen.</span>`;return}$("#shipres").innerHTML=`<span class="shipok">✓ ${geo.label}</span><br>Khoảng cách ~${geo.km.toFixed(1)} km · Phí ship ước tính <b>~${vnd(geo.fee)}</b>${isPeak()?" <b style='color:var(--red)'>(giờ cao điểm)</b>":""}.<br>Tính theo hãng giao hàng giá cao nhất${isPeak()?", đã cộng phụ phí giờ cao điểm":""}; trời mưa có thể cao hơn. Giá thật thường thấp hơn số này. Sai vị trí? Sửa địa chỉ cụ thể hơn rồi bấm lại.<span class="en">~${geo.km.toFixed(1)} km · estimated fee ~${vnd(geo.fee)}${isPeak()?" (peak hour)":""}; actual app price is usually lower.</span>`}
 async function route(lon,lat,label){
   const r=await fetch(`https://router.project-osrm.org/route/v1/driving/${KITCHEN[0]},${KITCHEN[1]};${lon},${lat}?overview=false`).then(r=>r.json());
   if(!r.routes||!r.routes[0])throw 0;const km=r.routes[0].distance/1000;geo={km,label,get fee(){return fee(this.km)}};
