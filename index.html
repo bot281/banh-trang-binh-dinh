@@ -105,11 +105,11 @@ h2.sec .en{font-size:13px;margin-top:-2px}
 .gal figure{margin:0;flex:0 0 78%;max-width:420px;scroll-snap-align:start;background:var(--card);border:1.5px solid var(--line);border-radius:18px;overflow:hidden;cursor:zoom-in}
 .gal figure:only-child{flex-basis:100%;max-width:none}
 .gal img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
-.gal figure.vid{cursor:default}.gal video{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#000}
+.gal .vthumb{position:relative}.gal .vthumb .play{position:absolute;inset:0;margin:auto;width:58px;height:58px;border-radius:50%;background:rgba(200,30,30,.88);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;padding-left:4px;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
 .gal figcaption{font-size:13.5px;padding:8px 12px 10px;color:var(--ink)}
 .dthumb{width:68px;height:68px;border-radius:14px;object-fit:cover;flex:0 0 68px;border:1.5px solid var(--line);cursor:zoom-in}
 .lb{position:fixed;inset:0;background:rgba(20,10,5,.88);display:none;align-items:center;justify-content:center;z-index:60;padding:16px;flex-direction:column;gap:10px}
-.lb.show{display:flex}.lb img{max-width:100%;max-height:82vh;border-radius:14px}.lb p{color:#fff;margin:0;font-size:14px;text-align:center}
+.lb.show{display:flex}.lb img,.lb video{max-width:100%;max-height:82vh;border-radius:14px}.lb video{background:#000}.lb p{color:#fff;margin:0;font-size:14px;text-align:center}
 .grpbanner{background:var(--green);color:#fff;text-align:center;font-weight:700;padding:9px 16px;font-size:14px;display:none}
 .opt-label{font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
@@ -260,7 +260,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 
 <div class="bar"><div class="in"><div class="sum"><small id="barq">Chưa chọn món</small><b id="bart">0đ</b></div><a href="#don">Xem đơn ↓<span class="en">View order</span></a></div></div>
 <div class="toast" id="toast"></div>
-<div class="lb" id="lb"><img alt=""><p></p></div>
+<div class="lb" id="lb"><img alt=""><video controls playsinline preload="none"></video><p></p></div>
 <div class="modal" id="ok"><div class="box">
   <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn<span class="en">Thank you! We have received your order.</span></div><div class="code" id="okcode"></div>
   <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp: gọi <a href="tel:0919008571">0919 008 571</a> hoặc nhắn <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a>.</p>
@@ -389,10 +389,12 @@ const GAL=[   // clip: thêm phần tử thứ 4 = ảnh bìa → hiện dạng 
  ["img/sp3.jpg","Đặc biệt mặn: thịt ba chỉ luộc, tôm, trứng cút, bún mì, rau, cà rốt, xoài xanh","Special: boiled pork belly, shrimp, quail eggs, noodles, herbs, carrot, green mango"],
  ["img/sp1.jpg","Đóng gói giao hàng: bánh tráng, ruốc, dừa nạo, nước chấm để túi riêng — trộn lúc ăn vẫn giòn","Packed for delivery: cracker, shrimp, coconut and sauce in separate bags — stays crispy"],
 ];
-$("#gal").innerHTML=GAL.map(g=>g[3]?`<figure class="vid"><video src="${g[0]}" poster="${g[3]}" controls playsinline muted preload="none"></video><figcaption>🎬 ${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`:`<figure><img src="${g[0]}" alt="${g[1]}" loading="lazy" data-cap="${g[1]}"><figcaption>${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`).join("");
-document.addEventListener("click",e=>{const im=e.target.closest(".gal img,.dthumb");if(!im)return;const lb=$("#lb");
-  lb.querySelector("img").src=im.src.replace("-sq.jpg",".jpg");lb.querySelector("p").textContent=im.dataset.cap||"";lb.classList.add("show")});
-$("#lb").onclick=()=>$("#lb").classList.remove("show");
+$("#gal").innerHTML=GAL.map(g=>g[3]?`<figure class="vid"><div class="vthumb"><img src="${g[3]}" alt="${g[1]}" loading="lazy" data-cap="${g[1]}" data-video="${g[0]}"><span class="play">▶</span></div><figcaption>🎬 ${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`:`<figure><img src="${g[0]}" alt="${g[1]}" loading="lazy" data-cap="${g[1]}"><figcaption>${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`).join("");
+document.addEventListener("click",e=>{const im=e.target.closest(".gal img,.dthumb");if(!im)return;const lb=$("#lb"),v=lb.querySelector("video"),li=lb.querySelector("img");
+  if(im.dataset.video){li.style.display="none";v.style.display="";v.poster=im.src;v.src=im.dataset.video;v.play().catch(()=>{})}   // clip dọc: xem toàn màn hình, thẻ ngoài cùng khổ với ảnh
+  else{v.pause();v.removeAttribute("src");v.style.display="none";li.style.display=""}
+  li.src=im.src.replace("-sq.jpg",".jpg");lb.querySelector("p").textContent=im.dataset.cap||"";lb.classList.add("show")});
+$("#lb").onclick=e=>{if(e.target.tagName==="VIDEO")return;$("#lb").querySelector("video").pause();$("#lb").classList.remove("show")};
 // ===== LỜI NHẮN YÊU THƯƠNG: mỗi dịp lễ 1 bộ văn mẫu (from/to = MM-DD, hiện trong khoảng này) =====
 const OCC=[
  {name:"Mẫu 20/10 — Ngày Phụ nữ Việt Nam",icon:"🌷",from:"10-01",to:"10-21",t:[
