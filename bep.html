@@ -80,7 +80,7 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
   <div id="err"></div>
   <div class="stats" id="stats"></div>
   <div class="prep" id="prep"></div>
-  <div class="filters"><label><input type="checkbox" id="hideDone"> Ẩn đơn đã giao / đã thu</label></div>
+  <div class="filters"><label><input type="checkbox" id="hideDone"> Ẩn đơn đã làm xong (xong / đã giao / đã thu / huỷ)</label></div>
   <div class="tl" id="tl"></div>
   <div class="foot" id="foot">Tự cập nhật mỗi 30 giây</div>
 </div>
@@ -135,7 +135,7 @@ function render(){
     rest.forEach(x=>{const m=x.match(/chấm (Mắm|Nước tương)( không cay| cay)?/i);if(m){S[m[1]]=(S[m[1]]||0)+q;if(m[2]&&/không/.test(m[2]))S["Không cay"]=(S["Không cay"]||0)+q}})}));
   const chip=(o,cls)=>Object.entries(o).map(([k,v])=>`<span class="pc ${cls||""}"><b>${v}</b>${k}</span>`).join("");
   $("#prep").innerHTML=`<h3>🧾 Còn phải làm (đơn Mới + Đang làm)</h3><div class="chips">${chip(P,"dish")||'<span class="pc">Không còn món nào 🎉</span>'}${chip(T)}${chip(S)}</div>`;
-  if($("#hideDone").checked)L=L.filter(o=>!["Đã giao","Đã thu tiền","Huỷ"].includes(o.st));
+  if($("#hideDone").checked)L=L.filter(o=>!["Đã xong","Đã giao","Đã thu tiền","Huỷ"].includes(o.st));
   let html="",nowPlaced=day!==0;
   L.forEach(o=>{
     if(!nowPlaced&&o.when>now){html+=`<div class="now"><span>${p2(now.getHours())}:${p2(now.getMinutes())}</span></div>`;nowPlaced=true}
@@ -163,7 +163,8 @@ async function setStatus(code,st){
   const fd=new URLSearchParams();[[E.name,UPD],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,"Trạng thái: "+st],[E.total,"0"],[E.code,code],[E.pay,"Tiền mặt khi nhận"],[E.note,"Cập nhật từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd})}catch(e){toast("Lỗi mạng — bấm lại giúp")}
 }
-$("#hideDone").onchange=render;
+try{$("#hideDone").checked=localStorage.getItem("bep_hide")==="1"}catch(e){}
+$("#hideDone").onchange=()=>{try{localStorage.setItem("bep_hide",$("#hideDone").checked?"1":"0")}catch(e){}render()};
 setInterval(()=>{const n=new Date();$("#clock").textContent=p2(n.getHours())+":"+p2(n.getMinutes())},1000);
 setInterval(render,60000);setInterval(load,30000);load();
 </script>
