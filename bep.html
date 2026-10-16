@@ -57,6 +57,7 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .items .q{display:inline-block;min-width:30px;font-weight:800;color:var(--red);font-size:16px}
 .meta{font-size:13px;color:var(--muted);line-height:1.5}
 .meta b{color:var(--ink)}
+.meta .ph{color:var(--red);font-weight:800;font-size:15px;text-decoration:none}
 .love{background:#FFF0F3;border:1px dashed #E91E63;border-radius:10px;padding:6px 9px;font-size:13px;white-space:pre-wrap;margin-top:6px;color:#6A1B3A}
 .note{background:#FFF8E6;border-radius:10px;padding:6px 9px;font-size:13px;margin-top:6px}
 .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
@@ -147,7 +148,7 @@ function render(){
     <div class="card st-${o.st}${cc==="late"?" late":""}" data-code="${o.code}">
       <div class="ch"><div class="who"><b>${esc(o.name)}</b> <span class="badge" style="background:${COLOR[o.st]||"#999"}">${o.st}</span><small>${esc(o.code)}${o.grp?" · nhóm "+esc(o.grp):""}</small></div><span class="cd ${cc}">${cd}</span></div>
       <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}</li>`).join("")}</ul>
-      <div class="meta">📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
+      <div class="meta">${o.phone?`📞 <a class="ph" href="tel:${esc(o.phone)}">${esc(fmtPhone(o.phone))}</a><br>`:""}📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
       ${o.note?`<div class="note">📝 ${esc(o.note)}</div>`:""}${o.love?`<div class="love">💌 ${esc(o.love)}</div>`:""}
       <div class="acts">${nx&&o.st!=="Huỷ"?`<button class="${nx[1]}" data-st="${nx[0]}">${nx[2]}</button>`:""}${o.st!=="Mới"&&o.st!=="Huỷ"?`<button class="b-undo" data-st="${FLOW[Math.max(0,FLOW.indexOf(o.st)-1)]}" title="Lùi lại">↶</button>`:""}${o.phone?`<a class="b-call" href="tel:${esc(o.phone)}">📞</a>`:""}</div>
     </div></div>`});
@@ -155,6 +156,7 @@ function render(){
   $("#tl").innerHTML=html||`<div class="empty">Chưa có đơn ${day?"ngày mai":"hôm nay"}.</div>`;
   $("#tl").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>setStatus(b.closest(".card").dataset.code,b.dataset.st));
 }
+function fmtPhone(p){p=String(p).replace(/\D/g,"");if(/^84/.test(p))p="0"+p.slice(2);if(p.length===9)p="0"+p;return p.length===10?p.replace(/(\d{4})(\d{3})(\d{3})/,"$1 $2 $3"):p}
 function fmt(m){return m>=60?Math.floor(m/60)+"g"+(m%60?p2(m%60):""):m+"p"}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 async function setStatus(code,st){
