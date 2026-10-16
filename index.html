@@ -279,7 +279,7 @@ const TOP={trung:["Trứng cút",5000,"quail eggs"],thit:["Thịt luộc",10000,
   cgchay:["Chả giò chay",10000,"veggie spring roll"],chachay:["Chả chay",10000,"veggie sausage"],rong:["Rong biển sấy",5000,"seaweed"]};
 const MAN=["trung","thit","tom","muc","cgchay","chachay","rong"], CHAY=["cgchay","chachay","rong"];
 const MENU=[
- {id:"tt",n:"Truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
+ {id:"tt",img:"img/sp2-sq.jpg",n:"Truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
  {id:"ttc",n:"Truyền thống chay",en:"Traditional (vegetarian)",de:"Fried tofu instead of shrimp",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
  {id:"dbm",img:"img/sp1-sq.jpg",n:"Đặc biệt mặn",en:"Special",de:"Quail eggs + boiled pork + grilled shrimp",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
  {id:"dbh",n:"Đặc biệt hải sản",en:"Seafood special",de:"Quail eggs + grilled shrimp + grilled squid",d:"Trứng cút + tôm nướng + mực nướng",p:45000,top:MAN,sauce:"Mắm"},
@@ -382,6 +382,7 @@ $("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,beh
 renderMenu();renderCart();
 // ===== HÌNH THẬT: thêm ảnh = thêm 1 dòng vào GAL =====
 const GAL=[
+ ["img/sp2.jpg","Truyền thống: bánh tráng mì nướng giòn, ruốc biển, hành phi, đậu phộng, rau — kiểu Bình Định chính gốc","Traditional: crispy grilled rice cracker, dried shrimp, fried shallots, peanuts, herbs"],
  ["img/sp1.jpg","Đặc biệt mặn: thịt luộc, tôm, trứng cút — bánh tráng, ruốc, dừa nạo, nước chấm đóng gói riêng, trộn lúc ăn vẫn giòn","Special: pork, shrimp, quail eggs — toppings packed separately to stay crispy"],
 ];
 $("#gal").innerHTML=GAL.map(g=>`<figure><img src="${g[0]}" alt="${g[1]}" loading="lazy" data-cap="${g[1]}"><figcaption>${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`).join("");
