@@ -399,16 +399,20 @@ const OCC=[
   ["Bạn bè, chị em","Gửi {to} 🌷\nNhân ngày Phụ nữ Việt Nam 20/10, chúc {to} luôn xinh đẹp, vui tươi và thật hạnh phúc. Cảm ơn vì đã luôn mang năng lượng tích cực đến cho mọi người. Một phần bánh tráng nhỏ thay lời chúc nhé! 💐\n— {from}"],
   ["Mẹ","Gửi {to} yêu 💕\n20/10 này con chúc {to} luôn mạnh khoẻ, an vui và cười thật nhiều. Cảm ơn {to} vì bao năm tháng hy sinh thầm lặng. Con thương {to} nhiều lắm!\n— {from}"],
   ["Đồng nghiệp","Gửi {to} 🌸\nChúc mừng ngày 20/10! Chúc mọi người luôn rạng rỡ, công việc thuận lợi và tràn đầy niềm vui. Ăn bánh tráng cho có sức chiến tiếp nha!\n— {from}"],
-  ["Người yêu","Gửi {to} ❤️\nChúc em một ngày 20/10 thật ngọt ngào. Cảm ơn em đã luôn ở bên anh. Hôm nay để anh lo phần ăn vặt cho em nhé!\n— {from}"]]},
+  ["Người yêu","Gửi {to} ❤️\nChúc em một ngày 20/10 thật ngọt ngào. Cảm ơn em đã luôn ở bên anh. Hôm nay để anh lo phần ăn vặt cho em nhé!\n— {from}"],
+  ["Khách hàng","Kính gửi {to} 🌷\nNhân ngày Phụ nữ Việt Nam 20/10, xin chúc {to} luôn xinh đẹp, mạnh khoẻ và thành công. Cảm ơn {to} đã luôn tin tưởng và đồng hành. Mong {to} nhận chút quà nhỏ này thay lời tri ân!\n— {from}"],
+  ["Đối tác","Kính gửi {to} 🌸\nNhân dịp 20/10, xin gửi lời chúc mừng tốt đẹp nhất đến {to}: luôn rạng rỡ, hạnh phúc và gặt hái nhiều thành công. Cảm ơn {to} vì sự hợp tác tuyệt vời, mong chúng ta tiếp tục đồng hành lâu dài!\n— {from}"]]},
  {name:"Mẫu 20/11 — Ngày Nhà giáo Việt Nam",icon:"📚",from:"11-01",to:"11-21",t:[
   ["Thầy cô","Kính gửi {to} 🌹\nNhân ngày Nhà giáo Việt Nam 20/11, em kính chúc {to} luôn mạnh khoẻ, hạnh phúc và tràn đầy nhiệt huyết. Cảm ơn {to} vì những bài học quý giá!\n— {from}"]]},
 ];
 const DAILY={name:"Lời nhắn yêu thương",icon:"💌",t:[
+  ["Khách hàng","Kính gửi {to} 💐\nCảm ơn {to} đã luôn tin tưởng và ủng hộ. Chúc {to} sức khoẻ, an vui và công việc thuận lợi. Một phần quà nhỏ thay lời tri ân!\n— {from}"],
+  ["Đối tác","Kính gửi {to} 🤝\nCảm ơn {to} vì sự hợp tác và đồng hành thời gian qua. Chúc {to} luôn mạnh khoẻ, thành công và vạn sự hanh thông. Mong tiếp tục được hợp tác lâu dài!\n— {from}"],
   ["Cảm ơn","Gửi {to} 💛\nCảm ơn {to} vì đã luôn quan tâm và giúp đỡ. Một phần bánh tráng nhỏ gửi {to} ăn vui nhé!\n— {from}"],
   ["Sinh nhật","Gửi {to} 🎂\nChúc mừng sinh nhật! Chúc {to} tuổi mới thật nhiều sức khoẻ, niềm vui và may mắn.\n— {from}"],
   ["Động viên","Gửi {to} 💪\nCố lên nhé! Nghỉ tay ăn chút bánh tráng lấy sức rồi chiến tiếp, mọi chuyện rồi sẽ ổn thôi.\n— {from}"]]};
 const cur=(()=>{const n=new Date(),md=String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");
-  const o=OCC.find(o=>md>=o.from&&md<=o.to);return o?{...o,t:[...o.t,...DAILY.t]}:DAILY})();
+  const o=OCC.find(o=>md>=o.from&&md<=o.to);return o?{...o,t:[...o.t,...DAILY.t.filter(d=>!o.t.some(x=>x[0]===d[0]))]}:DAILY})();
 let tplIdx=0,lastGen="";
 function genMsg(){const t=cur.t[tplIdx];if(!t)return "";const to=$("#lto").value.trim()||"bạn",fr=$("#lfrom").value.trim()||$("#name").value.trim()||"…";
   return t[1].replaceAll("{to}",to).replaceAll("{from}",fr)}
