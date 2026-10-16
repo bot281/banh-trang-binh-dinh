@@ -75,6 +75,9 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .bell.on{background:var(--green);border-color:var(--green);color:#fff}
 .newbar{display:none;background:var(--red);color:#fff;border-radius:14px;padding:12px 14px;margin:0 0 12px;font-weight:800;font-size:16px;animation:blink 1s steps(2,start) infinite;cursor:pointer}
 .newbar.show{display:block}
+.warnbar{background:#F2A900;color:#4A2E1F}
+.hand{background:#F3F8FF;border-radius:10px;padding:6px 9px;font-size:13.5px;margin-top:8px}
+.hand span{color:var(--muted);font-size:12px}
 @keyframes blink{50%{background:#F2A900;color:#4A2E1F}}
 .card.isnew{box-shadow:0 0 0 4px #F2A900}
 .filters label{font-size:13px;display:flex;gap:5px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px}
@@ -87,7 +90,7 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
   <div id="err"></div>
   <div class="stats" id="stats"></div>
   <div class="prep" id="prep"></div>
-  <div class="newbar" id="newbar"></div>
+  <div class="newbar" id="newbar"></div><div class="newbar warnbar" id="warnbar"></div>
   <div class="filters"><button type="button" id="bell" class="bell">🔕 Bấm để BẬT CHUÔNG báo đơn mới</button><label><input type="checkbox" id="hideDone"> Ẩn đơn đã làm xong (xong / đã giao / đã thu / huỷ)</label></div>
   <div class="tl" id="tl"></div>
   <div class="foot" id="foot">Tự cập nhật mỗi 20 giây</div>
@@ -103,6 +106,8 @@ const COLOR={"Mới":"var(--s-new)","Đang làm":"var(--s-doing)","Đã xong":"v
 const NEXT={"Mới":["Đang làm","b-doing","▶ Bắt đầu làm"],"Đang làm":["Đã xong","b-done","✓ Làm xong"],"Đã xong":["Đã giao","b-sent","🛵 Đã giao"],"Đã giao":["Đã thu tiền","b-paid","💰 Đã thu tiền"]};
 const num=x=>+String(x==null?"":x).replace(/[^\d]/g,"")||0;
 const $=s=>document.querySelector(s), vnd=n=>num(n).toLocaleString("vi-VN")+"đ", p2=n=>String(n).padStart(2,"0");
+const SHIPCFG={wait:15,minPerKm:3,defTravel:20,warn:30}; // chờ xe 15', xe máy nội thành ~3'/km (20 km/h), không có km thì tạm 20', cảnh báo trước 30'
+let WARNED=new Set();try{WARNED=new Set(JSON.parse(localStorage.getItem("bep_warned")||"[]"))}catch(e){}
 let ORDERS=[], LOCAL={}, day=0, SEEN=null, NEW=new Set(), bellOn=false, actx=null;
 try{bellOn=localStorage.getItem("bep_bell")==="1"}catch(e){}
 function beep(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const t=actx.currentTime;
@@ -126,7 +131,7 @@ async function load(){
     const r=await fetch(`https://docs.google.com/spreadsheets/d/${KEY}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent("Form Responses 1")}&_=${Date.now()}`);
     const t=await r.text();const j=JSON.parse(t.substring(t.indexOf("{"),t.lastIndexOf("}")+1));
     const cols=j.table.cols.map(c=>c.label.trim());const idx=n=>cols.findIndex(c=>c.startsWith(n));
-    const I={ts:0,name:idx("Họ tên"),phone:idx("Số điện thoại"),addr:idx("Địa chỉ"),when:idx("Ngày giờ nhận"),items:idx("Món đặt"),qty:idx("Tổng số phần"),total:idx("Tổng tiền"),code:idx("Mã đơn"),pay:idx("Thanh toán"),note:idx("Ghi chú cho shop"),grp:idx("Mã nhóm"),ship:idx("Phí ship"),shipby:idx("Cách trả"),grand:idx("Tổng phải thu"),love:idx("Lời nhắn"),st:idx("Trạng thái")};
+    const I={ts:0,name:idx("Họ tên"),phone:idx("Số điện thoại"),addr:idx("Địa chỉ"),when:idx("Ngày giờ nhận"),items:idx("Món đặt"),qty:idx("Tổng số phần"),total:idx("Tổng tiền"),code:idx("Mã đơn"),pay:idx("Thanh toán"),note:idx("Ghi chú cho shop"),grp:idx("Mã nhóm"),km:idx("Khoảng cách"),ship:idx("Phí ship"),shipby:idx("Cách trả"),grand:idx("Tổng phải thu"),love:idx("Lời nhắn"),st:idx("Trạng thái")};
     const rows=j.table.rows.map(r=>r.c);const g=(c,k)=>I[k]<0?"":cellVal(c[I[k]]);
     const ev={};const out=[];
     rows.forEach((c,i)=>{if(!c)return;const nm=String(g(c,"name"));
@@ -134,7 +139,8 @@ async function load(){
       if(!nm)return;
       out.push({row:i,code:String(g(c,"code")||("R"+i)),name:nm,phone:String(g(c,"phone")),addr:String(g(c,"addr")),when:parseWhen(g(c,"when")),whenTxt:String(g(c,"when")),
         items:String(g(c,"items")),qty:String(g(c,"qty")),grand:g(c,"grand")||g(c,"total"),pay:String(g(c,"pay")),note:String(g(c,"note")),grp:String(g(c,"grp")),
-        shipby:String(g(c,"shipby")),love:String(g(c,"love")),st0:String(g(c,"st")||"")})});
+        shipby:String(g(c,"shipby")),km:parseFloat(String(g(c,"km")).replace(",","."))||0,love:String(g(c,"love")),st0:String(g(c,"st")||"")})});
+    out.forEach(o=>{const pick=/tự đến lấy/i.test(o.addr+" "+o.shipby);o.pick=pick;o.travel=pick?0:(o.km?Math.max(10,Math.ceil(o.km*SHIPCFG.minPerKm)):SHIPCFG.defTravel);o.hand=o.when?new Date(o.when-(pick?0:(o.travel+SHIPCFG.wait))*60000):null});
     out.forEach(o=>{const e=ev[o.code];o.st=e&&e.length?e[e.length-1][1]:(o.st0||"Mới");if(LOCAL[o.code]&&LOCAL[o.code].t>Date.now()-120000)o.st=LOCAL[o.code].st});
     const codes=out.map(o=>o.code);
     if(SEEN){const fresh=out.filter(o=>!SEEN.has(o.code));if(fresh.length)notifyNew(fresh)}
@@ -148,7 +154,8 @@ function render(){
   const now=new Date(),target=new Date(now.getFullYear(),now.getMonth(),now.getDate()+day);
   $("#days").innerHTML=["Hôm nay","Ngày mai"].map((t,i)=>`<button data-d="${i}" aria-pressed="${i===day}">${t}</button>`).join("");
   $("#days").querySelectorAll("button").forEach(b=>b.onclick=()=>{day=+b.dataset.d;render()});
-  let L=ORDERS.filter(o=>sameDay(o.when,target)).sort((a,b)=>a.when-b.when);
+  let L=ORDERS.filter(o=>sameDay(o.when,target)).sort((a,b)=>a.hand-b.hand);
+  checkWarn();
   const act=L.filter(o=>o.st!=="Huỷ");
   const sum=k=>act.filter(k).length;
   $("#stats").innerHTML=[[act.length,"Đơn"],[sum(o=>o.st==="Mới"||o.st==="Đang làm"),"Cần làm"],[sum(o=>o.st==="Đã xong"),"Chờ giao"],[vnd(act.reduce((a,o)=>a+num(o.grand),0)),"Phải thu"]]
@@ -162,14 +169,15 @@ function render(){
   if($("#hideDone").checked)L=L.filter(o=>!["Đã xong","Đã giao","Đã thu tiền","Huỷ"].includes(o.st));
   let html="",nowPlaced=day!==0;
   L.forEach(o=>{
-    if(!nowPlaced&&o.when>now){html+=`<div class="now"><span>${p2(now.getHours())}:${p2(now.getMinutes())}</span></div>`;nowPlaced=true}
-    const mins=Math.round((o.when-now)/60000),fin=["Đã giao","Đã thu tiền","Huỷ"].includes(o.st)||(o.st==="Đã xong"&&false);
-    let cd,cc;if(fin){cd=o.st;cc="fin"}else if(mins<0){cd=`TRỄ ${fmt(-mins)}`;cc="late"}else if(mins<=30){cd=`còn ${fmt(mins)}`;cc="warn"}else{cd=`còn ${fmt(mins)}`;cc="ok"}
-    if(o.st==="Đã xong"&&!fin){cd="Chờ giao · "+(mins<0?"trễ "+fmt(-mins):"còn "+fmt(mins));}
+    if(!nowPlaced&&o.hand>now){html+=`<div class="now"><span>${p2(now.getHours())}:${p2(now.getMinutes())}</span></div>`;nowPlaced=true}
+    const mins=Math.round((o.hand-now)/60000),fin=["Đã giao","Đã thu tiền","Huỷ"].includes(o.st)||(o.st==="Đã xong"&&false);
+    let cd,cc;if(fin){cd=o.st;cc="fin"}else if(mins<0){cd=`TRỄ ${fmt(-mins)}`;cc="late"}else if(mins<=SHIPCFG.warn){cd=`⏰ còn ${fmt(mins)}`;cc="warn"}else{cd=`còn ${fmt(mins)}`;cc="ok"}
+    if(o.st==="Đã xong"&&!fin){cd=(o.pick?"Chờ khách lấy · ":"Chờ giao · ")+(mins<0?"trễ "+fmt(-mins):"còn "+fmt(mins));}
     const nx=NEXT[o.st];
-    html+=`<div class="slot"><div class="t">${p2(o.when.getHours())}:${p2(o.when.getMinutes())}</div><div class="dot" style="border-color:${COLOR[o.st]||"#999"}"></div>
+    html+=`<div class="slot"><div class="t">${p2(o.hand.getHours())}:${p2(o.hand.getMinutes())}</div><div class="dot" style="border-color:${COLOR[o.st]||"#999"}"></div>
     <div class="card st-${o.st}${cc==="late"?" late":""}${NEW.has(o.code)?" isnew":""}" data-code="${o.code}">
       <div class="ch"><div class="who"><b>${esc(o.name)}</b> <span class="badge" style="background:${COLOR[o.st]||"#999"}">${o.st}</span><small>${esc(o.code)}${o.grp?" · nhóm "+esc(o.grp):""}</small></div><span class="cd ${cc}">${cd}</span></div>
+      <div class="hand">${o.pick?`🏃 Khách tự đến lấy lúc <b>${hm(o.when)}</b> — làm xong trước giờ này`:`🛵 Giao xe lúc <b>${hm(o.hand)}</b> → khách nhận ${hm(o.when)} <span>(xe đi ~${o.travel}′${o.km?" · "+o.km.toFixed(1)+" km":""} + chờ xe ${SHIPCFG.wait}′)</span>`}</div>
       <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}</li>`).join("")}</ul>
       <div class="meta">${o.phone?`📞 <a class="ph" href="tel:${esc(o.phone)}">${esc(fmtPhone(o.phone))}</a><br>`:""}📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
       ${o.note?`<div class="note">📝 ${esc(o.note)}</div>`:""}${o.love?`<div class="love">💌 ${esc(o.love)}</div>`:""}
@@ -180,6 +188,12 @@ function render(){
   $("#tl").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>setStatus(b.closest(".card").dataset.code,b.dataset.st));
 }
 function fmtPhone(p){p=String(p).replace(/\D/g,"");if(/^84/.test(p))p="0"+p.slice(2);if(p.length===9)p="0"+p;return p.length===10?p.replace(/(\d{4})(\d{3})(\d{3})/,"$1 $2 $3"):p}
+function hm(d){return p2(d.getHours())+":"+p2(d.getMinutes())}
+function checkWarn(){const now=new Date(),hit=ORDERS.filter(o=>o.hand&&sameDay(o.when,now)&&["Mới","Đang làm"].includes(o.st)&&!WARNED.has(o.code)&&(o.hand-now)/60000<=SHIPCFG.warn&&(o.hand-now)/60000>-60);
+  if(!hit.length)return;hit.forEach(o=>WARNED.add(o.code));try{localStorage.setItem("bep_warned",JSON.stringify([...WARNED].slice(-200)))}catch(e){}
+  const wb=$("#warnbar");wb.innerHTML="⏰ CÒN ≤30 PHÚT ĐẾN GIỜ GIAO XE: "+hit.map(o=>`${esc(o.name)} (${o.pick?"khách lấy":"giao xe"} ${hm(o.hand)})`).join(" · ")+' <span style="font-weight:600">(bấm để tắt)</span>';wb.classList.add("show");
+  if(bellOn){beep();setTimeout(beep,700);setTimeout(beep,1400)}try{navigator.vibrate&&navigator.vibrate([500,200,500,200,500])}catch(e){}
+  try{if(window.Notification&&Notification.permission==="granted")new Notification("⏰ Sắp tới giờ giao xe",{body:hit.map(o=>o.name+" · "+hm(o.hand)).join("\n"),icon:"mon.jpg"})}catch(e){}}
 function fmt(m){return m>=60?Math.floor(m/60)+"g"+(m%60?p2(m%60):""):m+"p"}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 async function setStatus(code,st){
@@ -192,6 +206,7 @@ try{$("#hideDone").checked=localStorage.getItem("bep_hide")==="1"}catch(e){}
 setBell();
 $("#bell").onclick=()=>{bellOn=!bellOn||true;try{localStorage.setItem("bep_bell","1")}catch(e){}setBell();beep();
   try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}};
+$("#warnbar").onclick=()=>$("#warnbar").classList.remove("show");
 $("#newbar").onclick=()=>{NEW.clear();$("#newbar").classList.remove("show");document.title="Bếp — Bánh Tráng Mì Ruốc Dừa";render()};
 document.addEventListener("click",()=>{if(bellOn&&!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}},{once:true});
 $("#hideDone").onchange=()=>{try{localStorage.setItem("bep_hide",$("#hideDone").checked?"1":"0")}catch(e){}render()};
