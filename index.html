@@ -362,7 +362,8 @@ $("#f").onsubmit=async e=>{
   x+=bad("ship",!pick&&(!sb||(sb.startsWith("Đặt nhóm")&&!$("#grp").value.trim())));
   if(x){document.querySelector(".f.bad").scrollIntoView({behavior:"smooth",block:"center"});return}
   const [y,mo,da]=date.split("-"),when=`${da}/${mo}/${y} ${time}`,T=totals(),n=new Date(),p2=v=>String(v).padStart(2,"0");
-  const code=`W${p2(n.getDate())}${p2(n.getMonth()+1)}-${p2(n.getHours())}${p2(n.getMinutes())}${String.fromCharCode(65+Math.floor(Math.random()*26))}`;
+  const RC="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",rc=()=>RC[Math.floor(Math.random()*RC.length)];
+  const code=`W${p2(n.getDate())}${p2(n.getMonth()+1)}-${p2(n.getHours())}${p2(n.getMinutes())}${rc()}${rc()}${rc()}`;
   const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
   const fd=new URLSearchParams();
   [[E.name,name],[E.phone,phone],[E.addr,addr],[E.when,when],[E.items,items],[E.qty,qtyText(T)],[E.total,String(T.t)],[E.code,code],
