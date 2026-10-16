@@ -101,6 +101,14 @@ h2.sec .en{font-size:13px;margin-top:-2px}
 .chip .en.i{margin-left:3px;font-size:11px}
 .chip[aria-pressed="true"] .en{color:#d9f0da}
 .add .en,.submit .en,.cbtn .en{color:inherit;opacity:.75}
+.gal{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;-webkit-overflow-scrolling:touch}
+.gal figure{margin:0;flex:0 0 78%;max-width:420px;scroll-snap-align:start;background:var(--card);border:1.5px solid var(--line);border-radius:18px;overflow:hidden;cursor:zoom-in}
+.gal figure:only-child{flex-basis:100%;max-width:none}
+.gal img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.gal figcaption{font-size:13.5px;padding:8px 12px 10px;color:var(--ink)}
+.dthumb{width:68px;height:68px;border-radius:14px;object-fit:cover;flex:0 0 68px;border:1.5px solid var(--line);cursor:zoom-in}
+.lb{position:fixed;inset:0;background:rgba(20,10,5,.88);display:none;align-items:center;justify-content:center;z-index:60;padding:16px;flex-direction:column;gap:10px}
+.lb.show{display:flex}.lb img{max-width:100%;max-height:82vh;border-radius:14px}.lb p{color:#fff;margin:0;font-size:14px;text-align:center}
 .grpbanner{background:var(--green);color:#fff;text-align:center;font-weight:700;padding:9px 16px;font-size:14px;display:none}
 .opt-label{font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
@@ -191,6 +199,8 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
     </div>
   </header>
 
+  <h2 class="sec">Hình thật tại bếp<span class="en">Real photos from our kitchen</span></h2>
+  <div class="gal" id="gal"></div>
   <h2 class="sec">Thực đơn<span class="en">Menu</span></h2>
   <p class="sub">Bấm + để thêm phần, rồi chọn topping, nước chấm, độ cay và ghi chú cho từng phần. Giá chưa gồm phí ship.<span class="en">Tap + to add a portion, then pick toppings, sauce, spice level and notes for each. Prices exclude delivery.</span></p>
   <div class="menu" id="menu"></div>
@@ -249,6 +259,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 
 <div class="bar"><div class="in"><div class="sum"><small id="barq">Chưa chọn món</small><b id="bart">0đ</b></div><a href="#don">Xem đơn ↓<span class="en">View order</span></a></div></div>
 <div class="toast" id="toast"></div>
+<div class="lb" id="lb"><img alt=""><p></p></div>
 <div class="modal" id="ok"><div class="box">
   <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn<span class="en">Thank you! We have received your order.</span></div><div class="code" id="okcode"></div>
   <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp: gọi <a href="tel:0919008571">0919 008 571</a> hoặc nhắn <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a>.</p>
@@ -270,7 +281,7 @@ const MAN=["trung","thit","tom","muc","cgchay","chachay","rong"], CHAY=["cgchay"
 const MENU=[
  {id:"tt",n:"Truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
  {id:"ttc",n:"Truyền thống chay",en:"Traditional (vegetarian)",de:"Fried tofu instead of shrimp",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
- {id:"dbm",n:"Đặc biệt mặn",en:"Special",de:"Quail eggs + boiled pork + grilled shrimp",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
+ {id:"dbm",img:"img/sp1-sq.jpg",n:"Đặc biệt mặn",en:"Special",de:"Quail eggs + boiled pork + grilled shrimp",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
  {id:"dbh",n:"Đặc biệt hải sản",en:"Seafood special",de:"Quail eggs + grilled shrimp + grilled squid",d:"Trứng cút + tôm nướng + mực nướng",p:45000,top:MAN,sauce:"Mắm"},
  {id:"dbc",n:"Đặc biệt chay",en:"Vegetarian special",de:"Veggie spring roll + veggie sausage + seaweed",d:"Chả giò chay + chả chay + rong biển",p:45000,top:CHAY,sauce:"Nước tương",chay:1},
  {id:"tra",n:"Trà tắc xí muội",en:"Kumquat & salted plum iced tea",de:"Cold, sweet & sour",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
@@ -311,7 +322,7 @@ function renderDish(el){
   const c=el.querySelector(".copy"); if(c)c.onclick=()=>{P.forEach((p,i)=>{if(i){p.tops=[...P[0].tops];p.sauce=P[0].sauce;p.cay=P[0].cay;p.note=P[0].note}});renderDish(el);renderCart();toast("Đã chép cho tất cả phần")};
 }
 function renderMenu(){
-  $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head"><div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}<span class="en">${m.en}</span></p><p class="d-desc">${m.d}<span class="en">${m.de}</span></p></div><div class="d-price">${vnd(m.p)}</div></div>
+  $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head">${m.img?`<img class="dthumb" src="${m.img}" alt="${m.n}" loading="lazy" data-cap="${m.n}">`:""}<div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}<span class="en">${m.en}</span></p><p class="d-desc">${m.d}<span class="en">${m.de}</span></p></div><div class="d-price">${vnd(m.p)}</div></div>
       <div class="step"><button type="button" class="minus" aria-label="Bớt">−</button><output>0</output><button type="button" class="plus" aria-label="Thêm">+</button><span class="subt"></span></div>
       ${m.drink?"":'<div class="opts"></div>'}</div>`).join("");
   document.querySelectorAll(".dish").forEach(el=>{
@@ -368,6 +379,14 @@ $("#f").onsubmit=async e=>{
 };
 $("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,behavior:"smooth"})};
 renderMenu();renderCart();
+// ===== HÌNH THẬT: thêm ảnh = thêm 1 dòng vào GAL =====
+const GAL=[
+ ["img/sp1.jpg","Đặc biệt mặn: thịt luộc, tôm, trứng cút — bánh tráng, ruốc, dừa nạo, nước chấm đóng gói riêng, trộn lúc ăn vẫn giòn","Special: pork, shrimp, quail eggs — toppings packed separately to stay crispy"],
+];
+$("#gal").innerHTML=GAL.map(g=>`<figure><img src="${g[0]}" alt="${g[1]}" loading="lazy" data-cap="${g[1]}"><figcaption>${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`).join("");
+document.addEventListener("click",e=>{const im=e.target.closest(".gal img,.dthumb");if(!im)return;const lb=$("#lb");
+  lb.querySelector("img").src=im.src.replace("-sq.jpg",".jpg");lb.querySelector("p").textContent=im.dataset.cap||"";lb.classList.add("show")});
+$("#lb").onclick=()=>$("#lb").classList.remove("show");
 // ===== LỜI NHẮN YÊU THƯƠNG: mỗi dịp lễ 1 bộ văn mẫu (from/to = MM-DD, hiện trong khoảng này) =====
 const OCC=[
  {name:"Mẫu 20/10 — Ngày Phụ nữ Việt Nam",icon:"🌷",from:"10-01",to:"10-21",t:[
