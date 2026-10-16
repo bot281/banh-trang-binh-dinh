@@ -71,6 +71,12 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:opacity .2s;z-index:30;pointer-events:none}
 .toast.show{opacity:1}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 12px}
+.bell{border:2px solid var(--red);background:#fff;color:var(--red);border-radius:999px;padding:6px 12px;font-weight:800;font-family:inherit;cursor:pointer;font-size:13.5px}
+.bell.on{background:var(--green);border-color:var(--green);color:#fff}
+.newbar{display:none;background:var(--red);color:#fff;border-radius:14px;padding:12px 14px;margin:0 0 12px;font-weight:800;font-size:16px;animation:blink 1s steps(2,start) infinite;cursor:pointer}
+.newbar.show{display:block}
+@keyframes blink{50%{background:#F2A900;color:#4A2E1F}}
+.card.isnew{box-shadow:0 0 0 4px #F2A900}
 .filters label{font-size:13px;display:flex;gap:5px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px}
 @media (max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}.tl{padding-left:52px}.tl:before{left:36px}.slot .t{left:-54px;width:36px;font-size:14px}.slot .dot{left:-22px}.now span{left:-54px}}
 </style>
@@ -81,9 +87,10 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
   <div id="err"></div>
   <div class="stats" id="stats"></div>
   <div class="prep" id="prep"></div>
-  <div class="filters"><label><input type="checkbox" id="hideDone"> Ẩn đơn đã làm xong (xong / đã giao / đã thu / huỷ)</label></div>
+  <div class="newbar" id="newbar"></div>
+  <div class="filters"><button type="button" id="bell" class="bell">🔕 Bấm để BẬT CHUÔNG báo đơn mới</button><label><input type="checkbox" id="hideDone"> Ẩn đơn đã làm xong (xong / đã giao / đã thu / huỷ)</label></div>
   <div class="tl" id="tl"></div>
-  <div class="foot" id="foot">Tự cập nhật mỗi 30 giây</div>
+  <div class="foot" id="foot">Tự cập nhật mỗi 20 giây</div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
@@ -96,7 +103,20 @@ const COLOR={"Mới":"var(--s-new)","Đang làm":"var(--s-doing)","Đã xong":"v
 const NEXT={"Mới":["Đang làm","b-doing","▶ Bắt đầu làm"],"Đang làm":["Đã xong","b-done","✓ Làm xong"],"Đã xong":["Đã giao","b-sent","🛵 Đã giao"],"Đã giao":["Đã thu tiền","b-paid","💰 Đã thu tiền"]};
 const num=x=>+String(x==null?"":x).replace(/[^\d]/g,"")||0;
 const $=s=>document.querySelector(s), vnd=n=>num(n).toLocaleString("vi-VN")+"đ", p2=n=>String(n).padStart(2,"0");
-let ORDERS=[], LOCAL={}, day=0;
+let ORDERS=[], LOCAL={}, day=0, SEEN=null, NEW=new Set(), bellOn=false, actx=null;
+try{bellOn=localStorage.getItem("bep_bell")==="1"}catch(e){}
+function beep(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const t=actx.currentTime;
+  [0,0.35,0.7].forEach((d,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type="sine";o.frequency.value=[880,1175,1568][i];
+  g.gain.setValueAtTime(0.0001,t+d);g.gain.exponentialRampToValueAtTime(0.6,t+d+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t+d+0.3);o.connect(g);g.connect(actx.destination);o.start(t+d);o.stop(t+d+0.32)})}catch(e){}}
+function setBell(){const b=$("#bell");b.classList.toggle("on",bellOn);b.textContent=bellOn?"🔔 Chuông đang BẬT (bấm để thử)":"🔕 Bấm để BẬT CHUÔNG báo đơn mới"}
+function notifyNew(list){
+  list.forEach(o=>NEW.add(o.code));
+  const nb=$("#newbar");nb.innerHTML=`🔔 CÓ ${NEW.size} ĐƠN MỚI: `+list.map(o=>`${esc(o.name)} — nhận ${o.when?p2(o.when.getHours())+":"+p2(o.when.getMinutes())+" "+p2(o.when.getDate())+"/"+p2(o.when.getMonth()+1):""}`).join(" · ")+` <span style="font-weight:600">(bấm để tắt)</span>`;nb.classList.add("show");
+  document.title=`(${NEW.size}) Đơn mới — Bếp`;
+  if(bellOn){beep();setTimeout(beep,1500)}
+  try{navigator.vibrate&&navigator.vibrate([300,150,300,150,300])}catch(e){}
+  try{if(window.Notification&&Notification.permission==="granted")new Notification("🔔 Đơn mới — Bánh Tráng",{body:list.map(o=>o.name+" · "+o.whenTxt).join("\n"),icon:"mon.jpg"})}catch(e){}
+}
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("show"),1800)}
 function parseWhen(s){const m=String(s||"").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})/);return m?new Date(+m[3],+m[2]-1,+m[1],+m[4],+m[5]):null}
 function cellVal(c){if(!c)return "";if(c.f!=null&&typeof c.v!=="number")return c.f;return c.v==null?"":c.v}
@@ -116,7 +136,10 @@ async function load(){
         items:String(g(c,"items")),qty:String(g(c,"qty")),grand:g(c,"grand")||g(c,"total"),pay:String(g(c,"pay")),note:String(g(c,"note")),grp:String(g(c,"grp")),
         shipby:String(g(c,"shipby")),love:String(g(c,"love")),st0:String(g(c,"st")||"")})});
     out.forEach(o=>{const e=ev[o.code];o.st=e&&e.length?e[e.length-1][1]:(o.st0||"Mới");if(LOCAL[o.code]&&LOCAL[o.code].t>Date.now()-120000)o.st=LOCAL[o.code].st});
-    ORDERS=out;$("#err").innerHTML="";render();$("#foot").textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · tự làm mới mỗi 30 giây";
+    const codes=out.map(o=>o.code);
+    if(SEEN){const fresh=out.filter(o=>!SEEN.has(o.code));if(fresh.length)notifyNew(fresh)}
+    SEEN=new Set(codes);
+    ORDERS=out;$("#err").innerHTML="";render();$("#foot").textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · tự làm mới mỗi 20 giây";
   }catch(e){$("#err").innerHTML='<div class="err">Không đọc được danh sách đơn (mạng yếu hoặc sheet chưa mở quyền xem). Thử tải lại trang.</div>'}
 }
 function sameDay(a,b){return a&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
@@ -145,7 +168,7 @@ function render(){
     if(o.st==="Đã xong"&&!fin){cd="Chờ giao · "+(mins<0?"trễ "+fmt(-mins):"còn "+fmt(mins));}
     const nx=NEXT[o.st];
     html+=`<div class="slot"><div class="t">${p2(o.when.getHours())}:${p2(o.when.getMinutes())}</div><div class="dot" style="border-color:${COLOR[o.st]||"#999"}"></div>
-    <div class="card st-${o.st}${cc==="late"?" late":""}" data-code="${o.code}">
+    <div class="card st-${o.st}${cc==="late"?" late":""}${NEW.has(o.code)?" isnew":""}" data-code="${o.code}">
       <div class="ch"><div class="who"><b>${esc(o.name)}</b> <span class="badge" style="background:${COLOR[o.st]||"#999"}">${o.st}</span><small>${esc(o.code)}${o.grp?" · nhóm "+esc(o.grp):""}</small></div><span class="cd ${cc}">${cd}</span></div>
       <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}</li>`).join("")}</ul>
       <div class="meta">${o.phone?`📞 <a class="ph" href="tel:${esc(o.phone)}">${esc(fmtPhone(o.phone))}</a><br>`:""}📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
@@ -166,9 +189,14 @@ async function setStatus(code,st){
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd})}catch(e){toast("Lỗi mạng — bấm lại giúp")}
 }
 try{$("#hideDone").checked=localStorage.getItem("bep_hide")==="1"}catch(e){}
+setBell();
+$("#bell").onclick=()=>{bellOn=!bellOn||true;try{localStorage.setItem("bep_bell","1")}catch(e){}setBell();beep();
+  try{if(window.Notification&&Notification.permission==="default")Notification.requestPermission()}catch(e){}};
+$("#newbar").onclick=()=>{NEW.clear();$("#newbar").classList.remove("show");document.title="Bếp — Bánh Tráng Mì Ruốc Dừa";render()};
+document.addEventListener("click",()=>{if(bellOn&&!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}},{once:true});
 $("#hideDone").onchange=()=>{try{localStorage.setItem("bep_hide",$("#hideDone").checked?"1":"0")}catch(e){}render()};
 setInterval(()=>{const n=new Date();$("#clock").textContent=p2(n.getHours())+":"+p2(n.getMinutes())},1000);
-setInterval(render,60000);setInterval(load,30000);load();
+setInterval(render,60000);setInterval(load,20000);load();
 </script>
 </body>
 </html>
