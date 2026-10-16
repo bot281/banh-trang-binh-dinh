@@ -105,6 +105,7 @@ h2.sec .en{font-size:13px;margin-top:-2px}
 .gal figure{margin:0;flex:0 0 78%;max-width:420px;scroll-snap-align:start;background:var(--card);border:1.5px solid var(--line);border-radius:18px;overflow:hidden;cursor:zoom-in}
 .gal figure:only-child{flex-basis:100%;max-width:none}
 .gal img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.gal figure.vid{cursor:default}.gal video{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#000}
 .gal figcaption{font-size:13.5px;padding:8px 12px 10px;color:var(--ink)}
 .dthumb{width:68px;height:68px;border-radius:14px;object-fit:cover;flex:0 0 68px;border:1.5px solid var(--line);cursor:zoom-in}
 .lb{position:fixed;inset:0;background:rgba(20,10,5,.88);display:none;align-items:center;justify-content:center;z-index:60;padding:16px;flex-direction:column;gap:10px}
@@ -381,12 +382,13 @@ $("#f").onsubmit=async e=>{
 $("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,behavior:"smooth"})};
 renderMenu();renderCart();
 // ===== HÌNH THẬT: thêm ảnh = thêm 1 dòng vào GAL =====
-const GAL=[
+const GAL=[   // clip: thêm phần tử thứ 4 = ảnh bìa → hiện dạng video
+ ["img/clip1.mp4","Bánh tráng đóng gói tại bếp: bánh, ruốc, dừa, rau và nước chấm để riêng từng túi","Packed fresh in our kitchen: every part in its own bag","img/clip1.jpg"],
  ["img/sp2.jpg","Truyền thống: bánh tráng mì nướng giòn, ruốc biển, hành phi, đậu phộng, rau — kiểu Bình Định chính gốc","Traditional: crispy grilled rice cracker, dried shrimp, fried shallots, peanuts, herbs"],
  ["img/sp3.jpg","Đặc biệt mặn: thịt ba chỉ luộc, tôm, trứng cút, bún mì, rau, cà rốt, xoài xanh","Special: boiled pork belly, shrimp, quail eggs, noodles, herbs, carrot, green mango"],
  ["img/sp1.jpg","Đóng gói giao hàng: bánh tráng, ruốc, dừa nạo, nước chấm để túi riêng — trộn lúc ăn vẫn giòn","Packed for delivery: cracker, shrimp, coconut and sauce in separate bags — stays crispy"],
 ];
-$("#gal").innerHTML=GAL.map(g=>`<figure><img src="${g[0]}" alt="${g[1]}" loading="lazy" data-cap="${g[1]}"><figcaption>${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`).join("");
+$("#gal").innerHTML=GAL.map(g=>g[3]?`<figure class="vid"><video src="${g[0]}" poster="${g[3]}" controls playsinline muted preload="none"></video><figcaption>🎬 ${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`:`<figure><img src="${g[0]}" alt="${g[1]}" loading="lazy" data-cap="${g[1]}"><figcaption>${g[1]}<span class="en">${g[2]}</span></figcaption></figure>`).join("");
 document.addEventListener("click",e=>{const im=e.target.closest(".gal img,.dthumb");if(!im)return;const lb=$("#lb");
   lb.querySelector("img").src=im.src.replace("-sq.jpg",".jpg");lb.querySelector("p").textContent=im.dataset.cap||"";lb.classList.add("show")});
 $("#lb").onclick=()=>$("#lb").classList.remove("show");
