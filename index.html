@@ -267,6 +267,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
   <button type="button" id="okclose">Đóng · Close</button></div></div>
 
 <script>
+const NTFY="https://ntfy.sh/",NTFY_TOPIC="bep-btbd-f43024300c84";
 const FORM="https://docs.google.com/forms/d/e/1FAIpQLSd3Z--C-uV6XJTzCdUzjuWeOQz8hOhmRHwPUtUA-ojLWfNP7w/formResponse";
 const E={name:"entry.1617320443",phone:"entry.1296680432",addr:"entry.1127379480",when:"entry.325322427",items:"entry.1094612916",
   qty:"entry.1589417355",total:"entry.682908208",code:"entry.1726601081",pay:"entry.1691158886",note:"entry.1448708004",grp:"entry.594608824",km:"entry.205361310",ship:"entry.529968166",shipby:"entry.1659168980",grand:"entry.1501035833",love:"entry.2143315422"};
@@ -372,6 +373,9 @@ $("#f").onsubmit=async e=>{
    .forEach(([k,v])=>fd.append(k,v));
   const btn=$("#go");btn.disabled=true;btn.innerHTML="Đang gửi…<span class=en>Sending…</span>";
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
+    try{const g=$("#grp").value.trim().toUpperCase(),kit=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.note?" · "+L.note:""}`).join("\n");
+      fetch(NTFY,{method:"POST",body:JSON.stringify({topic:NTFY_TOPIC,priority:5,tags:["bell"],title:`🔔 Đơn mới ${code} — nhận ${time} ${da}/${mo}`,
+        message:`${g?"Nhóm "+g+"\n":""}${kit}\n${pick?"🏃 Tự đến lấy":"🛵 Giao"+(geo?" ~"+geo.km.toFixed(1)+" km":"")} · ${qtyText(T)}`,click:"https://bot281.github.io/banh-trang-binh-dinh/bep.html"})}).catch(()=>{})}catch(_){}
     $("#okcode").textContent="Mã đơn: "+code;
     $("#bank").innerHTML=document.querySelector('input[name=pay]:checked').value==="Chuyển khoản"?bankBox(grand(),code):"";
     $("#oksum").textContent=`${$("#grp").value.trim()?"Nhóm: "+$("#grp").value.trim().toUpperCase()+"\n":""}${items}${loveText()?"\n\n💌 Lời nhắn:\n"+loveText():""}\n\nTiền hàng: ${vnd(T.t)}\nPhí ship: ${pick?"Tự đến lấy":sb.startsWith("Cộng")?(geo?vnd(geo.fee)+" (ước tính, cộng vào đơn)":"shop báo sau"):sb.startsWith("Khách")?(geo?"~"+vnd(geo.fee)+" trả tài xế":"trả tài xế"):"nhóm trả"}\nTổng thanh toán: ${vnd(grand())}\nNhận: ${when}\n${addr}`;
