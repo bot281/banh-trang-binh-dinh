@@ -165,7 +165,7 @@ const NEN_CHAY=["Bánh tráng mì nướng","Bún mì","Đậu hủ chiên (½ m
 const RECIPE={"Truyền thống chay":[NEN_CHAY,[]],"Truyền thống":[NEN,[]],
   "Đặc biệt mặn":[NEN,["Trứng cút","Thịt luộc","Tôm"]],"Đặc biệt hải sản":[NEN,["Trứng cút","Tôm","Mực đại dương nướng"]],
   "Đặc biệt chay":[NEN_CHAY,["Chả giò chay","Chả chay","Rong biển sấy"]],"Trà tắc xí muội":[["Tắc","Xí muội","Đá (ghi chú 'không đá' thì bỏ)"],[]]};
-const QTY={"Trứng cút":"3 quả","Tôm":"4 con","Tôm nướng":"4 con","Chả giò chay":"1 cuốn","Rong biển sấy":"1 gói"};
+const QTY={"Trứng cút":"3 quả","Tôm":"4 con","Tôm nướng":"4 con","Chả giò chay":"1 cuốn","Rong biển sấy":"½ gói"};
 const ALIAS={"Tôm nướng":"Tôm"};
 function recipe(t){
   const [main,...rest]=t.split(" · "),parts=main.split(" + ").map(x=>x.trim()),R=RECIPE[parts[0]];if(!R)return "";
