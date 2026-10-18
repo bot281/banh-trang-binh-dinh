@@ -124,6 +124,13 @@ h2.sec .en{font-size:13px;margin-top:-2px}
 .chip.sm{padding:5px 11px;font-size:13px}
 .sl{font-size:12.5px;color:var(--muted);align-self:center}
 .subt{margin-left:auto;font-weight:800;color:var(--red);font-size:15px}
+.pq{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:13.5px;color:var(--muted)}
+.pq>span{flex:1}
+.pq button{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--red);background:#fff;color:var(--red);font-size:19px;font-weight:700;cursor:pointer;line-height:1}
+.pq .qp{background:var(--red);color:#fff}
+.pq .qx{border-color:var(--line);color:var(--muted);font-size:15px}
+.pq .qi{width:58px;height:34px;text-align:center;font:inherit;font-weight:800;font-size:16px;border:1.5px solid var(--line);border-radius:10px}
+.addk{margin-top:2px}
 .copy{width:100%;border:1.5px dashed var(--green);background:#F1F8EE;color:var(--green);font-weight:700;border-radius:12px;padding:9px;margin-bottom:8px;cursor:pointer;font-family:inherit;font-size:13.5px}
 .add{width:100%;margin-top:4px;border:0;border-radius:14px;background:var(--red);color:#fff;font-weight:800;font-size:16px;padding:13px;cursor:pointer;font-family:inherit}
 .add:active{transform:translateY(1px)}
@@ -203,7 +210,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
   <h2 class="sec">Hình thật tại bếp<span class="en">Real photos from our kitchen</span></h2>
   <div class="gal" id="gal"></div>
   <h2 class="sec">Thực đơn<span class="en">Menu</span></h2>
-  <p class="sub">Bấm + để thêm phần, rồi chọn topping, nước chấm, độ cay và ghi chú cho từng phần. Giá chưa gồm phí ship.<span class="en">Tap + to add a portion, then pick toppings, sauce, spice level and notes for each. Prices exclude delivery.</span></p>
+  <p class="sub">Bấm + để thêm phần, chọn topping, nước chấm, độ cay. Nhiều phần giống nhau chỉ cần chọn 1 lần rồi gõ số phần; muốn phần khác thì bấm “Thêm kiểu khác”. Giá chưa gồm phí ship.<span class="en">Tap + to add portions and pick toppings once for identical portions; use “Add another style” for different ones. Prices exclude delivery.</span></p>
   <div class="menu" id="menu"></div>
 
   <h2 class="sec" id="don">Đơn của bạn<span class="en">Your order</span></h2>
@@ -301,27 +308,38 @@ document.addEventListener("click",e=>{const b=e.target.closest(".cp");if(!b)retu
   (navigator.clipboard?navigator.clipboard.writeText(b.dataset.c):Promise.reject()).then(()=>toast("Đã sao chép · Copied"),()=>toast(b.dataset.c))});
 const vnd=n=>n.toLocaleString("vi-VN")+"đ", $=s=>document.querySelector(s);
 const st={}; MENU.forEach(m=>st[m.id]=[]);
-const newP=m=>({tops:[],sauce:m.sauce||"",cay:"Cay",note:""});
+const MAXQ=300; // tối đa mỗi món
+const newP=(m,q=1)=>({tops:[],sauce:m.sauce||"",cay:"Cay",note:"",q});   // 1 "kiểu" = nhiều phần giống hệt nhau (q phần)
+const cnt=P=>P.reduce((a,p)=>a+p.q,0);
 function unit(m,p){return m.p+p.tops.reduce((a,k)=>a+TOP[k][1],0)}
-function chips(m,p,i){
-  return `<div class="por" data-i="${i}"><div class="por-h"><b>Phần ${i+1}<span class="en i">Portion ${i+1}</span></b><span>${vnd(unit(m,p))}</span></div>
+function chips(m,p,i,n){
+  return `<div class="por" data-i="${i}"><div class="por-h"><b>${n>1?`Kiểu ${i+1}<span class="en i">Style ${i+1}</span>`:"Lựa chọn<span class=\"en i\">Options</span>"}</b><span>${vnd(unit(m,p))}/phần</span></div>
+   <div class="pq"><span>Số phần kiểu này<span class="en">Portions</span></span><button type="button" class="qm" aria-label="Bớt">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="${MAXQ}" value="${p.q}"><button type="button" class="qp" aria-label="Thêm">+</button>${n>1?`<button type="button" class="qx" aria-label="Xoá kiểu">✕</button>`:""}</div>
    <div class="chips">${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
    <div class="chips sauce"><span class="sl">Nước chấm<span class="en">Sauce</span></span>${["Mắm","Nước tương"].map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}<span class="en i">${s==="Mắm"?"fish sauce":"soy sauce"}</span></button>`).join("")}<span class="sl" style="margin-left:6px">·</span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay<span class=\"en i\">spicy</span>":"Không cay<span class=\"en i\">mild</span>"}</button>`).join("")}</div>
-   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú phần ${i+1} · Note (vd/e.g.: không rau – no herbs)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
+   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú · Note (vd/e.g.: không rau – no herbs)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
+function setQ(m,P,i,v){v=Math.max(0,Math.min(MAXQ-cnt(P)+P[i].q,Math.floor(+v||0)));P[i].q=v;if(!v&&P.length>1)P.splice(i,1);else if(!v)P.length=0}
 function renderDish(el){
-  const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id], q=P.length, sub=P.reduce((a,p)=>a+unit(m,p),0);
+  const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id], q=cnt(P), sub=P.reduce((a,p)=>a+unit(m,p)*p.q,0);
   el.querySelector("output").textContent=q; el.classList.toggle("on",q>0);
   el.querySelector(".subt").textContent=q?`${q} ${m.drink?"ly":"phần"} = ${vnd(sub)}`:"";
   if(m.drink)return;
-  if(!q){el.querySelector(".opts").innerHTML=`<div class="hint">👆 Bấm <b>+</b> để thêm phần — mỗi phần chọn topping, nước chấm, độ cay và ghi chú riêng</div>`;return}
-  el.querySelector(".opts").innerHTML=(q>1?`<button type="button" class="copy">Chép topping, nước chấm, độ cay, ghi chú của phần 1 cho tất cả ${q} phần<span class="en">Copy portion 1 to all</span></button>`:"")+P.map((p,i)=>chips(m,p,i)).join("");
-  el.querySelectorAll(".por").forEach(r=>{const p=P[+r.dataset.i];
+  if(!q){el.querySelector(".opts").innerHTML=`<div class="hint">👆 Bấm <b>+</b> để thêm phần. Đặt nhiều phần giống nhau chỉ cần chọn topping <b>1 lần</b> rồi gõ số phần</div>`;return}
+  el.querySelector(".opts").innerHTML=P.map((p,i)=>chips(m,p,i,P.length)).join("")
+    +`<button type="button" class="copy addk">+ Thêm kiểu khác (topping / nước chấm / độ cay khác)<span class="en">Add another style</span></button>`;
+  const re=()=>{renderDish(el);renderCart()};
+  el.querySelectorAll(".por").forEach(r=>{const i=+r.dataset.i,p=P[i];
     r.querySelectorAll("[data-top]").forEach(b=>b.onclick=()=>{const k=b.dataset.top,j=p.tops.indexOf(k);
-      j<0?p.tops.push(k):p.tops.splice(j,1);p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y));renderDish(el);renderCart()});
-    r.querySelectorAll("[data-sauce]").forEach(b=>b.onclick=()=>{p.sauce=b.dataset.sauce;renderDish(el);renderCart()});
-    r.querySelectorAll("[data-cay]").forEach(b=>b.onclick=()=>{p.cay=b.dataset.cay;renderDish(el);renderCart()});
+      j<0?p.tops.push(k):p.tops.splice(j,1);p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y));re()});
+    r.querySelectorAll("[data-sauce]").forEach(b=>b.onclick=()=>{p.sauce=b.dataset.sauce;re()});
+    r.querySelectorAll("[data-cay]").forEach(b=>b.onclick=()=>{p.cay=b.dataset.cay;re()});
+    r.querySelector(".qm").onclick=()=>{setQ(m,P,i,p.q-1);re()};
+    r.querySelector(".qp").onclick=()=>{setQ(m,P,i,p.q+1);re()};
+    const x=r.querySelector(".qx"); if(x)x.onclick=()=>{P.splice(i,1);re()};
+    r.querySelector(".qi").onchange=e=>{setQ(m,P,i,e.target.value);re()};
     r.querySelector(".pnote").oninput=e=>{p.note=e.target.value;renderCart()};});
-  const c=el.querySelector(".copy"); if(c)c.onclick=()=>{P.forEach((p,i)=>{if(i){p.tops=[...P[0].tops];p.sauce=P[0].sauce;p.cay=P[0].cay;p.note=P[0].note}});renderDish(el);renderCart();toast("Đã chép cho tất cả phần")};
+  el.querySelector(".addk").onclick=()=>{if(q<MAXQ){const L=P[P.length-1];P.push({...newP(m),sauce:L.sauce,cay:L.cay})}re();
+    const ps=el.querySelectorAll(".por");ps[ps.length-1].scrollIntoView({behavior:"smooth",block:"center"})};
 }
 function renderMenu(){
   $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head">${m.img?`<img class="dthumb" src="${m.img}" alt="${m.n}" loading="lazy" data-cap="${m.n}">`:""}<div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}<span class="en">${m.en}</span></p><p class="d-desc">${m.d}<span class="en">${m.de}</span></p></div><div class="d-price">${vnd(m.p)}</div></div>
@@ -329,12 +347,13 @@ function renderMenu(){
       ${m.drink?"":'<div class="opts"></div>'}</div>`).join("");
   document.querySelectorAll(".dish").forEach(el=>{
     const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id];
-    el.querySelector(".plus").onclick=()=>{if(P.length<50)P.push(newP(m));renderDish(el);renderCart()};
-    el.querySelector(".minus").onclick=()=>{P.pop();renderDish(el);renderCart()};
+    // + / − ở đầu món: tăng giảm kiểu CUỐI cùng (đa số khách chỉ có 1 kiểu)
+    el.querySelector(".plus").onclick=()=>{if(cnt(P)<MAXQ){P.length?P[P.length-1].q++:P.push(newP(m))}renderDish(el);renderCart()};
+    el.querySelector(".minus").onclick=()=>{if(P.length)setQ(m,P,P.length-1,P[P.length-1].q-1);renderDish(el);renderCart()};
     renderDish(el);
   });
 }
-function lines(){const out=[];MENU.forEach(m=>{const g={};st[m.id].forEach(p=>{const k=p.tops.join(",")+"|"+p.sauce+"|"+p.cay+"|"+p.note.trim();(g[k]=g[k]||{p,q:0}).q++});
+function lines(){const out=[];MENU.forEach(m=>{const g={};st[m.id].forEach(p=>{const k=p.tops.join(",")+"|"+p.sauce+"|"+p.cay+"|"+p.note.trim();(g[k]=g[k]||{p,q:0}).q+=p.q});
   Object.values(g).forEach(({p,q})=>{const u=unit(m,p);out.push({m,q,u,amt:u*q,sauce:p.sauce,cay:m.drink?"":p.cay,note:p.note.trim(),
     title:m.n+(p.tops.length?" + "+p.tops.map(k=>TOP[k][0]).join(" + "):"")})})});return out}
 function totals(){let t=0,p=0,d=0;lines().forEach(L=>{t+=L.amt;L.m.drink?d+=L.q:p+=L.q});return{t,p,d}}
