@@ -55,6 +55,10 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .items li{padding:5px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
 .items li:last-child{border-bottom:0}
 .items .q{display:inline-block;min-width:30px;font-weight:800;color:var(--red);font-size:16px}
+.rc{margin:4px 0 2px 30px;font-size:13px}
+.rt{display:inline-block;background:#E8F5E9;color:#1B5E20;border-radius:8px;padding:2px 7px;margin:2px 4px 2px 0;font-weight:700}
+.rt.add{background:#FFE0B2;color:#8a3a00}.rt.sc{background:#E3F2FD;color:#0D47A1}
+.rc .nen{color:var(--muted);font-size:12.5px;margin:2px 0}
 .meta{font-size:13px;color:var(--muted);line-height:1.5}
 .meta b{color:var(--ink)}
 .meta .ph{color:var(--red);font-weight:800;font-size:15px;text-decoration:none}
@@ -155,6 +159,22 @@ async function load(){
 }
 function sameDay(a,b){return a&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
 function lines(o){return o.items.split("\n").filter(Boolean).map(l=>{const m=l.match(/^(\d+)\s*×\s*(.+?)(?:\s*\((?:[\d.]+đ)\))?\s*=\s*[\d.]+đ\s*$/);return m?{q:+m[1],t:m[2]}:{q:"",t:l}})}
+// ===== CÔNG THỨC từng món — bếp khỏi phải nhớ (chị Hiền 18/10 msg 6093). Đổi định mức thì sửa ở đây =====
+const NEN=["Bánh tráng mì nướng","Bún mì","Ruốc","Dừa nạo","Hành phi","Đậu phộng","Xà lách + rau thơm","Cà rốt, xoài xanh"];
+const NEN_CHAY=["Bánh tráng mì nướng","Bún mì","Đậu hủ chiên (½ miếng, thay ruốc)","Dừa nạo","Hành phi","Đậu phộng","Xà lách + rau thơm","Cà rốt, xoài xanh"];
+const RECIPE={"Truyền thống chay":[NEN_CHAY,[]],"Truyền thống":[NEN,[]],
+  "Đặc biệt mặn":[NEN,["Trứng cút","Thịt luộc","Tôm"]],"Đặc biệt hải sản":[NEN,["Trứng cút","Tôm","Mực đại dương nướng"]],
+  "Đặc biệt chay":[NEN_CHAY,["Chả giò chay","Chả chay","Rong biển sấy"]],"Trà tắc xí muội":[["Tắc","Xí muội","Đá (ghi chú 'không đá' thì bỏ)"],[]]};
+const QTY={"Trứng cút":"3 quả","Tôm":"4 con","Tôm nướng":"4 con","Chả giò chay":"1 cuốn","Rong biển sấy":"1 gói"};
+const ALIAS={"Tôm nướng":"Tôm"};
+function recipe(t){
+  const [main,...rest]=t.split(" · "),parts=main.split(" + ").map(x=>x.trim()),R=RECIPE[parts[0]];if(!R)return "";
+  const cnt={};R[1].forEach(x=>cnt[x]=(cnt[x]||0)+1);const extra=[];
+  parts.slice(1).forEach(x=>{x=ALIAS[x]||x;if(cnt[x]!=null){cnt[x]++}else extra.push(x)});
+  const top=Object.entries(cnt).map(([k,n])=>`<span class="rt">${k}${QTY[k]?" "+QTY[k]:""}${n>1?` <b>×${n} (thêm)</b>`:""}</span>`)
+    .concat(extra.map(k=>`<span class="rt add">+ THÊM ${k}${QTY[k]?" "+QTY[k]:""}</span>`));
+  const sauce=rest.map(x=>x.match(/^chấm (.+)$/i)).filter(Boolean).map(m=>`<span class="rt sc">Chấm ${m[1]}</span>`);
+  return `<div class="rc">${top.length?`<div>${top.join("")}</div>`:""}<div class="nen">Nền: ${R[0].join(" · ")}</div>${sauce.join("")}</div>`}
 function render(){
   const now=new Date(),target=new Date(now.getFullYear(),now.getMonth(),now.getDate()+day);
   $("#days").innerHTML=["Hôm nay","Ngày mai"].map((t,i)=>`<button data-d="${i}" aria-pressed="${i===day}">${t}</button>`).join("");
@@ -183,7 +203,7 @@ function render(){
     <div class="card st-${o.st}${cc==="late"?" late":""}${NEW.has(o.code)?" isnew":""}" data-code="${o.code}">
       <div class="ch"><div class="who"><b>${esc(o.name)}</b> <span class="badge" style="background:${COLOR[o.st]||"#999"}">${o.st}</span><small>${esc(o.code)}${o.grp?" · nhóm "+esc(o.grp):""}</small></div><span class="cd ${cc}">${cd}</span></div>
       <div class="hand">${o.pick?`🏃 Khách tự đến lấy lúc <b>${hm(o.when)}</b> — làm xong trước giờ này`:`🛵 Giao xe lúc <b>${hm(o.hand)}</b> → khách nhận ${hm(o.when)} <span>(xe đi ~${o.travel}′${o.km?" · "+o.km.toFixed(1)+" km":""} + chờ xe ${SHIPCFG.wait}′)</span>`}</div>
-      <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}</li>`).join("")}</ul>
+      <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}${recipe(l.t)}</li>`).join("")}</ul>
       <div class="meta">${o.phone?`📞 <a class="ph" href="tel:${esc(o.phone)}">${esc(fmtPhone(o.phone))}</a><br>`:""}📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
       ${o.note?`<div class="note">📝 ${esc(o.note)}</div>`:""}${o.love?`<div class="love">💌 ${esc(o.love)}</div>`:""}
       <div class="acts">${nx&&o.st!=="Huỷ"?`<button class="${nx[1]}" data-st="${nx[0]}">${nx[2]}</button>`:""}${o.st!=="Mới"&&o.st!=="Huỷ"?`<button class="b-undo" data-st="${FLOW[Math.max(0,FLOW.indexOf(o.st)-1)]}" title="Lùi lại">↶</button>`:""}${o.phone?`<a class="b-call" href="tel:${esc(o.phone)}">📞</a>`:""}</div>
