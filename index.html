@@ -171,6 +171,16 @@ textarea{min-height:76px;resize:vertical}
 .bar .sum small{display:block;opacity:.9;font-size:12.5px}
 .bar .sum b{font-size:21px}
 .bar a{background:#fff;color:var(--red);font-weight:800;text-decoration:none;border-radius:12px;padding:11px 16px;white-space:nowrap}
+.hd{background:var(--card);border:1.5px solid var(--line);border-radius:18px;margin:0 0 12px;overflow:hidden}
+.hd summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:800;color:var(--red);font-size:16px}
+.hd summary::-webkit-details-marker{display:none}
+.hd summary:after{content:"▾";float:right;color:var(--muted)}
+.hd[open] summary:after{content:"▴"}
+.hd .b{padding:0 16px 12px;font-size:14.5px}
+.hd .b p{margin:0 0 8px}
+.hd ol{margin:0 0 8px;padding-left:22px}.hd li{margin:0 0 10px}.hd li b{color:var(--green)}
+.hd .tip{background:var(--cream);border-radius:12px;padding:8px 12px;font-size:13.5px;margin:6px 0 10px}
+.hd .img{display:inline-block;margin:2px 0 4px;font-weight:700;color:var(--red)}
 footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 .modal{position:fixed;inset:0;background:rgba(40,20,10,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
 .modal.show{display:flex}
@@ -262,6 +272,30 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
       <p class="note" style="margin:6px 0 0" id="sumhint">Phí ship là ước tính, shop xác nhận lại khi gọi.<span class="en">Delivery fee is an estimate; we confirm by phone.</span></p></div>
     <button class="submit" id="go" type="submit">Đặt hàng<span class="en">Place order</span></button>
   </form>
+  <h2 class="sec" id="huong-dan">Hướng dẫn trộn<span class="en">How to mix</span></h2>
+  <p class="sub">Chọn đúng cách theo kiểu shop giao cho bạn.<span class="en">Pick the guide that matches how your order was delivered.</span></p>
+  <details class="hd" open><summary>🛵 Giao gần — tô đã chuẩn bị sẵn<span class="en">Nearby delivery — bowl ready to mix</span></summary><div class="b">
+    <p>Tô bánh tráng đã chuẩn bị sẵn: bún, rau, củ, xoài và topping nằm gọn trong tô. Các gói dừa, nước trộn, bánh tráng, ruốc, đậu phộng để riêng cho giòn. Chỉ cần <b>trộn 2 lần</b> là ăn!<span class="en">Noodles, greens, carrot, mango and toppings are already in the bowl. Coconut, sauce, rice cracker, dried shrimp and peanuts are packed separately to stay crisp. Just mix twice!</span></p>
+    <ol>
+      <li><b>Mở nắp, kiểm tra tô.</b> Trong tô có sẵn bún mì, rau sống, cà rốt, xoài xanh và topping theo đơn (thịt, tôm, mực, trứng cút…). Gói nhỏ đi kèm: dừa, nước mắm hoặc nước tương, bánh tráng mì + ruốc + đậu phộng.<span class="en">Open the lid and check: noodles, greens, carrot, green mango and your toppings are inside; small packs hold coconut, sauce, rice cracker + dried shrimp + peanuts.</span></li>
+      <li><b>Trộn lần 1: cho thấm vị.</b> Cho dừa và nước mắm / nước tương vào tô, trộn đều để bún, rau và topping thấm nước trộn. Thích nhạt thì rưới từ từ, nếm rồi thêm — bún mì sẽ hút thêm nước trộn nên đừng đổ hết ngay.<span class="en">Mix 1: add coconut and sauce, toss well. Pour gradually and taste — the noodles keep soaking up sauce.</span></li>
+      <li><b>Trộn lần 2: thêm phần giòn rồi ăn ngay.</b> Bóp vụn bánh tráng mì, cho cùng ruốc và đậu phộng vào, trộn nhanh tay vài lượt là ăn liền để nghe tiếng giòn rụm!<span class="en">Mix 2: crumble the rice cracker, add dried shrimp and peanuts, toss quickly and eat right away.</span></li>
+    </ol>
+    <div class="tip">💡 Không trộn tất cả một lần — bánh tráng gặp nước trộn lâu sẽ mất độ giòn. Chưa ăn ngay? Cất tô vào ngăn mát, dùng trong ngày; gói bánh tráng để nơi khô ráo, buộc kín để không bị ỉu.<span class="en">Don't mix everything at once. Not eating now? Refrigerate the bowl and eat the same day; keep the cracker pack dry and sealed.</span></div>
+    <a class="img" href="img/hd-gan.jpg" target="_blank" rel="noopener">🖼️ Xem thiệp hướng dẫn<span class="en i">View guide card</span></a>
+  </div></details>
+  <details class="hd"><summary>📦 Gửi xa — trộn tại nhà<span class="en">Long-distance — mix at home</span></summary><div class="b">
+    <p>Món quê Bình Định đã lên đường đến tay bạn! Vì đường xa, tụi mình đóng gói riêng từng phần để giữ trọn độ giòn, độ thơm. Trong gói có: bánh tráng mì + ruốc biển, bún mì Tam Quan, hành phi, nước mắm trộn, rau sống, cà rốt bào, xoài xanh bào, dừa, tôm + mực nướng, trứng cút và các gói nhỏ khác theo đơn (đậu phộng, thịt luộc…).<span class="en">Everything is packed separately for the trip: rice cracker + dried shrimp, Tam Quan noodles, fried shallots, sauce, greens, carrot, green mango, coconut, grilled shrimp & squid, quail eggs and extras from your order.</span></p>
+    <ol>
+      <li><b>Bún mì — đặc sản Tam Quan.</b> Lấy bún ra, rửa qua nước khoảng 30 giây, để ráo. Bóp đều với hành phi để sợi bún tơi, không dính. Thích mềm hơn thì rửa lâu thêm chút, nhưng đừng ngâm nhiều: bún mì rất mau nhão và còn hút thêm nước mắm khi trộn.<span class="en">Rinse the noodles ~30 seconds, drain, then rub with fried shallots so they stay loose. Don't soak — they soften fast.</span></li>
+      <li><b>Làm nóng tôm, mực.</b> Cho vào nồi chiên không dầu sấy vài phút cho nóng và se mặt — thích mùi nướng thì sấy hơi xém vàng. Không có nồi chiên? Dùng lò vi sóng hâm tôm, mực cùng trứng cút và thịt luộc khoảng 20–30 giây.<span class="en">Reheat shrimp & squid a few minutes in an air fryer (or 20–30 s in a microwave with the eggs and pork).</span></li>
+      <li><b>Trộn và thưởng thức.</b> Cho tất cả vào tô đi kèm, rưới nước mắm hoặc nước tương, trộn đều. Nếu tô đầy, cho bánh tráng vào sau cùng và trộn nhanh để bánh giữ độ giòn.<span class="en">Put everything in the bowl, add sauce and toss. If the bowl is full, add the rice cracker last and mix quickly.</span></li>
+    </ol>
+    <div class="tip">💡 Bánh tráng mì ngon nhất khi vừa trộn xong — bóp vụn, trộn và ăn ngay. Chưa ăn ngay? Cất rau, topping và nước trộn vào ngăn mát, dùng trong ngày; bánh tráng để nơi khô ráo, buộc kín túi.<span class="en">Best eaten right after mixing. Not eating now? Refrigerate greens, toppings and sauce for the same day; keep the cracker dry and sealed.</span></div>
+    <a class="img" href="img/hd-xa.jpg" target="_blank" rel="noopener">🖼️ Xem thiệp hướng dẫn<span class="en i">View guide card</span></a>
+  </div></details>
+  <p class="note">Cần hỗ trợ? Nhắn Zalo <a href="https://zalo.me/0919008571" target="_blank" rel="noopener">0919 008 571</a>.<span class="en">Need help? Message us on Zalo.</span></p>
+
   <footer>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0919008571" style="color:inherit">0919 008 571</a> · <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></footer>
 </div>
 
@@ -271,6 +305,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 <div class="modal" id="ok"><div class="box">
   <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn<span class="en">Thank you! We have received your order.</span></div><div class="code" id="okcode"></div>
   <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp: gọi <a href="tel:0919008571">0919 008 571</a> hoặc nhắn <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a>.</p>
+  <p class="note">🥢 Nhận món rồi xem <a href="#huong-dan" onclick="document.getElementById('ok').classList.remove('show')">hướng dẫn trộn</a> để ăn ngon nhất nhé.<span class="en">See the mixing guide when your order arrives.</span></p>
   <button type="button" id="okclose">Đóng · Close</button></div></div>
 
 <script>
