@@ -57,7 +57,7 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .items .q{display:inline-block;min-width:30px;font-weight:800;color:var(--red);font-size:16px}
 .rc{margin:4px 0 2px 30px;font-size:13px}
 .rt{display:inline-block;background:#E8F5E9;color:#1B5E20;border-radius:8px;padding:2px 7px;margin:2px 4px 2px 0;font-weight:700}
-.rt.add{background:#FFE0B2;color:#8a3a00}.rt.sc{background:#E3F2FD;color:#0D47A1}
+.rt.add{background:#FFE0B2;color:#8a3a00}.rt.bot{background:#FFCDD2;color:#B71C1C}.rt.sc{background:#E3F2FD;color:#0D47A1}
 .rc .nen{color:var(--muted);font-size:12.5px;margin:2px 0}
 .meta{font-size:13px;color:var(--muted);line-height:1.5}
 .meta b{color:var(--ink)}
@@ -163,7 +163,7 @@ function lines(o){return o.items.split("\n").filter(Boolean).map(l=>{const m=l.m
 const NEN=["Bánh tráng mì nướng","Bún mì","Ruốc","Dừa nạo","Hành phi","Đậu phộng","Xà lách + rau thơm","Cà rốt, xoài xanh"];
 const NEN_CHAY=["Bánh tráng mì nướng","Bún mì","Đậu hủ chiên (½ miếng, thay ruốc)","Dừa nạo","Hành phi","Đậu phộng","Xà lách + rau thơm","Cà rốt, xoài xanh"];
 const RECIPE={"Truyền thống chay":[NEN_CHAY,[]],"Truyền thống":[NEN,[]],
-  "Đặc biệt mặn":[NEN,["Trứng cút","Thịt luộc","Tôm"]],"Đặc biệt hải sản":[NEN,["Trứng cút","Tôm","Mực đại dương nướng"]],
+  "Đặc biệt mặn":[NEN,["Trứng cút","Thịt luộc","Tôm"]],"Đặc biệt hải sản":[NEN,["Trứng cút","Thịt luộc","Tôm","Mực đại dương nướng"]],
   "Đặc biệt chay":[NEN_CHAY,["Chả giò chay","Chả chay","Rong biển sấy"]],"Trà tắc xí muội":[["Tắc","Xí muội","Đá (ghi chú 'không đá' thì bỏ)"],[]]};
 const QTY={"Trứng cút":"3 quả","Tôm":"4 con","Tôm nướng":"4 con","Chả giò chay":"1 cuốn","Rong biển sấy":"½ gói"};
 const ALIAS={"Tôm nướng":"Tôm"};
@@ -174,7 +174,8 @@ function recipe(t){
   const top=Object.entries(cnt).map(([k,n])=>`<span class="rt">${k}${QTY[k]?" "+QTY[k]:""}${n>1?` <b>×${n} (thêm)</b>`:""}</span>`)
     .concat(extra.map(k=>`<span class="rt add">+ THÊM ${k}${QTY[k]?" "+QTY[k]:""}</span>`));
   const sauce=rest.map(x=>x.match(/^chấm (.+)$/i)).filter(Boolean).map(m=>`<span class="rt sc">Chấm ${m[1]}</span>`);
-  return `<div class="rc">${top.length?`<div>${top.join("")}</div>`:""}<div class="nen">Nền: ${R[0].join(" · ")}</div>${sauce.join("")}</div>`}
+  const bot=rest.map(x=>x.match(/^bớt (.+)$/i)).filter(Boolean).map(m=>`<span class="rt bot">BỚT ${m[1]}</span>`);
+  return `<div class="rc">${top.length?`<div>${top.join("")}</div>`:""}<div class="nen">Nền: ${R[0].join(" · ")}</div>${sauce.join("")}${bot.join("")}</div>`}
 function render(){
   const now=new Date(),target=new Date(now.getFullYear(),now.getMonth(),now.getDate()+day);
   $("#days").innerHTML=["Hôm nay","Ngày mai"].map((t,i)=>`<button data-d="${i}" aria-pressed="${i===day}">${t}</button>`).join("");
