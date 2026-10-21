@@ -181,6 +181,25 @@ textarea{min-height:76px;resize:vertical}
 .hd ol{margin:0 0 8px;padding-left:22px}.hd li{margin:0 0 10px}.hd li b{color:var(--green)}
 .hd .tip{background:var(--cream);border-radius:12px;padding:8px 12px;font-size:13.5px;margin:6px 0 10px}
 .hd .img{display:inline-block;margin:2px 0 4px;font-weight:700;color:var(--red)}
+.hdtabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
+.hdtabs button{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:10px 8px;font:inherit;font-weight:800;font-size:15px;color:var(--ink);cursor:pointer}
+.hdtabs button small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.hdtabs button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.hdtabs button[aria-pressed="true"] small{color:#ffe3e3}
+.hdp{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px;margin:0 0 12px}
+.kit{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px;font-size:13px}
+.kit b{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
+.kit span{background:var(--cream);border-radius:999px;padding:4px 10px}
+.steps{position:relative;margin:12px 0 4px}
+.steps:before{content:"";position:absolute;left:27px;top:20px;bottom:20px;border-left:2px dashed var(--line)}
+.st{position:relative;display:flex;gap:12px;align-items:center;margin:0 0 12px}
+.st .ic{position:relative;flex:0 0 56px;height:56px;border-radius:50%;background:#FFF3E0;border:2px solid #FFCC80;display:grid;place-items:center;font-size:28px}
+.st .ic i{position:absolute;top:-4px;right:-4px;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;font-style:normal;font-size:12.5px;font-weight:800;display:grid;place-items:center}
+.st b{font-size:16px;color:var(--red)}
+.st p{margin:2px 0 0;font-size:14px}
+.hdp .tip{background:var(--cream);border-radius:12px;padding:8px 12px;font-size:13.5px;margin:4px 0 10px}
+.hdcard{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--red);font-weight:700;font-size:14px}
+.hdcard img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
 footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 .modal{position:fixed;inset:0;background:rgba(40,20,10,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
 .modal.show{display:flex}
@@ -285,27 +304,29 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
     <button class="submit" id="go" type="submit">Đặt hàng<span class="en">Place order</span></button>
   </form>
   <h2 class="sec" id="huong-dan">Hướng dẫn trộn<span class="en">How to mix</span></h2>
-  <p class="sub">Chọn đúng cách theo kiểu shop giao cho bạn.<span class="en">Pick the guide that matches how your order was delivered.</span></p>
-  <details class="hd" open><summary>🛵 Giao gần — tô đã chuẩn bị sẵn<span class="en">Nearby delivery — bowl ready to mix</span></summary><div class="b">
-    <p>Tô bánh tráng đã chuẩn bị sẵn: bún, rau, củ, xoài và topping nằm gọn trong tô. Các gói dừa, nước trộn, bánh tráng, ruốc, đậu phộng để riêng cho giòn. Chỉ cần <b>trộn 2 lần</b> là ăn!<span class="en">Noodles, greens, carrot, mango and toppings are already in the bowl. Coconut, sauce, rice cracker, dried shrimp and peanuts are packed separately to stay crisp. Just mix twice!</span></p>
-    <ol>
-      <li><b>Mở nắp, kiểm tra tô.</b> Trong tô có sẵn bún mì, rau sống, cà rốt, xoài xanh và topping theo đơn (thịt, tôm, mực, trứng cút…). Gói nhỏ đi kèm: dừa, nước mắm hoặc nước tương, bánh tráng mì + ruốc + đậu phộng.<span class="en">Open the lid and check: noodles, greens, carrot, green mango and your toppings are inside; small packs hold coconut, sauce, rice cracker + dried shrimp + peanuts.</span></li>
-      <li><b>Trộn lần 1: cho thấm vị.</b> Cho dừa và nước mắm / nước tương vào tô, trộn đều để bún, rau và topping thấm nước trộn. Thích nhạt thì rưới từ từ, nếm rồi thêm — bún mì sẽ hút thêm nước trộn nên đừng đổ hết ngay.<span class="en">Mix 1: add coconut and sauce, toss well. Pour gradually and taste — the noodles keep soaking up sauce.</span></li>
-      <li><b>Trộn lần 2: thêm phần giòn rồi ăn ngay.</b> Bóp vụn bánh tráng mì, cho cùng ruốc và đậu phộng vào, trộn nhanh tay vài lượt là ăn liền để nghe tiếng giòn rụm!<span class="en">Mix 2: crumble the rice cracker, add dried shrimp and peanuts, toss quickly and eat right away.</span></li>
-    </ol>
-    <div class="tip">💡 Không trộn tất cả một lần — bánh tráng gặp nước trộn lâu sẽ mất độ giòn. Chưa ăn ngay? Cất tô vào ngăn mát, dùng trong ngày; gói bánh tráng để nơi khô ráo, buộc kín để không bị ỉu.<span class="en">Don't mix everything at once. Not eating now? Refrigerate the bowl and eat the same day; keep the cracker pack dry and sealed.</span></div>
-    <a class="img" href="img/hd-gan.jpg" target="_blank" rel="noopener">🖼️ Xem thiệp hướng dẫn<span class="en i">View guide card</span></a>
-  </div></details>
-  <details class="hd"><summary>📦 Gửi xa — trộn tại nhà<span class="en">Long-distance — mix at home</span></summary><div class="b">
-    <p>Món quê Bình Định đã lên đường đến tay bạn! Vì đường xa, tụi mình đóng gói riêng từng phần để giữ trọn độ giòn, độ thơm. Trong gói có: bánh tráng mì + ruốc biển, bún mì Tam Quan, hành phi, nước mắm trộn, rau sống, cà rốt bào, xoài xanh bào, dừa, tôm + mực nướng, trứng cút và các gói nhỏ khác theo đơn (đậu phộng, thịt luộc…).<span class="en">Everything is packed separately for the trip: rice cracker + dried shrimp, Tam Quan noodles, fried shallots, sauce, greens, carrot, green mango, coconut, grilled shrimp & squid, quail eggs and extras from your order.</span></p>
-    <ol>
-      <li><b>Bún mì — đặc sản Tam Quan.</b> Lấy bún ra, rửa qua nước khoảng 30 giây, để ráo. Bóp đều với hành phi để sợi bún tơi, không dính. Thích mềm hơn thì rửa lâu thêm chút, nhưng đừng ngâm nhiều: bún mì rất mau nhão và còn hút thêm nước mắm khi trộn.<span class="en">Rinse the noodles ~30 seconds, drain, then rub with fried shallots so they stay loose. Don't soak — they soften fast.</span></li>
-      <li><b>Làm nóng tôm, mực.</b> Cho vào nồi chiên không dầu sấy vài phút cho nóng và se mặt — thích mùi nướng thì sấy hơi xém vàng. Không có nồi chiên? Dùng lò vi sóng hâm tôm, mực cùng trứng cút và thịt luộc khoảng 20–30 giây.<span class="en">Reheat shrimp & squid a few minutes in an air fryer (or 20–30 s in a microwave with the eggs and pork).</span></li>
-      <li><b>Trộn và thưởng thức.</b> Cho tất cả vào tô đi kèm, rưới nước mắm hoặc nước tương, trộn đều. Nếu tô đầy, cho bánh tráng vào sau cùng và trộn nhanh để bánh giữ độ giòn.<span class="en">Put everything in the bowl, add sauce and toss. If the bowl is full, add the rice cracker last and mix quickly.</span></li>
-    </ol>
-    <div class="tip">💡 Bánh tráng mì ngon nhất khi vừa trộn xong — bóp vụn, trộn và ăn ngay. Chưa ăn ngay? Cất rau, topping và nước trộn vào ngăn mát, dùng trong ngày; bánh tráng để nơi khô ráo, buộc kín túi.<span class="en">Best eaten right after mixing. Not eating now? Refrigerate greens, toppings and sauce for the same day; keep the cracker dry and sealed.</span></div>
-    <a class="img" href="img/hd-xa.jpg" target="_blank" rel="noopener">🖼️ Xem thiệp hướng dẫn<span class="en i">View guide card</span></a>
-  </div></details>
+  <div class="hdtabs"><button type="button" data-t="gan" aria-pressed="true">🛵 Giao gần<small>tô trộn sẵn</small></button><button type="button" data-t="xa" aria-pressed="false">📦 Gửi xa<small>trộn tại nhà</small></button></div>
+  <div class="hdp" data-t="gan">
+    <div class="kit"><b>Trong tô</b><span>🍜 Bún mì</span><span>🥬 Rau</span><span>🥕 Cà rốt, xoài</span><span>🍤 Topping</span></div>
+    <div class="kit"><b>Gói riêng</b><span>🥥 Dừa</span><span>🫙 Nước trộn</span><span>🍘 Bánh tráng + ruốc + đậu phộng</span></div>
+    <div class="steps">
+      <div class="st"><div class="ic">🥥<i>1</i></div><div><b>Trộn lần 1</b><span class="en i">Mix 1</span><p>Cho dừa + nước trộn, rưới từ từ, nếm vừa.<span class="en">Add coconut + sauce, pour slowly, taste.</span></p></div></div>
+      <div class="st"><div class="ic">🍘<i>2</i></div><div><b>Trộn lần 2</b><span class="en i">Mix 2</span><p>Bóp vụn bánh tráng, thêm ruốc + đậu phộng.<span class="en">Crumble the cracker, add shrimp + peanuts.</span></p></div></div>
+      <div class="st"><div class="ic">😋<i>3</i></div><div><b>Ăn liền!</b><span class="en i">Eat now!</span><p>Ăn ngay khi còn giòn rụm.<span class="en">Eat while it's crunchy.</span></p></div></div>
+    </div>
+    <div class="tip">💡 Đừng trộn hết một lần, bánh tráng sẽ mềm.<span class="en">Don't mix all at once, the cracker goes soft.</span></div>
+    <a class="hdcard" href="img/hd-gan.jpg" target="_blank" rel="noopener"><img src="img/hd-gan.jpg" alt="Thiệp hướng dẫn giao gần" loading="lazy"><span>🖼️ Xem thiệp hướng dẫn<span class="en">View guide card</span></span></a>
+  </div>
+  <div class="hdp" data-t="xa" hidden>
+    <div class="kit"><b>Trong gói</b><span>🍜 Bún mì Tam Quan</span><span>🧅 Hành phi</span><span>🥬 Rau</span><span>🥕 Cà rốt, xoài</span><span>🥥 Dừa</span><span>🍤 Tôm, mực nướng</span><span>🥚 Trứng cút</span><span>🫙 Nước trộn</span><span>🍘 Bánh tráng + ruốc</span></div>
+    <div class="steps">
+      <div class="st"><div class="ic">💧<i>1</i></div><div><b>Rửa bún 30 giây</b><span class="en i">Rinse noodles 30 s</span><p>Để ráo, bóp với hành phi cho tơi. Đừng ngâm lâu.<span class="en">Drain, rub with fried shallots. Don't soak.</span></p></div></div>
+      <div class="st"><div class="ic">🔥<i>2</i></div><div><b>Hâm tôm, mực</b><span class="en i">Reheat seafood</span><p>Nồi chiên vài phút, hoặc vi sóng 20–30 giây.<span class="en">Air fryer a few minutes, or microwave 20–30 s.</span></p></div></div>
+      <div class="st"><div class="ic">🥗<i>3</i></div><div><b>Trộn đều</b><span class="en i">Toss</span><p>Cho tất cả vào tô, rưới nước trộn.<span class="en">Everything in the bowl, add sauce.</span></p></div></div>
+      <div class="st"><div class="ic">🍘<i>4</i></div><div><b>Bánh tráng sau cùng</b><span class="en i">Cracker last</span><p>Bóp vụn, trộn nhanh, ăn liền.<span class="en">Crumble, toss quickly, eat now.</span></p></div></div>
+    </div>
+    <div class="tip">💡 Chưa ăn ngay? Rau, topping, nước trộn cất ngăn mát, dùng trong ngày. Bánh tráng buộc kín.<span class="en">Not eating now? Refrigerate the rest; keep the cracker sealed.</span></div>
+    <a class="hdcard" href="img/hd-xa.jpg" target="_blank" rel="noopener"><img src="img/hd-xa.jpg" alt="Thiệp hướng dẫn gửi xa" loading="lazy"><span>🖼️ Xem thiệp hướng dẫn<span class="en">View guide card</span></span></a>
+  </div>
   <p class="note">Cần hỗ trợ? Nhắn Zalo <a href="https://zalo.me/0919008571" target="_blank" rel="noopener">0919 008 571</a>.<span class="en">Need help? Message us on Zalo.</span></p>
 
   <footer>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0919008571" style="color:inherit">0919 008 571</a> · <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></footer>
@@ -604,6 +625,8 @@ $("#grp").oninput=e=>shareGrp(e.target.value.trim().toUpperCase());
     ['.f[data-k="addr"]','#shipf','.f[data-k="when"]'].forEach(k=>document.querySelector(k).style.display="none");}
   $("#gbn").textContent=`🤝 Bạn đang đặt chung nhóm ${c}${dc?" — giao tới "+dc:""}`;$("#gbn").style.display="block";
   shareGrp(c);if(MEMBER)$("#share").style.display="none"})();
+document.querySelectorAll(".hdtabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".hdtabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  document.querySelectorAll(".hdp").forEach(p=>p.hidden=p.dataset.t!==b.dataset.t)});
 document.querySelectorAll("input[name=pay]").forEach(r=>r.onchange=()=>{$("#paynote").style.display=r.value==="Chuyển khoản"&&r.checked?"block":"none"});
 </script>
 </body>
