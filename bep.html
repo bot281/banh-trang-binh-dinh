@@ -65,6 +65,9 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .love{background:#FFF0F3;border:1px dashed #E91E63;border-radius:10px;padding:6px 9px;font-size:13px;white-space:pre-wrap;margin-top:6px;color:#6A1B3A}
 .note{background:#FFF8E6;border-radius:10px;padding:6px 9px;font-size:13px;margin-top:6px}
 .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.shipl{font-size:13px;margin-top:6px;color:var(--ink)}.shipl:empty{display:none}
+.acts2{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.acts2 button{flex:1;min-width:0;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 6px;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer}
 .acts button{flex:1;min-width:110px;border:0;border-radius:12px;padding:11px 10px;font-weight:800;font-family:inherit;font-size:15px;cursor:pointer;color:#fff}
 .acts .b-doing{background:var(--s-doing)}.acts .b-done{background:var(--s-done)}.acts .b-sent{background:var(--s-sent)}.acts .b-paid{background:var(--s-paid)}
 .acts .b-undo{background:#fff;color:var(--muted);border:1.5px solid var(--line);flex:0 0 auto;min-width:0}
@@ -103,7 +106,8 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 <script>
 const FORM="https://docs.google.com/forms/d/e/1FAIpQLSd3Z--C-uV6XJTzCdUzjuWeOQz8hOhmRHwPUtUA-ojLWfNP7w/formResponse";
 const E={name:"entry.1617320443",phone:"entry.1296680432",addr:"entry.1127379480",when:"entry.325322427",items:"entry.1094612916",total:"entry.682908208",code:"entry.1726601081",pay:"entry.1691158886",note:"entry.1448708004"};
-const UPD="⚙️ CẬP NHẬT TRẠNG THÁI";
+const UPD="⚙️ CẬP NHẬT TRẠNG THÁI",UPD2="⚙️ CẬP NHẬT ĐƠN";   // UPD2: phí ship / nhắn khách — khách thấy ở track.html
+const TRACK="https://bot281.github.io/banh-trang-binh-dinh/track.html?c=";
 const KEY=(location.hash.match(/k=([\w-]{20,})/)||[])[1];
 const FLOW=["Mới","Đang làm","Đã xong","Đã giao","Đã thu tiền"];
 const COLOR={"Mới":"var(--s-new)","Đang làm":"var(--s-doing)","Đã xong":"var(--s-done)","Đã giao":"var(--s-sent)","Đã thu tiền":"var(--s-paid)","Huỷ":"var(--s-cancel)"};
@@ -112,7 +116,7 @@ const num=x=>+String(x==null?"":x).replace(/[^\d]/g,"")||0;
 const $=s=>document.querySelector(s), vnd=n=>num(n).toLocaleString("vi-VN")+"đ", p2=n=>String(n).padStart(2,"0");
 const SHIPCFG={wait:15,minPerKm:3,defTravel:20,warn:30}; // chờ xe 15', xe máy nội thành ~3'/km (20 km/h), không có km thì tạm 20', cảnh báo trước 30'
 let WARNED=new Set();try{WARNED=new Set(JSON.parse(localStorage.getItem("bep_warned")||"[]"))}catch(e){}
-let ORDERS=[], LOCAL={}, day=0, SEEN=null, NEW=new Set(), bellOn=false, actx=null;
+let ORDERS=[], LOCAL={}, LOCAL2={}, day=0, SEEN=null, NEW=new Set(), bellOn=false, actx=null;
 try{bellOn=localStorage.getItem("bep_bell")==="1"}catch(e){}
 // Chuông: file WAV tự tạo, phát bằng thẻ <audio> (iPhone: Web Audio bị tắt khi gạt nút im lặng, <audio> thì vẫn kêu)
 const CHIME=(()=>{const sr=22050,dur=1.1,n=Math.floor(sr*dur),b=new ArrayBuffer(44+n*2),v=new DataView(b);
@@ -142,14 +146,18 @@ async function load(){
     const cols=j.table.cols.map(c=>c.label.trim());const idx=n=>cols.findIndex(c=>c.startsWith(n));
     const I={ts:0,name:idx("Họ tên"),phone:idx("Số điện thoại"),addr:idx("Địa chỉ"),when:idx("Ngày giờ nhận"),items:idx("Món đặt"),qty:idx("Tổng số phần"),total:idx("Tổng tiền"),code:idx("Mã đơn"),pay:idx("Thanh toán"),note:idx("Ghi chú cho shop"),grp:idx("Mã nhóm"),km:idx("Khoảng cách"),ship:idx("Phí ship"),shipby:idx("Cách trả"),grand:idx("Tổng phải thu"),love:idx("Lời nhắn"),st:idx("Trạng thái")};
     const rows=j.table.rows.map(r=>r.c);const g=(c,k)=>I[k]<0?"":cellVal(c[I[k]]);
-    const ev={};const out=[];
+    const ev={},ev2={};const out=[];
     rows.forEach((c,i)=>{if(!c)return;const nm=String(g(c,"name"));
       if(nm===UPD){const code=String(g(c,"code"));const st=String(g(c,"items")).replace(/^Trạng thái:\s*/,"");(ev[code]=ev[code]||[]).push([i,st]);return}
-      if(!nm)return;
+      if(nm===UPD2){const code=String(g(c,"code")),t=String(g(c,"items")),e=ev2[code]=ev2[code]||{};
+        if(/^Phí ship:/.test(t))e.ship=num(t);else if(/^Nhắn khách:/.test(t))e.msg=t.replace(/^Nhắn khách:\s*/,"");return}
+      if(!nm||/^⚙/.test(nm))return;
       out.push({row:i,code:String(g(c,"code")||("R"+i)),name:nm,phone:String(g(c,"phone")),addr:String(g(c,"addr")),when:parseWhen(g(c,"when")),whenTxt:String(g(c,"when")),
         items:String(g(c,"items")),qty:String(g(c,"qty")),grand:g(c,"grand")||g(c,"total"),pay:String(g(c,"pay")),note:String(g(c,"note")),grp:String(g(c,"grp")),
-        shipby:String(g(c,"shipby")),km:parseFloat(String(g(c,"km")).replace(",","."))||0,love:String(g(c,"love")),st0:String(g(c,"st")||"")})});
+        shipby:String(g(c,"shipby")),total:num(g(c,"total")),ship0:String(g(c,"ship")),km:parseFloat(String(g(c,"km")).replace(",","."))||0,love:String(g(c,"love")),st0:String(g(c,"st")||"")})});
     out.forEach(o=>{const pick=/tự đến lấy/i.test(o.addr+" "+o.shipby);o.pick=pick;o.travel=pick?0:(o.km?Math.max(10,Math.ceil(o.km*SHIPCFG.minPerKm)):SHIPCFG.defTravel);o.hand=o.when?new Date(o.when-(pick?0:(o.travel+SHIPCFG.wait))*60000):null});
+    out.forEach(o=>{const e=ev2[o.code]||{},L=LOCAL2[o.code]||{};o.shipEst=L.ship==null&&e.ship==null;o.ship=L.ship!=null?L.ship:e.ship!=null?e.ship:(/\d/.test(o.ship0)?num(o.ship0):null);o.msg=L.msg!=null?L.msg:(e.msg||"");
+      if((L.ship!=null||e.ship!=null)&&/^Cộng/i.test(o.shipby))o.grand=o.total+o.ship});
     out.forEach(o=>{const e=ev[o.code];o.st=e&&e.length?e[e.length-1][1]:(o.st0||"Mới");if(LOCAL[o.code]&&LOCAL[o.code].t>Date.now()-120000)o.st=LOCAL[o.code].st});
     const codes=out.map(o=>o.code);
     if(SEEN){const fresh=out.filter(o=>!SEEN.has(o.code));if(fresh.length)notifyNew(fresh)}
@@ -206,12 +214,15 @@ function render(){
       <div class="hand">${o.pick?`🏃 Khách tự đến lấy lúc <b>${hm(o.when)}</b> — làm xong trước giờ này`:`🛵 Giao xe lúc <b>${hm(o.hand)}</b> → khách nhận ${hm(o.when)} <span>(xe đi ~${o.travel}′${o.km?" · "+o.km.toFixed(1)+" km":""} + chờ xe ${SHIPCFG.wait}′)</span>`}</div>
       <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}${recipe(l.t)}</li>`).join("")}</ul>
       <div class="meta">${o.phone?`📞 <a class="ph" href="tel:${esc(o.phone)}">${esc(fmtPhone(o.phone))}</a><br>`:""}📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
+      <div class="shipl">${o.pick?"":`🚚 Ship: <b>${o.ship!=null?vnd(o.ship):"chưa nhập"}</b>${o.ship!=null&&o.shipEst?" (web ước tính)":""}`}${o.msg?`${o.pick?"":" · "}💬 Đã nhắn khách: “${esc(o.msg)}”`:""}</div>
       ${o.note?`<div class="note">📝 ${esc(o.note)}</div>`:""}${o.love?`<div class="love">💌 ${esc(o.love)}</div>`:""}
       <div class="acts">${nx&&o.st!=="Huỷ"?`<button class="${nx[1]}" data-st="${nx[0]}">${nx[2]}</button>`:""}${o.st!=="Mới"&&o.st!=="Huỷ"?`<button class="b-undo" data-st="${FLOW[Math.max(0,FLOW.indexOf(o.st)-1)]}" title="Lùi lại">↶</button>`:""}${o.phone?`<a class="b-call" href="tel:${esc(o.phone)}">📞</a>`:""}</div>
+      <div class="acts2">${o.pick?"":`<button data-x="ship">🚚 Nhập phí ship</button>`}<button data-x="msg">💬 Nhắn khách</button><button data-x="link">🔗 Link theo dõi</button></div>
     </div></div>`});
   if(!nowPlaced&&L.length)html+=`<div class="now"><span>${p2(now.getHours())}:${p2(now.getMinutes())}</span></div>`;
   $("#tl").innerHTML=html||`<div class="empty">Chưa có đơn ${day?"ngày mai":"hôm nay"}.</div>`;
   $("#tl").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>setStatus(b.closest(".card").dataset.code,b.dataset.st));
+  $("#tl").querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>extra(b.closest(".card").dataset.code,b.dataset.x));
 }
 function fmtPhone(p){p=String(p).replace(/\D/g,"");if(/^84/.test(p))p="0"+p.slice(2);if(p.length===9)p="0"+p;return p.length===10?p.replace(/(\d{4})(\d{3})(\d{3})/,"$1 $2 $3"):p}
 function hm(d){return p2(d.getHours())+":"+p2(d.getMinutes())}
@@ -228,6 +239,17 @@ async function setStatus(code,st){
   const fd=new URLSearchParams();[[E.name,UPD],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,"Trạng thái: "+st],[E.total,"0"],[E.code,code],[E.pay,"Tiền mặt khi nhận"],[E.note,"Cập nhật từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd})}catch(e){toast("Lỗi mạng — bấm lại giúp")}
 }
+// Phí ship / nhắn khách / link theo dõi — ghi dòng sự kiện UPD2, khách thấy ở trang theo dõi sau vài phút
+async function extra(code,x){const o=ORDERS.find(z=>z.code===code);if(!o)return;
+  if(x==="link"){const u=TRACK+encodeURIComponent(code),t=`Theo dõi đơn ${code} (trạng thái, phí ship, số tiền): ${u}`;
+    try{await navigator.clipboard.writeText(t);toast("Đã chép link — dán gửi khách qua Zalo")}catch(e){prompt("Chép link gửi khách:",u)}return}
+  let v;
+  if(x==="ship"){v=prompt(`Phí ship đơn ${code} (số tiền, vd 35000):`,o.ship!=null?o.ship:"");if(v==null)return;v=num(v);if(!v&&!confirm("Ship = 0đ?"))return;LOCAL2[code]={...LOCAL2[code],ship:v};v="Phí ship: "+v}
+  else{v=prompt(`Nhắn khách (đơn ${code}) — khách đọc được, vd "Tài xế Grab 59X1-12345, khoảng 15 phút nữa tới":`,o.msg||"");if(v==null)return;v=v.trim();LOCAL2[code]={...LOCAL2[code],msg:v};v="Nhắn khách: "+v}
+  if(LOCAL2[code].ship!=null){o.ship=LOCAL2[code].ship;o.shipEst=false;if(/^Cộng/i.test(o.shipby))o.grand=o.total+o.ship}if(LOCAL2[code].msg!=null)o.msg=LOCAL2[code].msg;render();toast("Đã lưu — khách thấy sau vài phút");
+  const n=new Date(),when=`${p2(n.getDate())}/${p2(n.getMonth()+1)}/${n.getFullYear()} ${p2(n.getHours())}:${p2(n.getMinutes())}`;
+  const fd=new URLSearchParams();[[E.name,UPD2],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,v],[E.total,"0"],[E.code,code],[E.pay,"Tiền mặt khi nhận"],[E.note,"Cập nhật từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
+  try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd})}catch(e){toast("Lỗi mạng — bấm lại giúp")}}
 try{$("#hideDone").checked=localStorage.getItem("bep_hide")==="1"}catch(e){}
 setBell();
 $("#bell").onclick=()=>{bellOn=true;AUD.muted=false;try{localStorage.setItem("bep_bell","1")}catch(e){}setBell();beep();
