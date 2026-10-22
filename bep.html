@@ -204,9 +204,12 @@ function render(){
     .map(([v,l])=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
   // tổng chuẩn bị (chỉ đơn chưa làm xong)
   const P={},T={},S={};act.filter(o=>o.st==="Mới"||o.st==="Đang làm").forEach(o=>lines(o).forEach(({q,t})=>{if(!q)return;
-    const [main,...rest]=t.split(" · ");const parts=main.split(" + ");P[parts[0]]=(P[parts[0]]||0)+q;parts.slice(1).forEach(x=>T[x]=(T[x]||0)+q);
+    const [main,...rest]=t.split(" · ");const parts=main.split(" + ").map(x=>x.trim());P[parts[0]]=(P[parts[0]]||0)+q;
+    // topping = phần có sẵn trong công thức món (ĐB có tôm/trứng/thịt/mực) + phần khách gọi thêm
+    ((RECIPE[parts[0]]||[,[]])[1]).concat(parts.slice(1).map(x=>ALIAS[x]||x)).forEach(x=>T[x]=(T[x]||0)+q);
     rest.forEach(x=>{const m=x.match(/chấm (Mắm|Nước tương)( không cay| cay)?/i);if(m){S[m[1]]=(S[m[1]]||0)+q;if(m[2]&&/không/.test(m[2]))S["Không cay"]=(S["Không cay"]||0)+q}})}));
-  const chip=(o,cls)=>Object.entries(o).map(([k,v])=>`<span class="pc ${cls||""}"><b>${v}</b>${k}</span>`).join("");
+  const QN={"Trứng cút":[3,"quả"],"Tôm":[4,"con"],"Chả giò chay":[1,"cuốn"],"Rong biển sấy":[0.5,"gói"]};
+  const chip=(o,cls)=>Object.entries(o).map(([k,v])=>`<span class="pc ${cls||""}"><b>${v}</b>${k}${cls!=="dish"&&QN[k]?` <small>(${v*QN[k][0]} ${QN[k][1]})</small>`:""}</span>`).join("");
   $("#prep").innerHTML=`<h3>🧾 Còn phải làm (đơn Mới + Đang làm)</h3><div class="chips">${chip(P,"dish")||'<span class="pc">Không còn món nào 🎉</span>'}${chip(T)}${chip(S)}</div>`;
   if($("#hideDone").checked)L=L.filter(o=>!["Đã xong","Đã giao","Đã thu tiền","Huỷ"].includes(o.st));
   let html="",nowPlaced=day!==0;
