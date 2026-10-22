@@ -93,7 +93,7 @@ h3{margin:0 0 10px;font-size:16px}
 <div class="toast" id="toast"></div>
 <script>
 // Nguồn: tab "Khách xem" (chỉ mã đơn, món, tiền, trạng thái — KHÔNG có tên/SĐT/địa chỉ), publish to web dạng CSV
-const PUB_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vT9VaUKp76j8JlJnOgesCsl9nOn-D1xhp8lbNtLU-CeKkXHZyzerhuH84mv5GvsNYmbcrD22pfrTIkA/pub?gid=1645329007const PUB_CSV="";single=trueconst PUB_CSV="";output=csv";
+const PUB_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vT9VaUKp76j8JlJnOgesCsl9nOn-D1xhp8lbNtLU-CeKkXHZyzerhuH84mv5GvsNYmbcrD22pfrTIkA/pub?gid=1645329007&single=true&output=csv";
 const BANK={bin:"TPB",name:"TPBank",acc:"28428121985",accFmt:"2842 8121 985"};
 const $=s=>document.querySelector(s),num=x=>+String(x==null?"":x).replace(/[^\d]/g,"")||0,vnd=n=>num(n).toLocaleString("vi-VN")+"đ";
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
