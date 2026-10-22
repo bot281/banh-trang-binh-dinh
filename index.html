@@ -230,6 +230,10 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 .closebn{background:#FFF3E0;border:1.5px solid #E65100;color:#BF360C;border-radius:12px;padding:10px 12px;margin:12px 0 0;font-size:14px;display:none}
 .whenhint{font-size:12.5px;color:var(--muted);margin-top:6px}
 
+.trackbtn{display:block;margin:10px 0 4px;background:var(--green);color:#fff;text-decoration:none;font-weight:800;text-align:center;border-radius:14px;padding:12px;box-shadow:0 4px 0 #1f5a23}
+.trackbtn .en{color:#e6f4e7}
+.tlink{display:flex;gap:6px;margin:6px 0 0}.tlink input{flex:1;min-width:0;font:inherit;font-size:13px;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.tlink button{font:inherit;font-size:13px;font-weight:800;border:1.5px solid var(--green);color:var(--green);background:#fff;border-radius:10px;padding:0 12px;cursor:pointer;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -329,7 +333,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
   </div>
   <p class="note">Cần hỗ trợ? Nhắn Zalo <a href="https://zalo.me/0919008571" target="_blank" rel="noopener">0919 008 571</a>.<span class="en">Need help? Message us on Zalo.</span></p>
 
-  <footer>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0919008571" style="color:inherit">0919 008 571</a> · <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></footer>
+  <footer><a href="track.html" style="color:var(--red);font-weight:700">📍 Theo dõi đơn đã đặt</a><br>Bánh Tráng Mì Ruốc Dừa — Kiểu Bình Định · <a href="tel:0919008571" style="color:inherit">0919 008 571</a> · <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></footer>
 </div>
 
 <div class="bar"><div class="in"><div class="sum"><small id="barq">Chưa chọn món</small><b id="bart">0đ</b></div><a href="#don">Xem đơn ↓<span class="en">View order</span></a></div></div>
@@ -337,6 +341,9 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 <div class="lb" id="lb"><img alt=""><video controls playsinline preload="none"></video><p></p></div>
 <div class="modal" id="ok"><div class="box">
   <h3>Cảm ơn bạn!</h3><div>Shop đã nhận đơn<span class="en">Thank you! We have received your order.</span></div><div class="code" id="okcode"></div>
+  <a class="trackbtn" id="oktrack" href="track.html">📍 Theo dõi đơn hàng<span class="en">Track your order — status, shipping fee, total</span></a>
+  <div class="tlink"><input id="oklink" readonly aria-label="Link theo dõi đơn"><button type="button" id="okcopy">Sao chép link</button></div>
+  <p class="note" style="margin-top:2px">Lưu link này để xem đơn đang làm hay đang giao, phí ship và số tiền cần trả.<span class="en">Save this link to follow your order.</span></p>
   <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp: gọi <a href="tel:0919008571">0919 008 571</a> hoặc nhắn <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a>.</p>
   <p class="note">🥢 Nhận món rồi xem <a href="#huong-dan" onclick="document.getElementById('ok').classList.remove('show')">hướng dẫn trộn</a> để ăn ngon nhất nhé.<span class="en">See the mixing guide when your order arrives.</span></p>
   <button type="button" id="okclose">Đóng · Close</button></div></div>
@@ -501,12 +508,17 @@ $("#f").onsubmit=async e=>{
       fetch(NTFY,{method:"POST",body:JSON.stringify({topic:NTFY_TOPIC,priority:5,tags:["bell"],title:`🔔 Đơn mới ${code} — nhận ${time} ${da}/${mo}`,
         message:`${g?"Nhóm "+g+"\n":""}${kit}\n${pick?"🏃 Tự đến lấy":"🛵 Giao"+(geo?" ~"+geo.km.toFixed(1)+" km":"")} · ${qtyText(T)}`,click:"https://bot281.github.io/banh-trang-binh-dinh/bep.html"})}).catch(()=>{})}catch(_){}
     $("#okcode").textContent="Mã đơn: "+code;
+    try{const L=JSON.parse(localStorage.getItem("btbd_orders")||"[]");L.push({code,when,ts:Date.now()});localStorage.setItem("btbd_orders",JSON.stringify(L.slice(-10)))}catch(_){}
+    const tu="https://bot281.github.io/banh-trang-binh-dinh/track.html?c="+encodeURIComponent(code);$("#oktrack").href=tu;$("#oklink").value=tu;
     $("#bank").innerHTML=document.querySelector('input[name=pay]:checked').value==="Chuyển khoản"?bankBox(grand(),code):"";
     $("#oksum").textContent=`${$("#grp").value.trim()?"Nhóm: "+$("#grp").value.trim().toUpperCase()+"\n":""}${items}${loveText()?"\n\n💌 Lời nhắn:\n"+loveText():""}\n\nTiền hàng: ${vnd(T.t)}\nPhí ship: ${pick?"Tự đến lấy":sb.startsWith("Cộng")?(geo?vnd(geo.fee)+" (ước tính, cộng vào đơn)":"shop báo sau"):sb.startsWith("Khách")?(geo?"~"+vnd(geo.fee)+" trả tài xế":"trả tài xế"):"nhóm trả"}\nTổng thanh toán: ${vnd(grand())}\nNhận: ${when}\n${addr}`;
     $("#ok").classList.add("show");MENU.forEach(m=>st[m.id]=[]);document.querySelectorAll(".dish").forEach(renderDish);renderCart();$("#note").value="";
   }catch(err){toast("Gửi không được, vui lòng thử lại hoặc gọi 0919 008 571")}
   btn.disabled=false;btn.innerHTML="Đặt hàng<span class=en>Place order</span>";
 };
+$("#okcopy").onclick=async()=>{const t=`Theo dõi đơn ${$("#oklink").value.split("c=")[1]||""} — Bánh Tráng Mì Ruốc Dừa: ${$("#oklink").value}`;
+  try{await navigator.clipboard.writeText(t);toast("Đã sao chép link theo dõi")}catch(e){$("#oklink").select();document.execCommand("copy");toast("Đã sao chép link theo dõi")}};
+$("#oklink").onclick=e=>e.target.select();
 $("#okclose").onclick=()=>{$("#ok").classList.remove("show");scrollTo({top:0,behavior:"smooth"})};
 renderMenu();renderCart();
 // ===== HÌNH THẬT: thêm ảnh = thêm 1 dòng vào GAL =====
