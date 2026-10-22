@@ -95,6 +95,7 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 <div class="top"><div class="in"><h1>🍳 Bếp — Tiến độ đơn</h1><div class="days" id="days"></div><div class="clock" id="clock">--:--</div></div></div>
 <div class="wrap">
   <div id="err"></div>
+  <div id="miss"></div>
   <div class="stats" id="stats"></div>
   <div class="prep" id="prep"></div>
   <div class="newbar" id="newbar"></div><div class="newbar warnbar" id="warnbar"></div>
@@ -162,9 +163,16 @@ async function load(){
     const codes=out.map(o=>o.code);
     if(SEEN){const fresh=out.filter(o=>!SEEN.has(o.code));if(fresh.length)notifyNew(fresh)}
     SEEN=new Set(codes);
-    ORDERS=out;$("#err").innerHTML="";render();$("#foot").textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · tự làm mới mỗi 20 giây";
+    ORDERS=out;$("#err").innerHTML="";render();checkMiss();$("#foot").textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · tự làm mới mỗi 20 giây";
   }catch(e){$("#err").innerHTML='<div class="err">Không đọc được danh sách đơn (mạng yếu hoặc sheet chưa mở quyền xem). Thử tải lại trang.</div>'}
 }
+// Chốt chặn (22/10 msg 6395): đơn đã báo chuông ntfy mà KHÔNG vào sheet (Google từ chối im lặng) → cảnh báo đỏ
+const NTFY_TOPIC="bep-btbd-f43024300c84";let MISS_T=0;
+async function checkMiss(){if(Date.now()-MISS_T<55000)return;MISS_T=Date.now();
+  try{const r=await fetch(`https://ntfy.sh/${NTFY_TOPIC}/json?poll=1&since=12h`),have=new Set(ORDERS.map(o=>o.code)),miss=[];
+    (await r.text()).split("\n").filter(Boolean).forEach(l=>{try{const m=JSON.parse(l),c=((m.title||"").match(/W\d{4}-\w+/)||[])[0];
+      if(m.event==="message"&&c&&!have.has(c)&&Date.now()/1000-m.time>120&&!miss.some(x=>x.c===c))miss.push({c,t:m.title.replace(/^🔔\s*/,""),b:m.message||"",at:new Date(m.time*1000)})}catch(_){}});
+    $("#miss").innerHTML=miss.map(x=>`<div class="err"><b>⚠️ Đơn có báo chuông nhưng CHƯA VÀO SHEET — ${esc(x.t)}</b><br><small>Khách đặt lúc ${p2(x.at.getHours())}:${p2(x.at.getMinutes())} · trang bếp chưa hiện đơn này</small><div style="white-space:pre-wrap;margin-top:6px">${esc(x.b)}</div><small>👉 Gọi xác nhận khách hoặc nhắn Baby Boss nhập lại đơn (đưa mã ${esc(x.c)}).</small></div>`).join("")}catch(_){}}
 function sameDay(a,b){return a&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
 function lines(o){return o.items.split("\n").filter(Boolean).map(l=>{const m=l.match(/^(\d+)\s*×\s*(.+?)(?:\s*\((?:[\d.]+đ)\))?\s*=\s*[\d.]+đ\s*$/);return m?{q:+m[1],t:m[2]}:{q:"",t:l}})}
 // ===== CÔNG THỨC từng món — bếp khỏi phải nhớ (chị Hiền 18/10 msg 6093). Đổi định mức thì sửa ở đây =====

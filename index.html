@@ -509,7 +509,7 @@ $("#f").onsubmit=async e=>{
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
     try{const g=$("#grp").value.trim().toUpperCase(),kit=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.bot?" · bớt "+L.bot:""}${L.note?" · "+L.note:""}`).join("\n");
       fetch(NTFY,{method:"POST",body:JSON.stringify({topic:NTFY_TOPIC,priority:5,tags:["bell"],title:`🔔 Đơn mới ${code} — nhận ${time} ${da}/${mo}`,
-        message:`${g?"Nhóm "+g+"\n":""}${kit}\n${pick?"🏃 Tự đến lấy":"🛵 Giao"+(geo?" ~"+geo.km.toFixed(1)+" km":"")} · ${qtyText(T)}`,click:"https://bot281.github.io/banh-trang-binh-dinh/bep.html"})}).catch(()=>{})}catch(_){}
+        message:`${g?"Nhóm "+g+"\n":""}${kit}\n${pick?"🏃 Tự đến lấy":"🛵 Giao"+(geo?" ~"+geo.km.toFixed(1)+" km":"")} · ${qtyText(T)}\n💰 ${vnd(T.t)} · ${document.querySelector('input[name=pay]:checked').value}`,click:"https://bot281.github.io/banh-trang-binh-dinh/bep.html"})}).catch(()=>{})}catch(_){}
     $("#okcode").textContent="Mã đơn: "+code;
     try{const L=JSON.parse(localStorage.getItem("btbd_orders")||"[]");L.push({code,when,ts:Date.now()});localStorage.setItem("btbd_orders",JSON.stringify(L.slice(-10)))}catch(_){}
     const tu="https://bot281.github.io/banh-trang-binh-dinh/track.html?c="+encodeURIComponent(code);$("#oktrack").href=tu;$("#oklink").value=tu;
