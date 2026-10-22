@@ -56,6 +56,8 @@ h2.sec{font-family:"Lobster",cursive;font-weight:400;color:var(--red);font-size:
 .d-info{flex:1;min-width:0}
 .d-name{font-weight:800;font-size:17px;margin:0}
 .d-desc{color:var(--muted);font-size:13.5px;margin:3px 0 0}
+.kcal{margin:2px 0 0;font-size:12px;font-weight:700;color:#c0561a}
+.chip .kc{display:block;font-size:10.5px;font-weight:600;opacity:.75;font-style:normal}
 .d-price{color:var(--red);font-weight:800;font-size:17px;white-space:nowrap}
 .tagchip{display:inline-block;font-size:11px;font-weight:700;color:var(--green);border:1px solid var(--green);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
 .step{display:flex;align-items:center;gap:6px;margin-top:10px}
@@ -256,6 +258,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
   <h2 class="sec">Thực đơn<span class="en">Menu</span></h2>
   <p class="sub">Bấm + để thêm phần, chọn topping, nước chấm, độ cay. Nhiều phần giống nhau chỉ cần chọn 1 lần rồi gõ số phần; muốn phần khác thì bấm “Thêm kiểu khác”. Giá chưa gồm phí ship.<span class="en">Tap + to add portions and pick toppings once for identical portions; use “Add another style” for different ones. Prices exclude delivery.</span></p>
   <div class="menu" id="menu"></div>
+  <p class="kcal" style="text-align:center;font-weight:600;margin-top:8px">🔥 Calo (kcal) ước tính theo định lượng thực tế của quán, chênh ±15%<span class="en"> · Estimated calories, ±15%</span></p>
 
   <h2 class="sec" id="don">Đơn của bạn<span class="en">Your order</span></h2>
   <div class="cart" id="cart"></div>
@@ -361,6 +364,8 @@ let geo=null; // {km,fee,label}
 
 const TOP={trung:["Trứng cút",5000,"quail eggs"],thit:["Thịt luộc",10000,"boiled pork"],tom:["Tôm nướng",10000,"grilled shrimp"],muc:["Mực đại dương nướng",10000,"grilled squid"],
   cgchay:["Chả giò chay",10000,"veggie spring roll"],chachay:["Chả chay",10000,"veggie sausage"],rong:["Rong biển sấy",5000,"seaweed"]};
+// kcal ước tính theo menu 22/10 (chị Hiền msg 6379), chênh ±15%
+const KCAL_TOP={trung:45,thit:160,tom:40,muc:50,cgchay:75,chachay:60,rong:5};
 const MAN=["trung","thit","tom","muc","cgchay","chachay","rong"], CHAY=["cgchay","chachay","rong"];
 // Phần NỀN khách chọn thêm / bớt (quản lý 22/10 msg 6317). Giá THÊM = null → chưa có giá, ẩn nút "Thêm".
 const BASE={bun:["Bún mì","noodles"],banh:["Bánh tráng","rice cracker"],rau:["Rau","herbs"],xoai:["Xoài","green mango"]};
@@ -368,12 +373,12 @@ const BASE_P={bun:5000,banh:10000,rau:5000,xoai:5000};   // 22/10 msg 6323/6325:
 const bp=(m,k)=>k==="banh"&&m.chay?8000:BASE_P[k];
 const baseN=(m,k)=>k==="banh"?(m.chay?"Bánh tráng + đậu phộng":"Bánh tráng + ruốc + đậu phộng"):BASE[k][0];
 const MENU=[
- {id:"tt",img:"img/sp2-sq.jpg",n:"Truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
- {id:"ttc",n:"Truyền thống chay",en:"Traditional (vegetarian)",de:"Fried tofu instead of shrimp",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
- {id:"dbm",img:"img/sp3-sq.jpg",n:"Đặc biệt mặn",en:"Special",de:"Quail eggs + boiled pork + grilled shrimp",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
- {id:"dbh",img:"img/sp4-sq.jpg",n:"Đặc biệt hải sản",en:"Seafood special",de:"Quail eggs + boiled pork + grilled shrimp + grilled squid",d:"Trứng cút + thịt luộc + tôm nướng + mực nướng",p:55000,top:MAN,sauce:"Mắm"},
- {id:"dbc",img:"img/dbc-sq.jpg",n:"Đặc biệt chay",en:"Vegetarian special",de:"Veggie spring roll + veggie sausage + seaweed",d:"Chả giò chay + chả chay + rong biển",p:45000,top:CHAY,sauce:"Nước tương",chay:1},
- {id:"tra",img:"img/tra-sq.jpg",n:"Trà tắc xí muội",en:"Kumquat & salted plum iced tea",de:"Cold, sweet & sour",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
+ {id:"tt",kc:500,img:"img/sp2-sq.jpg",n:"Truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
+ {id:"ttc",kc:580,n:"Truyền thống chay",en:"Traditional (vegetarian)",de:"Fried tofu instead of shrimp",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
+ {id:"dbm",kc:740,img:"img/sp3-sq.jpg",n:"Đặc biệt mặn",en:"Special",de:"Quail eggs + boiled pork + grilled shrimp",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
+ {id:"dbh",kc:790,img:"img/sp4-sq.jpg",n:"Đặc biệt hải sản",en:"Seafood special",de:"Quail eggs + boiled pork + grilled shrimp + grilled squid",d:"Trứng cút + thịt luộc + tôm nướng + mực nướng",p:55000,top:MAN,sauce:"Mắm"},
+ {id:"dbc",kc:720,img:"img/dbc-sq.jpg",n:"Đặc biệt chay",en:"Vegetarian special",de:"Veggie spring roll + veggie sausage + seaweed",d:"Chả giò chay + chả chay + rong biển",p:45000,top:CHAY,sauce:"Nước tương",chay:1},
+ {id:"tra",kc:150,img:"img/tra-sq.jpg",n:"Trà tắc xí muội",en:"Kumquat & salted plum iced tea",de:"Cold, sweet & sour",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
 ];
 const BANK={bin:"TPB",name:"TPBank",acc:"28428121985",accFmt:"2842 8121 985"};
 function bankBox(amount,code){
@@ -396,7 +401,7 @@ const baseOf=(p,v)=>Object.keys(BASE).filter(k=>(p.base||{})[k]===v&&(v<0||BASE_
 function chips(m,p,i,n){
   return `<div class="por" data-i="${i}"><div class="por-h"><b>${n>1?`Kiểu ${i+1}<span class="en i">Style ${i+1}</span>`:"Lựa chọn<span class=\"en i\">Options</span>"}</b><span>${vnd(unit(m,p))}/phần</span></div>
    <div class="pq"><span>Số phần kiểu này<span class="en">Portions</span></span><button type="button" class="qm" aria-label="Bớt">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="${MAXQ}" value="${p.q}"><button type="button" class="qp" aria-label="Thêm">+</button>${n>1?`<button type="button" class="qx" aria-label="Xoá kiểu">✕</button>`:""}</div>
-   <div class="chips">${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
+   <div class="chips">${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em>${KCAL_TOP[k]?`<small class="kc">~${KCAL_TOP[k]} kcal</small>`:""}</button>`).join("")}</div>
    <div class="base"><span class="sl">Thêm / bớt phần nền<span class="en">More / less of the base</span></span>${Object.keys(BASE).map(k=>{const v=(p.base||{})[k]||0;return `<div class="brow"><span class="bn">${baseN(m,k)}<span class="en i">${BASE[k][1]}</span></span><span class="seg"><button type="button" class="b" data-base="${k}" data-v="-1" aria-pressed="${v<0}">Bớt</button><button type="button" data-base="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${bp(m,k)?`<button type="button" data-base="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${bp(m,k)/1000}k</button>`:""}</span></div>`}).join("")}</div>
    <div class="chips sauce"><span class="sl">Nước chấm<span class="en">Sauce</span></span>${["Mắm","Nước tương"].map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}<span class="en i">${s==="Mắm"?"fish sauce":"soy sauce"}</span></button>`).join("")}<span class="sl" style="margin-left:6px">·</span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay<span class=\"en i\">spicy</span>":"Không cay<span class=\"en i\">mild</span>"}</button>`).join("")}</div>
    <input class="pnote" type="text" maxlength="80" placeholder="${baseOf(p,-1).length?"Ghi chú phần bớt (vd: bớt ½ rau, không xoài) · Note":"Ghi chú · Note (vd/e.g.: không rau – no herbs)"}" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
@@ -425,7 +430,7 @@ function renderDish(el){
     const ps=el.querySelectorAll(".por");ps[ps.length-1].scrollIntoView({behavior:"smooth",block:"center"})};
 }
 function renderMenu(){
-  $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head">${m.img?`<img class="dthumb" src="${m.img}" alt="${m.n}" loading="lazy" data-cap="${m.n}">`:""}<div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}<span class="en">${m.en}</span></p><p class="d-desc">${m.d}<span class="en">${m.de}</span></p></div><div class="d-price">${vnd(m.p)}</div></div>
+  $("#menu").innerHTML=MENU.map(m=>`<div class="dish" data-id="${m.id}"><div class="d-head">${m.img?`<img class="dthumb" src="${m.img}" alt="${m.n}" loading="lazy" data-cap="${m.n}">`:""}<div class="d-info"><p class="d-name">${m.n}${m.chay?'<span class="tagchip">CHAY</span>':''}<span class="en">${m.en}</span></p>${m.kc?`<p class="kcal">🔥 ~${m.kc} kcal</p>`:""}<p class="d-desc">${m.d}<span class="en">${m.de}</span></p></div><div class="d-price">${vnd(m.p)}</div></div>
       <div class="step"><button type="button" class="minus" aria-label="Bớt">−</button><output>0</output><button type="button" class="plus" aria-label="Thêm">+</button><span class="subt"></span></div>
       ${m.drink?"":'<div class="opts"></div>'}</div>`).join("");
   document.querySelectorAll(".dish").forEach(el=>{
