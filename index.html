@@ -485,6 +485,9 @@ function closeBanner(){const t=isoD(new Date()),lim=isoD(new Date(Date.now()+14*
   closeBanner();})();
 $("#pickup").onchange=e=>{$("#addr").disabled=e.target.checked;if(e.target.checked)$("#addr").value=""};
 function bad(k,b){document.querySelector(`.f[data-k="${k}"]`).classList.toggle("bad",b);return b}
+// Báo lỗi xong thì tự tắt ngay khi khách sửa đúng (trước đây lỗi đỏ đứng nguyên tới lần bấm Đặt hàng sau)
+const phoneOk=v=>/^(\+?84|0)\d{9}$/.test(v.replace(/[^\d+]/g,""));
+[["name",v=>v.trim()],["phone",phoneOk],["addr",v=>v.trim()]].forEach(([k,ok])=>{const el=$("#"+k);el&&el.addEventListener("input",()=>{const f=el.closest(".f");if(f.classList.contains("bad")&&ok(el.value))f.classList.remove("bad")})});
 $("#f").onsubmit=async e=>{
   e.preventDefault();
   if(!lines().length){toast("Bạn chưa chọn món nào · Please choose a dish");$("#menu").scrollIntoView({behavior:"smooth"});return}
