@@ -64,6 +64,10 @@ h3{margin:0 0 10px;font-size:16px}
 .bk .r{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;padding:6px 0;border-bottom:1px dashed var(--line)}
 .bk .r span{display:block;font-size:12px;color:var(--muted)}
 .bk .cp{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px;color:var(--red);cursor:pointer}
+.paid{margin-top:12px;border-radius:12px;padding:11px 13px;font-weight:800}
+.paid.ok{background:#E8F5E9;color:var(--green);border:1.5px solid #A5D6A7}
+.paid.wait{background:#FFF8E6;color:#9A6B00;border:1.5px dashed var(--gold)}
+.paid small{font-weight:600;color:var(--muted)}
 .empty{text-align:center;color:var(--muted);padding:6px 0}
 .foot{text-align:center;color:var(--muted);font-size:13px;margin-top:6px}
 .contact{display:flex;gap:8px;margin-top:4px}
@@ -133,15 +137,17 @@ function render(o){
   const cur=S.findIndex(s=>s[0]===o.trangthai),cancel=o.trangthai==="Huỷ",[h1,h2]=headline(o,pick),M=money(o);
   const stepHtml=cancel?"":`<ol class="steps">${S.map((s,i)=>`<li class="${i<cur||(i===cur&&i===S.length-1)?"done":i===cur?"now":""}"><span class="ic">${s[1]}</span><b>${s[2]}</b>${H[s[0]]?`<small>${esc(H[s[0]])}</small>`:""}</li>`).join("")}</ol>`;
   const items=o.mon.split("\n").filter(Boolean).map(l=>`<li>${esc(l.replace(/\s*\([\d.]+đ\)\s*=\s*/," = "))}</li>`).join("");
-  const unpaid=o.trangthai!=="Đã thu tiền"&&!cancel&&/chuyển khoản/i.test(o.thanhtoan);
-  $("#out").innerHTML=`<div class="card"><div class="code"><b>${esc(o.ma)}</b><span class="pill${cancel?" cancel":""}">${esc(o.trangthai)}</span></div>
+  const paid=!!o.danhantien||o.trangthai==="Đã thu tiền",unpaid=!paid&&!cancel&&/chuyển khoản/i.test(o.thanhtoan);
+  const payBox=cancel?"":paid?`<div class="paid ok">✅ Shop đã nhận thanh toán${o.danhantien?` <small>lúc ${esc(o.danhantien)}</small>`:""}<span class="en">Payment received — thank you!</span></div>`
+    :`<div class="paid wait">⏳ Shop chưa xác nhận thanh toán<span class="en">${/chuyển khoản/i.test(o.thanhtoan)?"Đã chuyển khoản? Shop sẽ xác nhận sau khi đối chiếu (vài phút).":"Thanh toán khi nhận hàng."}</span></div>`;
+  $("#out").innerHTML=`<div class="card"><div class="code"><b>${esc(o.ma)}</b><span class="pill${cancel?" cancel":""}">${esc(o.trangthai)}</span></div>${paid&&!cancel?`<p class="hint" style="margin:6px 0 0;color:var(--green);font-weight:800">✅ Đã thanh toán</p>`:""}
     <p class="big">${h1}</p><p class="sub">${h2}</p>${o.nhankhach?`<div class="msg">${esc(o.nhankhach)}</div>`:""}${stepHtml}
     <p class="hint">⏰ ${pick?"Hẹn lấy":"Giờ nhận"}: <b>${esc(o.nhan)}</b>${o.capnhat?` · cập nhật ${esc(o.capnhat)}`:""}</p></div>
   <div class="card"><h3>🧾 Món đã đặt · ${esc(o.phan)}</h3><ul class="items">${items}</ul>
     <div class="money"><div class="r"><span>Tiền hàng</span><b>${vnd(M.goods)}</b></div><div class="r"><span>Phí ship</span><b>${M.shipTxt}</b></div>
     <div class="r tot"><span>${M.shipKnown?"Thanh toán cho shop":"Tạm tính (chưa gồm ship)"}</span><b>${vnd(M.payShop)}</b></div>
     ${M.driver?`<div class="r"><span>Trả tài xế khi nhận</span><b>${vnd(M.driver)}</b></div>`:""}
-    <div class="r"><span>Hình thức</span><b>${esc(o.thanhtoan)}</b></div></div>${M.hint?`<p class="hint">${M.hint}</p>`:""}</div>
+    <div class="r"><span>Hình thức</span><b>${esc(o.thanhtoan)}</b></div></div>${payBox}${M.hint?`<p class="hint">${M.hint}</p>`:""}</div>
   ${unpaid&&M.shipKnown?bankBox(M.payShop,o.ma):""}`;
   document.title=`${o.trangthai} · ${o.ma} — Theo dõi đơn`}
 function pending(l){$("#out").innerHTML=`<div class="card"><div class="code"><b>${esc(l.code)}</b><span class="pill">Mới</span></div><p class="big">Shop đã nhận đơn của bạn</p>

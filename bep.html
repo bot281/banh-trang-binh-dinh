@@ -150,13 +150,13 @@ async function load(){
     rows.forEach((c,i)=>{if(!c)return;const nm=String(g(c,"name"));
       if(nm===UPD){const code=String(g(c,"code"));const st=String(g(c,"items")).replace(/^Trạng thái:\s*/,"");(ev[code]=ev[code]||[]).push([i,st]);return}
       if(nm===UPD2){const code=String(g(c,"code")),t=String(g(c,"items")),e=ev2[code]=ev2[code]||{};
-        if(/^Phí ship:/.test(t))e.ship=num(t);else if(/^Nhắn khách:/.test(t))e.msg=t.replace(/^Nhắn khách:\s*/,"");return}
+        if(/^Phí ship:/.test(t))e.ship=num(t);else if(/^Nhắn khách:/.test(t))e.msg=t.replace(/^Nhắn khách:\s*/,"");else if(/^(Đã|Chưa) nhận thanh toán/.test(t))e.paid=/^Đã/.test(t);return}
       if(!nm||/^⚙/.test(nm))return;
       out.push({row:i,code:String(g(c,"code")||("R"+i)),name:nm,phone:String(g(c,"phone")),addr:String(g(c,"addr")),when:parseWhen(g(c,"when")),whenTxt:String(g(c,"when")),
         items:String(g(c,"items")),qty:String(g(c,"qty")),grand:g(c,"grand")||g(c,"total"),pay:String(g(c,"pay")),note:String(g(c,"note")),grp:String(g(c,"grp")),
         shipby:String(g(c,"shipby")),total:num(g(c,"total")),ship0:String(g(c,"ship")),km:parseFloat(String(g(c,"km")).replace(",","."))||0,love:String(g(c,"love")),st0:String(g(c,"st")||"")})});
     out.forEach(o=>{const pick=/tự đến lấy/i.test(o.addr+" "+o.shipby);o.pick=pick;o.travel=pick?0:(o.km?Math.max(10,Math.ceil(o.km*SHIPCFG.minPerKm)):SHIPCFG.defTravel);o.hand=o.when?new Date(o.when-(pick?0:(o.travel+SHIPCFG.wait))*60000):null});
-    out.forEach(o=>{const e=ev2[o.code]||{},L=LOCAL2[o.code]||{};o.shipEst=L.ship==null&&e.ship==null;o.ship=L.ship!=null?L.ship:e.ship!=null?e.ship:(/\d/.test(o.ship0)?num(o.ship0):null);o.msg=L.msg!=null?L.msg:(e.msg||"");
+    out.forEach(o=>{const e=ev2[o.code]||{},L=LOCAL2[o.code]||{};o.shipEst=L.ship==null&&e.ship==null;o.ship=L.ship!=null?L.ship:e.ship!=null?e.ship:(/\d/.test(o.ship0)?num(o.ship0):null);o.msg=L.msg!=null?L.msg:(e.msg||"");o.paid=L.paid!=null?L.paid:!!e.paid;
       if((L.ship!=null||e.ship!=null)&&/^Cộng/i.test(o.shipby))o.grand=o.total+o.ship});
     out.forEach(o=>{const e=ev[o.code];o.st=e&&e.length?e[e.length-1][1]:(o.st0||"Mới");if(LOCAL[o.code]&&LOCAL[o.code].t>Date.now()-120000)o.st=LOCAL[o.code].st});
     const codes=out.map(o=>o.code);
@@ -214,10 +214,10 @@ function render(){
       <div class="hand">${o.pick?`🏃 Khách tự đến lấy lúc <b>${hm(o.when)}</b> — làm xong trước giờ này`:`🛵 Giao xe lúc <b>${hm(o.hand)}</b> → khách nhận ${hm(o.when)} <span>(xe đi ~${o.travel}′${o.km?" · "+o.km.toFixed(1)+" km":""} + chờ xe ${SHIPCFG.wait}′)</span>`}</div>
       <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}${recipe(l.t)}</li>`).join("")}</ul>
       <div class="meta">${o.phone?`📞 <a class="ph" href="tel:${esc(o.phone)}">${esc(fmtPhone(o.phone))}</a><br>`:""}📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
-      <div class="shipl">${o.pick?"":`🚚 Ship: <b>${o.ship!=null?vnd(o.ship):"chưa nhập"}</b>${o.ship!=null&&o.shipEst?" (web ước tính)":""}`}${o.msg?`${o.pick?"":" · "}💬 Đã nhắn khách: “${esc(o.msg)}”`:""}</div>
+      <div class="shipl">${o.pick?"":`🚚 Ship: <b>${o.ship!=null?vnd(o.ship):"chưa nhập"}</b>${o.ship!=null&&o.shipEst?" (web ước tính)":""}`}${o.msg?`${o.pick?"":" · "}💬 Đã nhắn khách: “${esc(o.msg)}”`:""}${o.paid||o.st==="Đã thu tiền"?" · <b style='color:var(--s-paid)'>✅ Đã nhận tiền</b>":""}</div>
       ${o.note?`<div class="note">📝 ${esc(o.note)}</div>`:""}${o.love?`<div class="love">💌 ${esc(o.love)}</div>`:""}
       <div class="acts">${nx&&o.st!=="Huỷ"?`<button class="${nx[1]}" data-st="${nx[0]}">${nx[2]}</button>`:""}${o.st!=="Mới"&&o.st!=="Huỷ"?`<button class="b-undo" data-st="${FLOW[Math.max(0,FLOW.indexOf(o.st)-1)]}" title="Lùi lại">↶</button>`:""}${o.phone?`<a class="b-call" href="tel:${esc(o.phone)}">📞</a>`:""}</div>
-      <div class="acts2">${o.pick?"":`<button data-x="ship">🚚 Nhập phí ship</button>`}<button data-x="msg">💬 Nhắn khách</button><button data-x="link">🔗 Link theo dõi</button></div>
+      <div class="acts2">${o.st==="Đã thu tiền"?"":`<button data-x="pay">${o.paid?"↶ Bỏ đã nhận tiền":"💰 Đã nhận tiền"}</button>`}${o.pick?"":`<button data-x="ship">🚚 Nhập phí ship</button>`}<button data-x="msg">💬 Nhắn khách</button><button data-x="link">🔗 Link theo dõi</button></div>
     </div></div>`});
   if(!nowPlaced&&L.length)html+=`<div class="now"><span>${p2(now.getHours())}:${p2(now.getMinutes())}</span></div>`;
   $("#tl").innerHTML=html||`<div class="empty">Chưa có đơn ${day?"ngày mai":"hôm nay"}.</div>`;
@@ -244,7 +244,9 @@ async function extra(code,x){const o=ORDERS.find(z=>z.code===code);if(!o)return;
   if(x==="link"){const u=TRACK+encodeURIComponent(code),t=`Theo dõi đơn ${code} (trạng thái, phí ship, số tiền): ${u}`;
     try{await navigator.clipboard.writeText(t);toast("Đã chép link — dán gửi khách qua Zalo")}catch(e){prompt("Chép link gửi khách:",u)}return}
   let v;
-  if(x==="ship"){v=prompt(`Phí ship đơn ${code} (số tiền, vd 35000):`,o.ship!=null?o.ship:"");if(v==null)return;v=num(v);if(!v&&!confirm("Ship = 0đ?"))return;LOCAL2[code]={...LOCAL2[code],ship:v};v="Phí ship: "+v}
+  if(x==="pay"){const yes=!o.paid;if(!confirm(yes?`Xác nhận ĐÃ NHẬN tiền đơn ${code} (${vnd(o.grand)})? Khách sẽ thấy "Shop đã nhận thanh toán".`:`Bỏ xác nhận đã nhận tiền đơn ${code}?`))return;
+    LOCAL2[code]={...LOCAL2[code],paid:yes};o.paid=yes;v=(yes?"Đã":"Chưa")+" nhận thanh toán: "+vnd(o.grand)}
+  else if(x==="ship"){v=prompt(`Phí ship đơn ${code} (số tiền, vd 35000):`,o.ship!=null?o.ship:"");if(v==null)return;v=num(v);if(!v&&!confirm("Ship = 0đ?"))return;LOCAL2[code]={...LOCAL2[code],ship:v};v="Phí ship: "+v}
   else{v=prompt(`Nhắn khách (đơn ${code}) — khách đọc được, vd "Tài xế Grab 59X1-12345, khoảng 15 phút nữa tới":`,o.msg||"");if(v==null)return;v=v.trim();LOCAL2[code]={...LOCAL2[code],msg:v};v="Nhắn khách: "+v}
   if(LOCAL2[code].ship!=null){o.ship=LOCAL2[code].ship;o.shipEst=false;if(/^Cộng/i.test(o.shipby))o.grand=o.total+o.ship}if(LOCAL2[code].msg!=null)o.msg=LOCAL2[code].msg;render();toast("Đã lưu — khách thấy sau vài phút");
   const n=new Date(),when=`${p2(n.getDate())}/${p2(n.getMonth()+1)}/${n.getFullYear()} ${p2(n.getHours())}:${p2(n.getMinutes())}`;
