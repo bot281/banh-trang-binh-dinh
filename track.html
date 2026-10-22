@@ -126,7 +126,7 @@ function money(o){const goods=num(o.tienhang),shipN=/\d/.test(o.ship)?num(o.ship
   return {goods,shipTxt,payShop,driver,hint,shipKnown:shipN!=null||pick||/^free|nhóm/i.test(cach)}}
 function bankBox(amount,code){const url=`https://img.vietqr.io/image/${BANK.bin}-${BANK.acc}-compact.png?amount=${amount}&addInfo=${encodeURIComponent(code)}`;
   const row=(l,v,c)=>`<div class="r"><div><span>${l}</span><b>${v}</b></div>${c!=null?`<button type="button" class="cp" data-c="${c}">Sao chép</button>`:""}</div>`;
-  return `<div class="card bk"><h3>Quét mã để chuyển khoản<span class="en">Scan to pay</span></h3><img src="${url}" alt="Mã QR chuyển khoản">
+  return `<div class="card bk"><h3>Chưa chuyển khoản? Quét mã này<span class="en">Not paid yet? Scan to pay</span></h3><p class="hint" style="margin:0 0 8px">Đã chuyển rồi thì bỏ qua nhé — shop đối chiếu và đánh dấu "Hoàn tất".</p><img src="${url}" alt="Mã QR chuyển khoản">
     ${row("Ngân hàng",BANK.name)}${row("Số tài khoản",BANK.accFmt,BANK.acc)}${row("Số tiền",vnd(amount),amount)}${row("Nội dung",code,code)}</div>`}
 function render(o){
   const pick=/tự đến lấy/i.test(o.cachtra),S=steps(o),H={};(o.lichsu||"").split("|").filter(Boolean).forEach(x=>{const[t,s]=x.split("~");H[s]=t});
