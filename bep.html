@@ -19,7 +19,7 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .top .in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .top h1{font-family:"Lobster",cursive;font-weight:400;font-size:24px;margin:0;flex:1;min-width:160px}
 .clock{font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}
-.days{display:flex;gap:6px}
+.days{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .days button{border:1.5px solid #fff;background:transparent;color:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-family:inherit;cursor:pointer}
 .days button[aria-pressed="true"]{background:#fff;color:var(--red)}
 .wrap{max-width:900px;margin:0 auto;padding:14px 16px 60px}
@@ -195,7 +195,10 @@ function recipe(t){
   return `<div class="rc">${top.length?`<div>${top.join("")}</div>`:""}<div class="nen">Nền: ${R[0].join(" · ")}</div>${sauce.join("")}${bot.join("")}</div>`}
 function render(){
   const now=new Date(),target=new Date(now.getFullYear(),now.getMonth(),now.getDate()+day);
-  $("#days").innerHTML=["Hôm nay","Ngày mai"].map((t,i)=>`<button data-d="${i}" aria-pressed="${i===day}">${t}</button>`).join("");
+  // trước 3 ngày → sau 3 ngày (quản lý msg 6659)
+  const dayLabel=i=>{if(i===0)return"Hôm nay";if(i===1)return"Ngày mai";if(i===-1)return"Hôm qua";const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);return`${["CN","T2","T3","T4","T5","T6","T7"][d.getDay()]} ${p2(d.getDate())}/${p2(d.getMonth()+1)}`};
+  const cnt=i=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);return ORDERS.filter(o=>sameDay(o.when,d)&&o.st!=="Huỷ").length};
+  $("#days").innerHTML=[-3,-2,-1,0,1,2,3].map(i=>{const n=cnt(i);return`<button data-d="${i}" aria-pressed="${i===day}">${dayLabel(i)}${n?` (${n})`:""}</button>`}).join("");
   $("#days").querySelectorAll("button").forEach(b=>b.onclick=()=>{day=+b.dataset.d;render()});
   let L=ORDERS.filter(o=>sameDay(o.when,target)).sort((a,b)=>a.hand-b.hand);
   checkWarn();
@@ -232,7 +235,7 @@ function render(){
       <div class="acts2">${o.st==="Đã thu tiền"?"":`<button data-x="pay">${o.paid?"↶ Bỏ đã nhận tiền":"💰 Đã nhận tiền"}</button>`}${o.pick?"":`<button data-x="ship">🚚 Nhập phí ship</button>`}<button data-x="msg">💬 Nhắn khách</button><button data-x="link">🔗 Link theo dõi</button></div>
     </div></div>`});
   if(!nowPlaced&&L.length)html+=`<div class="now"><span>${p2(now.getHours())}:${p2(now.getMinutes())}</span></div>`;
-  $("#tl").innerHTML=html||`<div class="empty">Chưa có đơn ${day?"ngày mai":"hôm nay"}.</div>`;
+  $("#tl").innerHTML=html||`<div class="empty">Chưa có đơn ${dayLabel(day).toLowerCase()}.</div>`;
   $("#tl").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>setStatus(b.closest(".card").dataset.code,b.dataset.st));
   $("#tl").querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>extra(b.closest(".card").dataset.code,b.dataset.x));
 }
