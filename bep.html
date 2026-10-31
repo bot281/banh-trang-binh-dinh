@@ -180,7 +180,8 @@ function lines(o){return o.items.split("\n").filter(Boolean).map(l=>{const m=l.m
 const NEN=["Bánh tráng mì nướng","Bún mì","Ruốc","Dừa nạo","Hành phi","Đậu phộng","Xà lách + rau thơm","Cà rốt, xoài xanh"];
 const NEN_CHAY=["Bánh tráng mì nướng","Bún mì","Đậu hủ chiên (½ miếng, thay ruốc)","Dừa nạo","Hành phi","Đậu phộng","Xà lách + rau thơm","Cà rốt, xoài xanh"];
 const NEN_BUN=["Bún mì 70g","Đậu hủ chiên 3 lát (¼ miếng)","Rong biển sấy 1 lá (⅛ gói)","Đậu phộng 4g","Xà lách 15g + rau thơm 10g","Cà rốt 15g + xoài 15g","Sốt trộn ~35ml","Dầu hành phi + ớt"];   // bún mì trộn 31/10 msg 6666–6672
-const RECIPE={"Truyền thống chay":[NEN_CHAY,[]],"Bún mì trộn truyền thống":[NEN_BUN,[]],"Bún mì trộn đặc biệt":[NEN_BUN,["Chả ram tôm đất","Chả bò","Trứng cút (bún)","Mực nướng (bún)"]],"Truyền thống":[NEN,[]],
+const RECIPE={"Bánh tráng trộn đầy đủ":[NEN,["Trứng cút","Thịt luộc","Tôm","Mực đại dương nướng"]],"Bánh tráng chay đầy đủ":[NEN_CHAY,["Chả giò chay","Chả chay","Rong biển sấy"]],
+  "Bánh tráng truyền thống":[NEN,[]],"Bún mì trộn":[NEN_BUN,["Chả ram tôm đất","Chả bò","Trứng cút (bún)","Mực nướng (bún)"]],"Truyền thống chay":[NEN_CHAY,[]],"Bún mì trộn truyền thống":[NEN_BUN,[]],"Bún mì trộn đặc biệt":[NEN_BUN,["Chả ram tôm đất","Chả bò","Trứng cút (bún)","Mực nướng (bún)"]],"Truyền thống":[NEN,[]],
   "Đặc biệt mặn":[NEN,["Trứng cút","Thịt luộc","Tôm"]],"Đặc biệt hải sản":[NEN,["Trứng cút","Thịt luộc","Tôm","Mực đại dương nướng"]],
   "Đặc biệt chay":[NEN_CHAY,["Chả giò chay","Chả chay","Rong biển sấy"]],"Trà tắc xí muội":[["Tắc","Xí muội","Đá (ghi chú 'không đá' thì bỏ)"],[]]};
 const QTY={"Mực đại dương nướng":"4 miếng (12g chín)","Mực nướng (bún)":"6g chín","Trứng cút (bún)":"2 quả","Chả ram tôm đất":"2 cuốn","Chả bò":"½ cây","Trứng cút":"3 quả","Tôm":"4 con","Tôm nướng":"4 con","Chả giò chay":"1 cuốn","Rong biển sấy":"½ gói"};
@@ -189,11 +190,14 @@ function recipe(t){
   const [main,...rest]=t.split(" · "),parts=main.split(" + ").map(x=>x.trim()),R=RECIPE[parts[0]];if(!R)return "";
   const cnt={};R[1].forEach(x=>cnt[x]=(cnt[x]||0)+1);const extra=[];
   parts.slice(1).forEach(x=>{x=ALIAS[x]||x;if(cnt[x]!=null){cnt[x]++}else extra.push(x)});
+  const off=offOf(rest);Object.keys(cnt).forEach(k=>{if(off.some(o=>k===o||k.startsWith(o+" (")||(o==="Tôm nướng"&&k==="Tôm")||(/^Mực/.test(o)&&/^Mực/.test(k))))delete cnt[k]});
   const top=Object.entries(cnt).map(([k,n])=>`<span class="rt">${k}${QTY[k]?" "+QTY[k]:""}${n>1?` <b>×${n} (thêm)</b>`:""}</span>`)
     .concat(extra.map(k=>`<span class="rt add">+ THÊM ${k}${QTY[k]?" "+QTY[k]:""}</span>`));
   const sauce=rest.map(x=>x.match(/^chấm (.+)$/i)).filter(Boolean).map(m=>`<span class="rt sc">Chấm ${m[1]}</span>`);
+  const no=off.map(o=>`<span class="rt bot">KHÔNG ${o}</span>`);
   const bot=rest.map(x=>x.match(/^bớt (.+)$/i)).filter(Boolean).map(m=>`<span class="rt bot">BỚT ${m[1]}</span>`);
-  return `<div class="rc">${top.length?`<div>${top.join("")}</div>`:""}<div class="nen">Nền: ${R[0].join(" · ")}</div>${sauce.join("")}${bot.join("")}</div>`}
+  return `<div class="rc">${top.length?`<div>${top.join("")}</div>`:""}<div class="nen">Nền: ${R[0].join(" · ")}</div>${no.join("")}${sauce.join("")}${bot.join("")}</div>`}
+function offOf(rest){return rest.map(x=>x.match(/^không (.+)$/i)).filter(Boolean).flatMap(m=>m[1].split(",").map(y=>y.trim()))}
 function render(){
   const now=new Date(),target=new Date(now.getFullYear(),now.getMonth(),now.getDate()+day);
   // trước 3 ngày → sau 3 ngày (quản lý msg 6659)
@@ -211,7 +215,7 @@ function render(){
   const P={},T={},S={};act.filter(o=>o.st==="Mới"||o.st==="Đang làm").forEach(o=>lines(o).forEach(({q,t})=>{if(!q)return;
     const [main,...rest]=t.split(" · ");const parts=main.split(" + ").map(x=>x.trim());P[parts[0]]=(P[parts[0]]||0)+q;
     // topping = phần có sẵn trong công thức món (ĐB có tôm/trứng/thịt/mực) + phần khách gọi thêm
-    ((RECIPE[parts[0]]||[,[]])[1]).concat(parts.slice(1).map(x=>ALIAS[x]||x)).forEach(x=>T[x]=(T[x]||0)+q);
+    const off=offOf(rest);((RECIPE[parts[0]]||[,[]])[1]).filter(k=>!off.some(o=>k===o||k.startsWith(o+" (")||(o==="Tôm nướng"&&k==="Tôm")||(/^Mực/.test(o)&&/^Mực/.test(k)))).concat(parts.slice(1).map(x=>ALIAS[x]||x)).forEach(x=>T[x]=(T[x]||0)+q);
     rest.forEach(x=>{const m=x.match(/chấm (Mắm|Nước tương|Sốt trộn)( không cay| cay)?/i);if(m){S[m[1]]=(S[m[1]]||0)+q;if(m[2]&&/không/.test(m[2]))S["Không cay"]=(S["Không cay"]||0)+q}})}));
   const QN={"Trứng cút (bún)":[2,"quả"],"Chả ram tôm đất":[2,"cuốn"],"Chả bò":[0.5,"cây"],"Trứng cút":[3,"quả"],"Tôm":[4,"con"],"Chả giò chay":[1,"cuốn"],"Rong biển sấy":[0.5,"gói"]};
   const chip=(o,cls)=>Object.entries(o).map(([k,v])=>`<span class="pc ${cls||""}"><b>${v}</b>${k}${cls!=="dish"&&QN[k]?` <small>(${v*QN[k][0]} ${QN[k][1]})</small>`:""}</span>`).join("");

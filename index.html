@@ -116,6 +116,7 @@ h2.sec .en{font-size:13px;margin-top:-2px}
 .chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:14px;cursor:pointer;user-select:none;font-family:inherit;color:var(--ink)}
 .chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
 .chip em{font-style:normal;opacity:.8;font-size:12.5px}
+.inc .chip[aria-pressed="false"]{border-color:#E57373;color:#B71C1C;background:#FFF5F5}
 .por{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 10px 2px;margin-bottom:8px}
 .por-h{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}
 .por-h span{color:var(--red);font-weight:800}
@@ -369,13 +370,13 @@ const BASE_P={bun:5000,banh:10000,rau:5000,xoai:5000};   // 22/10 msg 6323/6325:
 const bp=(m,k)=>k==="banh"&&m.chay?8000:BASE_P[k];
 const baseN=(m,k)=>k==="banh"?(m.chay?"Bánh tráng + đậu phộng":"Bánh tráng + ruốc + đậu phộng"):BASE[k][0];
 const MENU=[
- {id:"tt",img:"img/sp2-sq.jpg",n:"Truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
- {id:"ttc",n:"Truyền thống chay",en:"Traditional (vegetarian)",de:"Fried tofu instead of shrimp",d:"Đậu hủ chiên thay ruốc",p:20000,top:CHAY,sauce:"Nước tương",chay:1},
- {id:"dbm",img:"img/sp3-sq.jpg",n:"Đặc biệt mặn",en:"Special",de:"Quail eggs + boiled pork + grilled shrimp",d:"Trứng cút + thịt luộc + tôm nướng",p:45000,top:MAN,sauce:"Mắm"},
- {id:"dbh",img:"img/sp4-sq.jpg",n:"Đặc biệt hải sản",en:"Seafood special",de:"Quail eggs + boiled pork + grilled shrimp + grilled squid",d:"Trứng cút + thịt luộc + tôm nướng + mực nướng",p:55000,top:MAN,sauce:"Mắm"},
- {id:"dbc",img:"img/dbc-sq.jpg",n:"Đặc biệt chay",en:"Vegetarian special",de:"Veggie spring roll + veggie sausage + seaweed",d:"Chả giò chay + chả chay + rong biển",p:45000,top:CHAY,sauce:"Nước tương",chay:1},
- {id:"bmt",n:"Bún mì trộn truyền thống",en:"Mixed noodles",de:"Noodles, fried tofu, seaweed, peanuts, herbs, carrot, green mango, house dressing, scallion-chili oil · add meat as toppings",d:"Bún mì, đậu hủ chiên, rong biển sấy, đậu phộng, rau, cà rốt, xoài, sốt trộn, dầu hành ớt · ăn mặn thì thêm topping",p:30000,top:BUN,sauce:"Sốt trộn",chay:1,bun:1},
- {id:"bmd",n:"Bún mì trộn đặc biệt",en:"Mixed noodles special",de:"Traditional + shrimp spring rolls + beef sausage + 2 quail eggs + grilled squid",d:"Truyền thống + chả ram tôm đất + chả bò + 2 trứng cút + mực nướng",p:55000,top:BUN,sauce:"Sốt trộn",bun:1},
+ {id:"full",img:"img/sp4-sq.jpg",n:"Bánh tráng trộn đầy đủ",en:"Full rice-cracker salad",de:"Everything in: quail eggs, boiled pork, grilled shrimp, grilled squid · untick what you don't eat",d:"Có sẵn trứng cút, thịt luộc, tôm nướng, mực nướng · không ăn món nào bấm bỏ, giá tự trừ (bỏ mực = 45k, bỏ hết = 20k)",p:55000,
+   inc:[["trung","3 quả"],["thit","40g"],["tom","4 con"],["muc","4 miếng"]],top:["cgchay","chachay","rong"],sauce:"Mắm"},
+ {id:"dbc",img:"img/dbc-sq.jpg",n:"Bánh tráng chay đầy đủ",en:"Full vegetarian",de:"Fried tofu instead of shrimp + veggie spring roll, veggie sausage, seaweed · untick what you don't eat",d:"Đậu hủ chiên thay ruốc · có sẵn chả giò chay, chả chay, rong biển · bỏ hết = 20k",p:45000,
+   inc:[["cgchay","1 cuốn"],["chachay",""],["rong","½ gói"]],top:[],sauce:"Nước tương",chay:1},
+ {id:"bm",n:"Bún mì trộn",en:"Mixed noodles",de:"Noodles, fried tofu, seaweed, peanuts, herbs, carrot, green mango, house dressing, scallion-chili oil + shrimp spring rolls, beef sausage, quail eggs, squid · untick all = vegetarian 30k",d:"Bún mì, đậu hủ chiên, rong biển, đậu phộng, rau, cà rốt, xoài, sốt trộn, dầu hành ớt · có sẵn chả ram tôm đất, chả bò, trứng cút, mực · bỏ hết topping = phần CHAY 30k",p:55000,
+   inc:[["charam","2 cuốn"],["chabo","½ cây"],["trung","2 quả"],["muc","6g",5000]],top:["thit","tom","cgchay","chachay","rong"],sauce:"Sốt trộn",bun:1},
+ {id:"tt",img:"img/sp2-sq.jpg",n:"Bánh tráng truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
  {id:"tra",img:"img/tra-sq.jpg",n:"Trà tắc xí muội",en:"Kumquat & salted plum iced tea",de:"Cold, sweet & sour",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
 ];
 const BANK={bin:"TPB",name:"TPBank",acc:"28428121985",accFmt:"2842 8121 985"};
@@ -392,14 +393,16 @@ document.addEventListener("click",e=>{const b=e.target.closest(".cp");if(!b)retu
 const vnd=n=>n.toLocaleString("vi-VN")+"đ", $=s=>document.querySelector(s);
 const st={}; MENU.forEach(m=>st[m.id]=[]);
 const MAXQ=300; // tối đa mỗi món
-const newP=(m,q=1)=>({tops:[],base:{},sauce:m.sauce||"",cay:"Cay",note:"",q});   // 1 "kiểu" = nhiều phần giống hệt nhau (q phần)
+const newP=(m,q=1)=>({tops:[],off:[],base:{},sauce:m.sauce||"",cay:"Cay",note:"",q});   // 1 "kiểu" = nhiều phần giống hệt nhau (q phần)
 const cnt=P=>P.reduce((a,p)=>a+p.q,0);
-function unit(m,p){return m.p+p.tops.reduce((a,k)=>a+TOP[k][1],0)+Object.entries(p.base||{}).reduce((a,[k,v])=>a+(v>0&&bp(m,k)?bp(m,k):0),0)}
+const incP=(m,x)=>x[2]!=null?x[2]:TOP[x[0]][1];   // giá trừ khi bỏ 1 topping có sẵn (bún: mực 5k)
+function unit(m,p){return m.p-(m.inc||[]).filter(x=>(p.off||[]).includes(x[0])).reduce((a,x)=>a+incP(m,x),0)+p.tops.reduce((a,k)=>a+TOP[k][1],0)+Object.entries(p.base||{}).reduce((a,[k,v])=>a+(v>0&&bp(m,k)?bp(m,k):0),0)}
 const baseOf=(p,v)=>Object.keys(BASE).filter(k=>(p.base||{})[k]===v&&(v<0||BASE_P[k]));
 function chips(m,p,i,n){
   return `<div class="por" data-i="${i}"><div class="por-h"><b>${n>1?`Kiểu ${i+1}<span class="en i">Style ${i+1}</span>`:"Lựa chọn<span class=\"en i\">Options</span>"}</b><span>${vnd(unit(m,p))}/phần</span></div>
    <div class="pq"><span>Số phần kiểu này<span class="en">Portions</span></span><button type="button" class="qm" aria-label="Bớt">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="${MAXQ}" value="${p.q}"><button type="button" class="qp" aria-label="Thêm">+</button>${n>1?`<button type="button" class="qx" aria-label="Xoá kiểu">✕</button>`:""}</div>
-   <div class="chips">${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
+   ${m.inc?`<div class="chips inc"><span class="sl">Có sẵn trong món · bấm để bỏ<span class="en">Included · tap to remove</span></span>${m.inc.map(x=>{const on=!(p.off||[]).includes(x[0]);return `<button type="button" class="chip" data-off="${x[0]}" aria-pressed="${on}">${on?"✓":"✕ Không"} ${TOP[x[0]][0]}${x[1]?" "+x[1]:""}<span class="en i">${TOP[x[0]][2]}</span>${on?"":` <em>−${incP(m,x)/1000}k</em>`}</button>`}).join("")}</div>`:""}
+   ${m.top.length?`<div class="chips">${m.inc?'<span class="sl">Thêm topping<span class="en">Extra toppings</span></span>':""}`:'<div class="chips" style="display:none">'}${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
    <div class="base"><span class="sl">Thêm / bớt phần nền<span class="en">More / less of the base</span></span>${Object.keys(BASE).filter(k=>!(m.bun&&k==="banh")).map(k=>{const v=(p.base||{})[k]||0;return `<div class="brow"><span class="bn">${baseN(m,k)}<span class="en i">${BASE[k][1]}</span></span><span class="seg"><button type="button" class="b" data-base="${k}" data-v="-1" aria-pressed="${v<0}">Bớt</button><button type="button" data-base="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${bp(m,k)?`<button type="button" data-base="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${bp(m,k)/1000}k</button>`:""}</span></div>`}).join("")}</div>
    <div class="chips sauce"><span class="sl">${m.bun?"Sốt trộn":"Nước chấm"}<span class="en">Sauce</span></span>${(m.bun?[]:["Mắm","Nước tương"]).map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}<span class="en i">${s==="Mắm"?"fish sauce":"soy sauce"}</span></button>`).join("")}<span class="sl" style="margin-left:6px">·</span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay<span class=\"en i\">spicy</span>":"Không cay<span class=\"en i\">mild</span>"}</button>`).join("")}</div>
    <input class="pnote" type="text" maxlength="80" placeholder="${baseOf(p,-1).length?"Ghi chú phần bớt (vd: bớt ½ rau, không xoài) · Note":"Ghi chú · Note (vd/e.g.: không rau – no herbs)"}" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
@@ -417,6 +420,7 @@ function renderDish(el){
     r.querySelectorAll("[data-top]").forEach(b=>b.onclick=()=>{const k=b.dataset.top,j=p.tops.indexOf(k);
       j<0?p.tops.push(k):p.tops.splice(j,1);p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y));re()});
     r.querySelectorAll("[data-base]").forEach(b=>b.onclick=()=>{p.base={...p.base,[b.dataset.base]:+b.dataset.v};re()});
+    r.querySelectorAll("[data-off]").forEach(b=>b.onclick=()=>{const k=b.dataset.off,o=p.off=p.off||[],j=o.indexOf(k);j<0?o.push(k):o.splice(j,1);re()});
     r.querySelectorAll("[data-sauce]").forEach(b=>b.onclick=()=>{p.sauce=b.dataset.sauce;re()});
     r.querySelectorAll("[data-cay]").forEach(b=>b.onclick=()=>{p.cay=b.dataset.cay;re()});
     r.querySelector(".qm").onclick=()=>{setQ(m,P,i,p.q-1);re()};
@@ -439,15 +443,16 @@ function renderMenu(){
     renderDish(el);
   });
 }
-function lines(){const out=[];MENU.forEach(m=>{const g={};st[m.id].forEach(p=>{const k=p.tops.join(",")+"|"+JSON.stringify(p.base||{})+"|"+p.sauce+"|"+p.cay+"|"+p.note.trim();(g[k]=g[k]||{p,q:0}).q+=p.q});
+function lines(){const out=[];MENU.forEach(m=>{const g={};st[m.id].forEach(p=>{const k=p.tops.join(",")+"|"+(p.off||[]).join(",")+"|"+JSON.stringify(p.base||{})+"|"+p.sauce+"|"+p.cay+"|"+p.note.trim();(g[k]=g[k]||{p,q:0}).q+=p.q});
   Object.values(g).forEach(({p,q})=>{const u=unit(m,p);out.push({m,q,u,amt:u*q,sauce:p.sauce,cay:m.drink?"":p.cay,note:p.note.trim(),
     bot:baseOf(p,-1).map(k=>BASE[k][0].toLowerCase()).join(", "),
+    off:(m.inc||[]).filter(x=>(p.off||[]).includes(x[0])).map(x=>TOP[x[0]][0]).join(", "),
     title:m.n+[...p.tops.map(k=>TOP[k][0]),...baseOf(p,1).map(k=>k==="banh"?(m.chay?"Combo bánh tráng chay":"Combo bánh tráng"):BASE[k][0])].map(x=>" + "+x).join("")})})});return out}
 function totals(){let t=0,p=0,d=0;lines().forEach(L=>{t+=L.amt;L.m.drink?d+=L.q:p+=L.q});return{t,p,d}}
 function qtyText(T){return [T.p&&T.p+" phần",T.d&&T.d+" ly trà"].filter(Boolean).join(" + ")}
 function renderCart(){
   const T=totals(),L=lines();
-  $("#cart").innerHTML=L.length?L.map(l=>`<div class="line"><div class="t"><b>${l.q} × ${l.title}</b><span>${[l.sauce&&"Chấm "+l.sauce+(l.cay?" ("+l.cay.toLowerCase()+")":""),l.bot&&"Bớt "+l.bot,l.note&&"📝 "+l.note,vnd(l.u)+"/"+(l.m.drink?"ly":"phần")].filter(Boolean).join(" · ")}</span></div><div class="m">${vnd(l.amt)}</div></div>`).join("")
+  $("#cart").innerHTML=L.length?L.map(l=>`<div class="line"><div class="t"><b>${l.q} × ${l.title}</b><span>${[l.sauce&&"Chấm "+l.sauce+(l.cay?" ("+l.cay.toLowerCase()+")":""),l.off&&"Không "+l.off,l.bot&&"Bớt "+l.bot,l.note&&"📝 "+l.note,vnd(l.u)+"/"+(l.m.drink?"ly":"phần")].filter(Boolean).join(" · ")}</span></div><div class="m">${vnd(l.amt)}</div></div>`).join("")
     +`<div class="total"><span>Tổng (chưa ship)<span class="en">Subtotal (excl. delivery)</span></span><span class="v">${vnd(T.t)}</span></div>`
     :`<div class="empty">Chưa có món nào — chọn ở thực đơn phía trên nhé.<span class="en">Your cart is empty — choose from the menu above.</span></div>`;
   $("#barq").textContent=$("#sumq").textContent=L.length?qtyText(T):"Chưa chọn món"; $("#sumt").textContent=vnd(T.t);updSum();
@@ -503,14 +508,14 @@ $("#f").onsubmit=async e=>{
   const [y,mo,da]=date.split("-"),when=`${da}/${mo}/${y} ${time}`,T=totals(),n=new Date(),p2=v=>String(v).padStart(2,"0");
   const RC="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",rc=()=>RC[Math.floor(Math.random()*RC.length)];
   const code=`W${p2(n.getDate())}${p2(n.getMonth()+1)}-${p2(n.getHours())}${p2(n.getMinutes())}${rc()}${rc()}${rc()}`;
-  const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.bot?" · bớt "+L.bot:""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
+  const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.off?" · không "+L.off:""}${L.bot?" · bớt "+L.bot:""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
   const fd=new URLSearchParams();
   [[E.name,name],[E.phone,phone],[E.addr,addr],[E.when,when],[E.items,items],[E.qty,qtyText(T)],[E.total,String(T.t)],[E.code,code],
    [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":isFree()?`Free ship ≤ ${SHIP.freeKm} km — shop trả`:sb],[E.grand,String(grand())],[E.love,loveText()]]
    .forEach(([k,v])=>fd.append(k,v));
   const btn=$("#go");btn.disabled=true;btn.innerHTML="Đang gửi…<span class=en>Sending…</span>";
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
-    try{const g=$("#grp").value.trim().toUpperCase(),kit=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.bot?" · bớt "+L.bot:""}${L.note?" · "+L.note:""}`).join("\n");
+    try{const g=$("#grp").value.trim().toUpperCase(),kit=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.off?" · không "+L.off:""}${L.bot?" · bớt "+L.bot:""}${L.note?" · "+L.note:""}`).join("\n");
       fetch(NTFY,{method:"POST",body:JSON.stringify({topic:NTFY_TOPIC,priority:5,tags:["bell"],title:`🔔 Đơn mới ${code} — nhận ${time} ${da}/${mo}`,
         message:`${g?"Nhóm "+g+"\n":""}${kit}\n${pick?"🏃 Tự đến lấy":"🛵 Giao"+(geo?" ~"+geo.km.toFixed(1)+" km":"")} · ${qtyText(T)}\n💰 ${vnd(T.t)} · ${document.querySelector('input[name=pay]:checked').value}`,click:"https://bot281.github.io/banh-trang-binh-dinh/bep.html"})}).catch(()=>{})}catch(_){}
     $("#okcode").textContent="Mã đơn: "+code;
