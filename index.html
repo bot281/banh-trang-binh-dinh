@@ -373,7 +373,7 @@ let geo=null; // {km,fee,label}
 
 const TOP={trung:["Trứng cút",5000,"quail eggs"],thit:["Thịt luộc",10000,"boiled pork"],tom:["Tôm nướng",10000,"grilled shrimp"],muc:["Mực đại dương nướng",10000,"grilled squid"],
   cgchay:["Chả giò chay",10000,"veggie spring roll"],chachay:["Chả chay",10000,"veggie sausage"],rong:["Rong biển sấy",5000,"seaweed"],
-  charam:["Chả ram tôm đất",10000,"shrimp spring rolls"],chabo:["Chả bò",5000,"beef sausage"]};   // bún mì trộn (chị Hiền 31/10 msg 6666–6672)
+  charam:["Ram tôm",10000,"shrimp spring rolls"],chabo:["Chả bò",5000,"beef sausage"]};   // bún mì trộn (chị Hiền 31/10 msg 6666–6672)
 const MAN=["trung","thit","tom","muc","cgchay","chachay","rong"], CHAY=["cgchay","chachay","rong"], BUN=["charam","chabo","trung","thit","tom","muc","cgchay","chachay","rong"];
 // Phần NỀN khách chọn thêm / bớt (quản lý 22/10 msg 6317). Giá THÊM = null → chưa có giá, ẩn nút "Thêm".
 const BASE={bun:["Bún mì","noodles"],banh:["Bánh tráng","rice cracker"],rau:["Rau","herbs"],xoai:["Xoài","green mango"]};
@@ -385,7 +385,7 @@ const MENU=[
    inc:[["trung","3 quả"],["thit","40g"],["tom","4 con"],["muc","4 miếng"]],top:["cgchay","chachay","rong"],sauce:"Mắm"},
  {id:"dbc",img:"img/dbc-sq.jpg",n:"Bánh tráng chay đầy đủ",en:"Full vegetarian",de:"Fried tofu instead of shrimp + veggie spring roll, veggie sausage, seaweed · untick what you don't eat",d:"Đậu hủ chiên thay ruốc · có sẵn chả giò chay, chả chay, rong biển · bỏ hết = 20k",p:45000,
    inc:[["cgchay","1 cuốn"],["chachay",""],["rong","½ gói"]],top:[],sauce:"Nước tương",chay:1},
- {id:"bm",n:"Bún mì trộn",en:"Mixed noodles",de:"Noodles, fried tofu, seaweed, peanuts, herbs, carrot, green mango, house dressing, scallion-chili oil + shrimp spring rolls, beef sausage, quail eggs, squid · untick all = vegetarian 30k",d:"Bún mì, đậu hủ chiên, rong biển, đậu phộng, rau, cà rốt, xoài, sốt trộn, dầu hành ớt · có sẵn chả ram tôm đất, chả bò, trứng cút, mực · bỏ hết topping = phần CHAY 30k",p:55000,
+ {id:"bm",n:"Bún mì trộn",en:"Mixed noodles",de:"Noodles, fried tofu, seaweed, peanuts, herbs, carrot, green mango, house dressing, scallion-chili oil + shrimp spring rolls, beef sausage, quail eggs, squid · untick all = vegetarian 30k",d:"Bún mì, đậu hủ chiên, rong biển, đậu phộng, rau, cà rốt, xoài, sốt trộn, dầu hành ớt · có sẵn ram tôm, chả bò, trứng cút, mực · bỏ hết topping = phần CHAY 30k",p:55000,
    inc:[["charam","2 cuốn"],["chabo","½ cây"],["trung","2 quả"],["muc","6g",5000]],top:["thit","tom","cgchay","chachay","rong"],sauce:"Sốt trộn",bun:1},
  {id:"tt",img:"img/sp2-sq.jpg",n:"Bánh tráng truyền thống",en:"Traditional",de:"Rice cracker, noodles, dried shrimp, coconut, herbs",d:"Bánh tráng mì nướng, bún mì, ruốc biển, dừa nạo, rau",p:20000,top:MAN,sauce:"Mắm"},
  {id:"tra",img:"img/tra-sq.jpg",n:"Trà tắc xí muội",en:"Kumquat & salted plum iced tea",de:"Cold, sweet & sour",d:"Mát lạnh, chua ngọt",p:15000,drink:1}
