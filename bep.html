@@ -195,9 +195,9 @@ function recipe(t){
     .concat(extra.map(k=>`<span class="rt add">+ THÊM ${k}${QTY[k]?" "+QTY[k]:""}</span>`));
   const sauce=rest.map(x=>x.match(/^chấm (.+)$/i)).filter(Boolean).map(m=>`<span class="rt sc">Chấm ${m[1]}</span>`);
   const no=off.map(o=>`<span class="rt bot">KHÔNG ${o}</span>`);
-  const bot=rest.map(x=>x.match(/^bớt (.+)$/i)).filter(Boolean).map(m=>`<span class="rt bot">BỚT ${m[1]}</span>`);
+  const bot=rest.map(x=>x.match(/^(bớt|không ăn) (.+)$/i)).filter(Boolean).map(m=>`<span class="rt bot">${m[1].toUpperCase()} ${m[2]}</span>`);   // web mới ghi "không ăn" (msg 6702)
   return `<div class="rc">${top.length?`<div>${top.join("")}</div>`:""}<div class="nen">Nền: ${R[0].join(" · ")}</div>${no.join("")}${sauce.join("")}${bot.join("")}</div>`}
-function offOf(rest){return rest.map(x=>x.match(/^không (.+)$/i)).filter(Boolean).flatMap(m=>m[1].split(",").map(y=>y.trim()))}
+function offOf(rest){return rest.map(x=>x.match(/^không (?!ăn )(.+)$/i)).filter(Boolean).flatMap(m=>m[1].split(",").map(y=>y.trim()))}
 function render(){
   const now=new Date(),target=new Date(now.getFullYear(),now.getMonth(),now.getDate()+day);
   // trước 3 ngày → sau 3 ngày (quản lý msg 6659)

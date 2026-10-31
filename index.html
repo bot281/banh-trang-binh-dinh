@@ -229,8 +229,9 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 .por .chip{padding:6px 12px;font-size:14px}
 .por .brow{display:flex;justify-content:space-between;flex-wrap:nowrap}
 .por .brow .bn{min-width:0}
-.por .seg{display:grid;grid-template-columns:48px 96px 78px}
-.por .seg button{padding:5px 4px;text-align:center}
+.por .brow{display:grid!important;grid-template-columns:62px 1fr;gap:6px}
+.por .seg{display:grid;grid-template-columns:1fr 1.2fr 1fr;width:100%}
+.por .seg button{padding:6px 2px;text-align:center;font-size:12.5px;white-space:nowrap}
 .brow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .brow .bn{min-width:96px;font-size:13.5px}
 .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
@@ -413,9 +414,9 @@ function chips(m,p,i,n){
    <div class="pq"><span>Số phần kiểu này<span class="en">Portions</span></span><button type="button" class="qm" aria-label="Bớt">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="${MAXQ}" value="${p.q}"><button type="button" class="qp" aria-label="Thêm">+</button>${n>1?`<button type="button" class="qx" aria-label="Xoá kiểu">✕</button>`:""}</div>
    ${m.inc?`<div class="chips inc"><span class="sl">Có sẵn trong món · bấm để bỏ<span class="en">Included · tap to remove</span></span>${m.inc.map(x=>{const on=!(p.off||[]).includes(x[0]);return `<button type="button" class="chip" data-off="${x[0]}" aria-pressed="${on}">${on?"✓":"✕ Không"} ${x[0]==="muc"?"Mực nướng":TOP[x[0]][0]}<span class="en i">${TOP[x[0]][2]}</span>${on?"":` <em>−${incP(m,x)/1000}k</em>`}</button>`}).join("")}</div>`:""}
    ${m.top.length?`<div class="chips">${m.inc?'<span class="sl">Thêm topping<span class="en">Extra toppings</span></span>':""}`:'<div class="chips" style="display:none">'}${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
-   <div class="base"><span class="sl">Thêm / bớt phần nền<span class="en">More / less of the base</span></span>${Object.keys(BASE).filter(k=>!(m.bun&&k==="banh")).map(k=>{const v=(p.base||{})[k]||0;return `<div class="brow"><span class="bn">${k==="banh"?"Bánh tráng":baseN(m,k)}<span class="en i">${BASE[k][1]}</span></span><span class="seg"><button type="button" class="b" data-base="${k}" data-v="-1" aria-pressed="${v<0}">Bớt</button><button type="button" data-base="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${bp(m,k)?`<button type="button" data-base="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${bp(m,k)/1000}k</button>`:""}</span></div>`}).join("")}</div>
+   <div class="base"><span class="sl">Phần nền: không ăn hoặc thêm<span class="en">Skip or add more</span></span>${Object.keys(BASE).filter(k=>!(m.bun&&k==="banh")).map(k=>{const v=(p.base||{})[k]||0;return `<div class="brow"><span class="bn">${k==="banh"?"Bánh tráng":baseN(m,k)}<span class="en i">${BASE[k][1]}</span></span><span class="seg"><button type="button" class="b" data-base="${k}" data-v="-1" aria-pressed="${v<0}">Không ăn</button><button type="button" data-base="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${bp(m,k)?`<button type="button" data-base="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${bp(m,k)/1000}k</button>`:""}</span></div>`}).join("")}</div>
    <div class="chips sauce"><span class="sl">${m.bun?"Sốt trộn":"Nước chấm"}<span class="en">Sauce</span></span>${(m.bun?[]:["Mắm","Nước tương"]).map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}<span class="en i">${s==="Mắm"?"fish sauce":"soy sauce"}</span></button>`).join("")}</div><div class="chips"><span class="sl">Độ cay<span class="en">Spice</span></span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay<span class=\"en i\">spicy</span>":"Không cay<span class=\"en i\">mild</span>"}</button>`).join("")}</div>
-   <input class="pnote" type="text" maxlength="80" placeholder="${baseOf(p,-1).length?"Ghi chú phần bớt (vd: bớt ½ rau, không xoài) · Note":"Ghi chú · Note (vd/e.g.: không rau – no herbs)"}" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
+   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú · Note (vd/e.g.: ít rau, nhiều cay)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
 function setQ(m,P,i,v){v=Math.max(0,Math.min(MAXQ-cnt(P)+P[i].q,Math.floor(+v||0)));P[i].q=v;if(!v&&P.length>1)P.splice(i,1);else if(!v)P.length=0}
 function renderDish(el){
   const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id], q=cnt(P), sub=P.reduce((a,p)=>a+unit(m,p)*p.q,0);
@@ -462,7 +463,7 @@ function totals(){let t=0,p=0,d=0;lines().forEach(L=>{t+=L.amt;L.m.drink?d+=L.q:
 function qtyText(T){return [T.p&&T.p+" phần",T.d&&T.d+" ly trà"].filter(Boolean).join(" + ")}
 function renderCart(){
   const T=totals(),L=lines();
-  $("#cart").innerHTML=L.length?L.map(l=>`<div class="line"><div class="t"><b>${l.q} × ${l.title}</b><span>${[l.sauce&&"Chấm "+l.sauce+(l.cay?" ("+l.cay.toLowerCase()+")":""),l.off&&"Không "+l.off,l.bot&&"Bớt "+l.bot,l.note&&"📝 "+l.note,vnd(l.u)+"/"+(l.m.drink?"ly":"phần")].filter(Boolean).join(" · ")}</span></div><div class="m">${vnd(l.amt)}</div></div>`).join("")
+  $("#cart").innerHTML=L.length?L.map(l=>`<div class="line"><div class="t"><b>${l.q} × ${l.title}</b><span>${[l.sauce&&"Chấm "+l.sauce+(l.cay?" ("+l.cay.toLowerCase()+")":""),l.off&&"Không "+l.off,l.bot&&"Không ăn "+l.bot,l.note&&"📝 "+l.note,vnd(l.u)+"/"+(l.m.drink?"ly":"phần")].filter(Boolean).join(" · ")}</span></div><div class="m">${vnd(l.amt)}</div></div>`).join("")
     +`<div class="total"><span>Tổng (chưa ship)<span class="en">Subtotal (excl. delivery)</span></span><span class="v">${vnd(T.t)}</span></div>`
     :`<div class="empty">Chưa có món nào — chọn ở thực đơn phía trên nhé.<span class="en">Your cart is empty — choose from the menu above.</span></div>`;
   $("#barq").textContent=$("#sumq").textContent=L.length?qtyText(T):"Chưa chọn món"; $("#sumt").textContent=vnd(T.t);updSum();
@@ -518,14 +519,14 @@ $("#f").onsubmit=async e=>{
   const [y,mo,da]=date.split("-"),when=`${da}/${mo}/${y} ${time}`,T=totals(),n=new Date(),p2=v=>String(v).padStart(2,"0");
   const RC="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",rc=()=>RC[Math.floor(Math.random()*RC.length)];
   const code=`W${p2(n.getDate())}${p2(n.getMonth()+1)}-${p2(n.getHours())}${p2(n.getMinutes())}${rc()}${rc()}${rc()}`;
-  const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.off?" · không "+L.off:""}${L.bot?" · bớt "+L.bot:""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
+  const items=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.off?" · không "+L.off:""}${L.bot?" · không ăn "+L.bot:""}${L.note?" · ghi chú: "+L.note:""} (${vnd(L.u)}) = ${vnd(L.amt)}`).join("\n");
   const fd=new URLSearchParams();
   [[E.name,name],[E.phone,phone],[E.addr,addr],[E.when,when],[E.items,items],[E.qty,qtyText(T)],[E.total,String(T.t)],[E.code,code],
    [E.pay,document.querySelector('input[name=pay]:checked').value],[E.note,$("#note").value.trim()],[E.grp,$("#grp").value.trim().toUpperCase()],[E.km,geo&&!pick?geo.km.toFixed(1):""],[E.ship,pick?"0":(geo?String(geo.fee):"Chưa tính")],[E.shipby,pick?"Tự đến lấy":isFree()?`Free ship ≤ ${SHIP.freeKm} km — shop trả`:sb],[E.grand,String(grand())],[E.love,loveText()]]
    .forEach(([k,v])=>fd.append(k,v));
   const btn=$("#go");btn.disabled=true;btn.innerHTML="Đang gửi…<span class=en>Sending…</span>";
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});
-    try{const g=$("#grp").value.trim().toUpperCase(),kit=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.off?" · không "+L.off:""}${L.bot?" · bớt "+L.bot:""}${L.note?" · "+L.note:""}`).join("\n");
+    try{const g=$("#grp").value.trim().toUpperCase(),kit=lines().map(L=>`${L.q} × ${L.title}${L.sauce?" · chấm "+L.sauce+(L.cay?" "+L.cay.toLowerCase():""):""}${L.off?" · không "+L.off:""}${L.bot?" · không ăn "+L.bot:""}${L.note?" · "+L.note:""}`).join("\n");
       fetch(NTFY,{method:"POST",body:JSON.stringify({topic:NTFY_TOPIC,priority:5,tags:["bell"],title:`🔔 Đơn mới ${code} — nhận ${time} ${da}/${mo}`,
         message:`${g?"Nhóm "+g+"\n":""}${kit}\n${pick?"🏃 Tự đến lấy":"🛵 Giao"+(geo?" ~"+geo.km.toFixed(1)+" km":"")} · ${qtyText(T)}\n💰 ${vnd(T.t)} · ${document.querySelector('input[name=pay]:checked').value}`,click:"https://bot281.github.io/banh-trang-binh-dinh/bep.html"})}).catch(()=>{})}catch(_){}
     $("#okcode").textContent="Mã đơn: "+code;
