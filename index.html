@@ -475,7 +475,7 @@ function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");cl
 // date & time — quản lý 22/10 msg 6317: món làm tươi, cần ÍT NHẤT 1 tiếng chuẩn bị (+ thời gian chạy xe nếu giao)
 const PREP=60;   // phút chuẩn bị tối thiểu
 // LỊCH NGHỈ: {tu:"YYYY-MM-DD",den:"YYYY-MM-DD",gioTu:"HH:MM"?,gioDen:"HH:MM"?,ly:"..."} — không ghi giờ = nghỉ cả ngày
-const NGHI=[];
+const NGHI=[{tu:"2026-11-06",den:"2026-11-08",ly:""}];   // msg 6870: nghỉ T6–CN 06–08/11
 const p2=n=>String(n).padStart(2,"0"),isoD=x=>`${x.getFullYear()}-${p2(x.getMonth()+1)}-${p2(x.getDate())}`,hm=x=>`${p2(x.getHours())}:${p2(x.getMinutes())}`,dm=s=>s.split("-").reverse().slice(0,2).join("/");
 const slotDate=(date,t)=>new Date(date+"T"+t+":00");
 function travelMin(){return $("#pickup").checked?0:(geo?Math.max(15,Math.ceil(geo.km*4)):30)}
