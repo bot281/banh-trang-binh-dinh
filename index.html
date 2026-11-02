@@ -484,7 +484,7 @@ function closedAt(dt){const d=isoD(dt),t=hm(dt);return NGHI.find(n=>d>=n.tu&&d<=
 function fmtE(e){const n=new Date(Math.ceil(e/18e5)*18e5);return hm(n)+(isoD(n)!==isoD(new Date())?" ngày "+dm(isoD(n)):"")}
 function buildTimes(){
   if(MEMBER)return;const date=$("#date").value,cur=$("#time").value,e=earliest();let o='<option value="">Chọn giờ</option>',any=false,allClosed=true;
-  for(let h=6;h<=20;h++)for(const mm of[0,30]){if(h===20&&mm)break;const t=`${p2(h)}:${p2(mm)}`,dt=slotDate(date,t),late=dt<e,cl=closedAt(dt);
+  for(let h=0;h<=23;h++)for(const mm of[0,30]){const t=`${p2(h)}:${p2(mm)}`,dt=slotDate(date,t),late=dt<e,cl=closedAt(dt);
     if(!cl)allClosed=false;if(!late&&!cl)any=true;o+=`<option value="${t}"${late||cl?" disabled":""}>${t}${cl?" — shop nghỉ":late?" — không kịp":""}</option>`}
   $("#time").innerHTML=o;if(cur)$("#time").value=cur;buildTimes.any=any;
   const c=closedAt(slotDate(date,"12:00"));
