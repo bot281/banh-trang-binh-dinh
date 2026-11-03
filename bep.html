@@ -90,6 +90,12 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .card.isnew{box-shadow:0 0 0 4px #F2A900}
 .filters label{font-size:13px;display:flex;gap:5px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px}
 @media (max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}.tl{padding-left:52px}.tl:before{left:36px}.slot .t{left:-54px;width:36px;font-size:14px}.slot .dot{left:-22px}.now span{left:-54px}}
+.pm{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:999}
+.pm .bx{background:#fff;border-radius:16px 16px 0 0;padding:16px 16px 20px;width:100%;max-width:480px;font-size:15px}
+.pm h3{margin:0 0 4px;font-size:17px}.pm .lb{margin-top:10px;font-weight:700;color:#555}
+.pm .g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.pm button{padding:12px 6px;border-radius:10px;border:1.5px solid #ddd;background:#fff;font:inherit;font-weight:700;cursor:pointer;color:#222}
+.pm button.on{background:var(--s-paid);color:#fff;border-color:var(--s-paid)}.pm button:disabled{opacity:.4}
 </style>
 </head>
 <body>
@@ -152,13 +158,13 @@ async function load(){
     rows.forEach((c,i)=>{if(!c)return;const nm=String(g(c,"name"));
       if(nm===UPD){const code=String(g(c,"code"));const st=String(g(c,"items")).replace(/^Trạng thái:\s*/,"");(ev[code]=ev[code]||[]).push([i,st]);return}
       if(nm===UPD2){const code=String(g(c,"code")),t=String(g(c,"items")),e=ev2[code]=ev2[code]||{};
-        if(/^Phí ship:/.test(t))e.ship=num(t);else if(/^Nhắn khách:/.test(t))e.msg=t.replace(/^Nhắn khách:\s*/,"");else if(/^(Đã|Chưa) nhận thanh toán/.test(t))e.paid=/^Đã/.test(t);return}
+        if(/^Phí ship:/.test(t))e.ship=num(t);else if(/^Nhắn khách:/.test(t))e.msg=t.replace(/^Nhắn khách:\s*/,"");else if(/^(Đã|Chưa) nhận thanh toán/.test(t)){e.paid=/^Đã/.test(t);e.how=e.paid?(t.split(" · ").slice(1).join(" · ")):""}return}
       if(!nm||/^⚙/.test(nm))return;
       out.push({row:i,code:String(g(c,"code")||("R"+i)),name:nm,phone:String(g(c,"phone")),addr:String(g(c,"addr")),when:parseWhen(g(c,"when")),whenTxt:String(g(c,"when")),
         items:String(g(c,"items")),qty:String(g(c,"qty")),grand:g(c,"grand")||g(c,"total"),pay:String(g(c,"pay")),note:String(g(c,"note")),grp:String(g(c,"grp")),
         shipby:String(g(c,"shipby")),total:num(g(c,"total")),ship0:String(g(c,"ship")),km:parseFloat(String(g(c,"km")).replace(",","."))||0,love:String(g(c,"love")),st0:String(g(c,"st")||"")})});
     out.forEach(o=>{const pick=/tự đến lấy/i.test(o.addr+" "+o.shipby);o.pick=pick;o.travel=pick?0:(o.km?Math.max(10,Math.ceil(o.km*SHIPCFG.minPerKm)):SHIPCFG.defTravel);o.hand=o.when?new Date(o.when-(pick?0:(o.travel+SHIPCFG.wait))*60000):null});
-    out.forEach(o=>{const e=ev2[o.code]||{},L=LOCAL2[o.code]||{};o.shipEst=L.ship==null&&e.ship==null;o.ship=L.ship!=null?L.ship:e.ship!=null?e.ship:(/\d/.test(o.ship0)?num(o.ship0):null);o.msg=L.msg!=null?L.msg:(e.msg||"");o.paid=L.paid!=null?L.paid:!!e.paid;
+    out.forEach(o=>{const e=ev2[o.code]||{},L=LOCAL2[o.code]||{};o.shipEst=L.ship==null&&e.ship==null;o.ship=L.ship!=null?L.ship:e.ship!=null?e.ship:(/\d/.test(o.ship0)?num(o.ship0):null);o.msg=L.msg!=null?L.msg:(e.msg||"");o.how=L.how!=null?L.how:(e.how||"");o.paid=L.paid!=null?L.paid:!!e.paid;
       if((L.ship!=null||e.ship!=null)&&/^Cộng/i.test(o.shipby))o.grand=o.total+o.ship});
     out.forEach(o=>{const e=ev[o.code];o.st=e&&e.length?e[e.length-1][1]:(o.st0||"Mới");if(LOCAL[o.code]&&LOCAL[o.code].t>Date.now()-120000)o.st=LOCAL[o.code].st});
     const codes=out.map(o=>o.code);
@@ -234,14 +240,15 @@ function render(){
       <div class="hand">${o.pick?`🏃 Khách tự đến lấy lúc <b>${hm(o.when)}</b> — làm xong trước giờ này`:`🛵 Giao xe lúc <b>${hm(o.hand)}</b> → khách nhận ${hm(o.when)} <span>(xe đi ~${o.travel}′${o.km?" · "+o.km.toFixed(1)+" km":""} + chờ xe ${SHIPCFG.wait}′)</span>`}</div>
       <ul class="items">${lines(o).map(l=>`<li><span class="q">${l.q?l.q+"×":""}</span>${esc(l.t)}${recipe(l.t)}</li>`).join("")}</ul>
       <div class="meta">${o.phone?`📞 <a class="ph" href="tel:${esc(o.phone)}">${esc(fmtPhone(o.phone))}</a> <button class="zl" data-x="zalo" title="Chép link theo dõi rồi mở Zalo của khách">💬 Zalo + link</button><br>`:""}📍 <b>${esc(o.addr)}</b><br>💵 ${vnd(o.grand)} · ${esc(o.pay)}${o.shipby&&o.shipby!=="Tự đến lấy"?" · ship: "+esc(o.shipby):""}</div>
-      <div class="shipl">${o.pick?"":`🚚 Ship: <b>${o.ship!=null?vnd(o.ship):"chưa nhập"}</b>${o.ship!=null&&o.shipEst?" (web ước tính)":""}`}${o.msg?`${o.pick?"":" · "}💬 Đã nhắn khách: “${esc(o.msg)}”`:""}${o.paid||o.st==="Đã thu tiền"?" · <b style='color:var(--s-paid)'>✅ Đã nhận tiền</b>":""}</div>
+      <div class="shipl">${o.pick?"":`🚚 Ship: <b>${o.ship!=null?vnd(o.ship):"chưa nhập"}</b>${o.ship!=null&&o.shipEst?" (web ước tính)":""}`}${o.msg?`${o.pick?"":" · "}💬 Đã nhắn khách: “${esc(o.msg)}”`:""}${o.paid||o.st==="Đã thu tiền"?" · <b style='color:var(--s-paid)'>✅ Đã nhận tiền"+(o.how?" ("+esc(o.how)+")":"")+"</b>":""}</div>
       ${o.note?`<div class="note">📝 ${esc(o.note)}</div>`:""}${o.love?`<div class="love">💌 ${esc(o.love)}</div>`:""}
       <div class="acts">${nx&&o.st!=="Huỷ"?`<button class="${nx[1]}" data-st="${nx[0]}">${nx[2]}</button>`:""}${o.st!=="Mới"&&o.st!=="Huỷ"?`<button class="b-undo" data-st="${FLOW[Math.max(0,FLOW.indexOf(o.st)-1)]}" title="Lùi lại">↶</button>`:""}${o.phone?`<a class="b-call" href="tel:${esc(o.phone)}">📞</a>`:""}</div>
       <div class="acts2">${o.st==="Đã thu tiền"?"":`<button data-x="pay">${o.paid?"↶ Bỏ đã nhận tiền":"💰 Đã nhận tiền"}</button>`}${o.pick?"":`<button data-x="ship">🚚 Nhập phí ship</button>`}<button data-x="msg">💬 Nhắn khách</button><button data-x="link">🔗 Link theo dõi</button></div>
     </div></div>`});
   if(!nowPlaced&&L.length)html+=`<div class="now"><span>${p2(now.getHours())}:${p2(now.getMinutes())}</span></div>`;
   $("#tl").innerHTML=html||`<div class="empty">Chưa có đơn ${dayLabel(day).toLowerCase()}.</div>`;
-  $("#tl").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>setStatus(b.closest(".card").dataset.code,b.dataset.st));
+  $("#tl").querySelectorAll("[data-st]").forEach(b=>b.onclick=async()=>{const code=b.closest(".card").dataset.code,o=ORDERS.find(x=>x.code===code);
+    if(b.dataset.st==="Đã thu tiền"&&o&&!o.paid&&!(await extra(code,"pay")))return;setStatus(code,b.dataset.st)});
   $("#tl").querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>extra(b.closest(".card").dataset.code,b.dataset.x));
 }
 function fmtPhone(p){p=String(p).replace(/\D/g,"");if(/^84/.test(p))p="0"+p.slice(2);if(p.length===9)p="0"+p;return p.length===10?p.replace(/(\d{4})(\d{3})(\d{3})/,"$1 $2 $3"):p}
@@ -259,6 +266,19 @@ async function setStatus(code,st){
   const fd=new URLSearchParams();[[E.name,UPD],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,"Trạng thái: "+st],[E.total,"0"],[E.code,code],[E.pay,"Tiền mặt khi nhận"],[E.note,"Cập nhật từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd})}catch(e){toast("Lỗi mạng — bấm lại giúp")}
 }
+// Xác nhận nhận tiền (msg 6908): CK hay TM; TM thì ai giữ → ghi kèm sự kiện "Đã nhận thanh toán: … · <cách>"
+const HOLD=["Chị Hiền","Chị Hảo","Bếp"];
+function payDlg(o){return new Promise(res=>{const d=document.createElement("div");d.className="pm";
+  d.innerHTML=`<div class="bx"><h3>💰 Nhận tiền đơn ${esc(o.code)}</h3><div>${esc(o.name)} · <b>${vnd(o.grand)}</b></div>
+   <div class="lb">Khách trả bằng gì?</div><div class="g"><button data-m="CK">💳 Chuyển khoản</button><button data-m="TM">💵 Tiền mặt</button></div>
+   <div class="hd" style="display:none"><div class="lb">Tiền mặt ai giữ?</div><div class="g">${HOLD.map(h=>`<button data-h="${h}">${h}</button>`).join("")}<button data-h="?">Người khác…</button></div></div>
+   <div class="g" style="margin-top:16px"><button data-c>Huỷ</button><button data-ok class="on" disabled>✓ Xác nhận</button></div></div>`;
+  let m=null,h=null;const ok=d.querySelector("[data-ok]"),upd=()=>{ok.disabled=!(m==="CK"||(m==="TM"&&h))};
+  d.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{m=b.dataset.m;d.querySelectorAll("[data-m]").forEach(x=>x.classList.toggle("on",x===b));d.querySelector(".hd").style.display=m==="TM"?"":"none";upd()});
+  d.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{let v=b.dataset.h;if(v==="?"){v=(prompt("Tên người giữ tiền mặt:")||"").trim();if(!v)return}h=v;d.querySelectorAll("[data-h]").forEach(x=>x.classList.toggle("on",x===b));upd()});
+  d.querySelector("[data-c]").onclick=()=>{d.remove();res(null)};
+  ok.onclick=()=>{d.remove();res(m==="CK"?"Chuyển khoản":"Tiền mặt — "+h+" giữ")};
+  d.onclick=e=>{if(e.target===d){d.remove();res(null)}};document.body.appendChild(d)})}
 // Phí ship / nhắn khách / link theo dõi — ghi dòng sự kiện UPD2, khách thấy ở trang theo dõi sau vài phút
 async function extra(code,x){const o=ORDERS.find(z=>z.code===code);if(!o)return;
   if(x==="zalo"){const u=TRACK+encodeURIComponent(code),t=`Theo dõi đơn ${code} (trạng thái, phí ship, số tiền): ${u}`,z="https://zalo.me/"+fmtPhone(o.phone).replace(/\D/g,"");
@@ -267,14 +287,15 @@ async function extra(code,x){const o=ORDERS.find(z=>z.code===code);if(!o)return;
   if(x==="link"){const u=TRACK+encodeURIComponent(code),t=`Theo dõi đơn ${code} (trạng thái, phí ship, số tiền): ${u}`;
     try{await navigator.clipboard.writeText(t);toast("Đã chép link — dán gửi khách qua Zalo")}catch(e){prompt("Chép link gửi khách:",u)}return}
   let v;
-  if(x==="pay"){const yes=!o.paid;if(!confirm(yes?`Xác nhận ĐÃ NHẬN tiền đơn ${code} (${vnd(o.grand)})? Khách sẽ thấy "Shop đã nhận thanh toán".`:`Bỏ xác nhận đã nhận tiền đơn ${code}?`))return;
-    LOCAL2[code]={...LOCAL2[code],paid:yes};o.paid=yes;v=(yes?"Đã":"Chưa")+" nhận thanh toán: "+vnd(o.grand)}
+  if(x==="pay"){const yes=!o.paid;let how="";
+    if(yes){how=await payDlg(o);if(!how)return false}else if(!confirm(`Bỏ xác nhận đã nhận tiền đơn ${code}?`))return false;
+    LOCAL2[code]={...LOCAL2[code],paid:yes,how};o.paid=yes;o.how=how;v=(yes?"Đã":"Chưa")+" nhận thanh toán: "+vnd(o.grand)+(how?" · "+how:"")}
   else if(x==="ship"){v=prompt(`Phí ship đơn ${code} (số tiền, vd 35000):`,o.ship!=null?o.ship:"");if(v==null)return;v=num(v);if(!v&&!confirm("Ship = 0đ?"))return;LOCAL2[code]={...LOCAL2[code],ship:v};v="Phí ship: "+v}
   else{v=prompt(`Nhắn khách (đơn ${code}) — khách đọc được, vd "Tài xế Grab 59X1-12345, khoảng 15 phút nữa tới":`,o.msg||"");if(v==null)return;v=v.trim();LOCAL2[code]={...LOCAL2[code],msg:v};v="Nhắn khách: "+v}
   if(LOCAL2[code].ship!=null){o.ship=LOCAL2[code].ship;o.shipEst=false;if(/^Cộng/i.test(o.shipby))o.grand=o.total+o.ship}if(LOCAL2[code].msg!=null)o.msg=LOCAL2[code].msg;render();toast("Đã lưu — khách thấy sau vài phút");
   const n=new Date(),when=`${p2(n.getDate())}/${p2(n.getMonth()+1)}/${n.getFullYear()} ${p2(n.getHours())}:${p2(n.getMinutes())}`;
   const fd=new URLSearchParams();[[E.name,UPD2],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,v],[E.total,"0"],[E.code,code],[E.pay,"Tiền mặt khi nhận"],[E.note,"Cập nhật từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
-  try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd})}catch(e){toast("Lỗi mạng — bấm lại giúp")}}
+  try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd})}catch(e){toast("Lỗi mạng — bấm lại giúp")}return true}
 try{$("#hideDone").checked=localStorage.getItem("bep_hide")==="1"}catch(e){}
 setBell();
 $("#bell").onclick=()=>{bellOn=true;AUD.muted=false;try{localStorage.setItem("bep_bell","1")}catch(e){}setBell();beep();
