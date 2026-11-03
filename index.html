@@ -116,6 +116,10 @@ h2.sec .en{font-size:13px;margin-top:-2px}
 .chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:14px;cursor:pointer;user-select:none;font-family:inherit;color:var(--ink)}
 .chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
 .chip em{font-style:normal;opacity:.8;font-size:12.5px}
+.tq{display:inline-flex;align-items:center;gap:6px;margin-left:8px;vertical-align:middle}
+.tq button{width:26px;height:26px;border-radius:50%;border:1.5px solid #fff;background:rgba(255,255,255,.2);color:inherit;font:700 15px/1 inherit;cursor:pointer;padding:0}
+.tq b{min-width:14px;text-align:center}
+.brow .tq{color:var(--green)}.brow .tq button{border-color:var(--green);background:#fff}   /* msg 6900: số lượng topping */
 .inc .chip[aria-pressed="false"]{border-color:#E57373;color:#B71C1C;background:#FFF5F5}
 .por{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 10px 2px;margin-bottom:8px}
 .por-h{display:flex;justify-content:space-between;font-size:14px;margin-bottom:7px}
@@ -407,6 +411,9 @@ document.addEventListener("click",e=>{const b=e.target.closest(".cp");if(!b)retu
 const vnd=n=>n.toLocaleString("vi-VN")+"đ", $=s=>document.querySelector(s);
 const st={}; MENU.forEach(m=>st[m.id]=[]);
 const MAXQ=300; // tối đa mỗi món
+const MAXT=10;  // tối đa mỗi topping thêm / phần (msg 6900)
+const tc=(p,k)=>p.tops.filter(x=>x===k).length;
+const tqH=(k,n)=>`<span class="tq"><button type="button" data-tm="${k}" aria-label="Bớt">−</button><b>${n}</b><button type="button" data-tp="${k}" aria-label="Thêm">+</button></span>`;
 const newP=(m,q=1)=>({tops:[],off:[],base:{},sauce:m.sauce||"",cay:"Cay",note:"",q});   // 1 "kiểu" = nhiều phần giống hệt nhau (q phần)
 const cnt=P=>P.reduce((a,p)=>a+p.q,0);
 const incP=(m,x)=>x[2]!=null?x[2]:TOP[x[0]][1];   // giá trừ khi bỏ 1 topping có sẵn (bún: mực 5k)
@@ -415,8 +422,8 @@ const baseOf=(p,v)=>Object.keys(BASE).filter(k=>(p.base||{})[k]===v&&(v<0||BASE_
 function chips(m,p,i,n){
   return `<div class="por" data-i="${i}"><div class="por-h"><b>${n>1?`Kiểu ${i+1}<span class="en i">Style ${i+1}</span>`:"Lựa chọn<span class=\"en i\">Options</span>"}</b><span>${vnd(unit(m,p))}/phần</span></div>
    <div class="pq"><span>Số phần kiểu này<span class="en">Portions</span></span><button type="button" class="qm" aria-label="Bớt">−</button><input class="qi" type="number" inputmode="numeric" min="0" max="${MAXQ}" value="${p.q}"><button type="button" class="qp" aria-label="Thêm">+</button>${n>1?`<button type="button" class="qx" aria-label="Xoá kiểu">✕</button>`:""}</div>
-   ${m.soup?"":`<div class="base"><span class="sl">Trong món có<span class="en">What's in it</span></span>${(m.inc||[]).map(x=>{const k=x[0],v=(p.off||[]).includes(k)?-1:p.tops.includes(k)?1:0;return `<div class="brow"><span class="bn">${k==="muc"?"Mực nướng":TOP[k][0]}</span><span class="seg"><button type="button" class="b" data-inc="${k}" data-v="-1" aria-pressed="${v<0}">Không ăn</button><button type="button" data-inc="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button><button type="button" data-inc="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${TOP[k][1]/1000}k</button></span></div>`}).join("")}${Object.keys(BASE).filter(k=>!(m.bun&&k==="banh")).map(k=>{const v=(p.base||{})[k]||0;return `<div class="brow"><span class="bn">${k==="banh"?"Bánh tráng":baseN(m,k)}<span class="en i">${BASE[k][1]}</span></span><span class="seg"><button type="button" class="b" data-base="${k}" data-v="-1" aria-pressed="${v<0}">Không ăn</button><button type="button" data-base="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${bp(m,k)?`<button type="button" data-base="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${bp(m,k)/1000}k</button>`:""}</span></div>`}).join("")}</div>`}
-   ${m.top.length?`<div class="chips">${m.inc||m.soup?'<span class="sl">Thêm topping<span class="en">Extra toppings</span></span>':""}`:'<div class="chips" style="display:none">'}${m.top.map(k=>`<button type="button" class="chip" data-top="${k}" aria-pressed="${p.tops.includes(k)}">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`).join("")}</div>
+   ${m.soup?"":`<div class="base"><span class="sl">Trong món có<span class="en">What's in it</span></span>${(m.inc||[]).map(x=>{const k=x[0],v=(p.off||[]).includes(k)?-1:p.tops.includes(k)?1:0;return `<div class="brow"><span class="bn">${k==="muc"?"Mực nướng":TOP[k][0]}</span><span class="seg"><button type="button" class="b" data-inc="${k}" data-v="-1" aria-pressed="${v<0}">Không ăn</button><button type="button" data-inc="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button><button type="button" data-inc="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${TOP[k][1]/1000}k</button></span>${v>0?tqH(k,tc(p,k)):""}</div>`}).join("")}${Object.keys(BASE).filter(k=>!(m.bun&&k==="banh")).map(k=>{const v=(p.base||{})[k]||0;return `<div class="brow"><span class="bn">${k==="banh"?"Bánh tráng":baseN(m,k)}<span class="en i">${BASE[k][1]}</span></span><span class="seg"><button type="button" class="b" data-base="${k}" data-v="-1" aria-pressed="${v<0}">Không ăn</button><button type="button" data-base="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${bp(m,k)?`<button type="button" data-base="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${bp(m,k)/1000}k</button>`:""}</span></div>`}).join("")}</div>`}
+   ${m.top.length?`<div class="chips">${m.inc||m.soup?'<span class="sl">Thêm topping<span class="en">Extra toppings</span></span>':""}`:'<div class="chips" style="display:none">'}${m.top.map(k=>{const n=tc(p,k);return n?`<span class="chip" aria-pressed="true">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em>${tqH(k,n)}</span>`:`<button type="button" class="chip" data-top="${k}" aria-pressed="false">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`}).join("")}</div>
    ${m.soup?"":`<div class="chips sauce"><span class="sl">${m.bun?"Sốt trộn":"Nước chấm"}<span class="en">Sauce</span></span>${(m.bun?[]:["Mắm","Nước tương"]).map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}<span class="en i">${s==="Mắm"?"fish sauce":"soy sauce"}</span></button>`).join("")}</div>`}<div class="chips"><span class="sl">Độ cay<span class="en">Spice</span></span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay<span class=\"en i\">spicy</span>":"Không cay<span class=\"en i\">mild</span>"}</button>`).join("")}</div>
    <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú · Note (vd/e.g.: ít rau, nhiều cay)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
 function setQ(m,P,i,v){v=Math.max(0,Math.min(MAXQ-cnt(P)+P[i].q,Math.floor(+v||0)));P[i].q=v;if(!v&&P.length>1)P.splice(i,1);else if(!v)P.length=0}
@@ -430,8 +437,10 @@ function renderDish(el){
     +`<button type="button" class="copy addk">+ Thêm kiểu khác (topping / nước chấm / độ cay khác)<span class="en">Add another style</span></button>`;
   const re=()=>{renderDish(el);renderCart()};
   el.querySelectorAll(".por").forEach(r=>{const i=+r.dataset.i,p=P[i];
-    r.querySelectorAll("[data-top]").forEach(b=>b.onclick=()=>{const k=b.dataset.top,j=p.tops.indexOf(k);
-      j<0?p.tops.push(k):p.tops.splice(j,1);p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y));re()});
+    const srt=()=>p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y));
+    r.querySelectorAll("[data-top]").forEach(b=>b.onclick=()=>{p.tops.push(b.dataset.top);srt();re()});
+    r.querySelectorAll("[data-tp]").forEach(b=>b.onclick=()=>{const k=b.dataset.tp;if(tc(p,k)<MAXT){p.tops.push(k);srt()}re()});
+    r.querySelectorAll("[data-tm]").forEach(b=>b.onclick=()=>{p.tops.splice(p.tops.indexOf(b.dataset.tm),1);re()});
     r.querySelectorAll("[data-base]").forEach(b=>b.onclick=()=>{p.base={...p.base,[b.dataset.base]:+b.dataset.v};re()});
     r.querySelectorAll("[data-inc]").forEach(b=>b.onclick=()=>{const k=b.dataset.inc,v=+b.dataset.v;p.off=(p.off||[]).filter(x=>x!==k);p.tops=p.tops.filter(x=>x!==k);
       if(v<0)p.off.push(k);if(v>0){p.tops.push(k);p.tops.sort((x,y)=>m.top.indexOf(x)-m.top.indexOf(y))}re()});
@@ -461,7 +470,7 @@ function lines(){const out=[];MENU.forEach(m=>{const g={};st[m.id].forEach(p=>{c
   Object.values(g).forEach(({p,q})=>{const u=unit(m,p);out.push({m,q,u,amt:u*q,sauce:p.sauce,cay:m.drink?"":p.cay,note:p.note.trim(),
     bot:baseOf(p,-1).map(k=>BASE[k][0].toLowerCase()).join(", "),
     off:(m.inc||[]).filter(x=>(p.off||[]).includes(x[0])).map(x=>TOP[x[0]][0]).join(", "),
-    title:m.n+[...p.tops.map(k=>TOP[k][0]),...baseOf(p,1).map(k=>k==="banh"?(m.chay?"Combo bánh tráng chay":"Combo bánh tráng"):BASE[k][0])].map(x=>" + "+x).join("")})})});return out}
+    title:m.n+[...[...new Set(p.tops)].map(k=>(tc(p,k)>1?tc(p,k)+" ":"")+TOP[k][0]),...baseOf(p,1).map(k=>k==="banh"?(m.chay?"Combo bánh tráng chay":"Combo bánh tráng"):BASE[k][0])].map(x=>" + "+x).join("")})})});return out}
 function totals(){let t=0,p=0,d=0;lines().forEach(L=>{t+=L.amt;L.m.drink?d+=L.q:p+=L.q});return{t,p,d}}
 function qtyText(T){return [T.p&&T.p+" phần",T.d&&T.d+" ly trà"].filter(Boolean).join(" + ")}
 function renderCart(){
