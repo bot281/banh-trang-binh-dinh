@@ -141,7 +141,7 @@ function render(o){
   const items=o.mon.split("\n").filter(Boolean).map(l=>`<li>${esc(l.replace(/\s*\([\d.]+đ\)\s*=\s*/," = "))}</li>`).join("");
   const paid=!!o.danhantien||o.trangthai==="Đã thu tiền",unpaid=!paid&&!cancel&&/chuyển khoản/i.test(o.thanhtoan);
   const payBox=cancel?"":paid?`<div class="paid ok">✅ Shop đã nhận thanh toán${o.danhantien?` <small>lúc ${esc(o.danhantien)}</small>`:""}<span class="en">Payment received — thank you!</span></div>`
-    :`<div class="paid wait">⏳ Shop chưa xác nhận thanh toán<span class="en">${/chuyển khoản/i.test(o.thanhtoan)?"Đã chuyển khoản? Shop sẽ xác nhận sau khi đối chiếu (vài phút).":"Thanh toán khi nhận hàng."}</span></div>`;
+    :`<div class="paid wait">⏳ Shop chưa xác nhận thanh toán<span class="en keep">${/chuyển khoản/i.test(o.thanhtoan)?"Đã chuyển khoản? Shop sẽ xác nhận sau khi đối chiếu (vài phút).":"Thanh toán khi nhận hàng."}</span></div>`;
   $("#out").innerHTML=`<div class="card"><div class="code"><b>${esc(o.ma)}</b><span class="pill${cancel?" cancel":""}">${esc(o.trangthai)}</span></div>${paid&&!cancel?`<p class="hint" style="margin:6px 0 0;color:var(--green);font-weight:800">✅ Đã thanh toán</p>`:""}
     <p class="big">${h1}</p><p class="sub">${h2}</p>${o.nhankhach?`<div class="msg">${linkify(o.nhankhach)}</div>`:""}${stepHtml}
     <p class="hint">⏰ ${pick?"Hẹn lấy":"Giờ nhận"}: <b>${esc(o.nhan)}</b>${o.capnhat?` · cập nhật ${esc(o.capnhat)}`:""}</p></div>
@@ -171,5 +171,6 @@ const M=mine().slice(-5).reverse();if(M.length)$("#mine").innerHTML="Đơn của
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&CODE)load()});
 load();
 </script>
+<script src="i18n.js?v=1"></script>
 </body>
 </html>
