@@ -252,6 +252,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
 .trackbtn .en{color:#e6f4e7}
 .tlink{display:flex;gap:6px;margin:6px 0 0}.tlink input{flex:1;min-width:0;font:inherit;font-size:13px;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
 .tlink button{font:inherit;font-size:13px;font-weight:800;border:1.5px solid var(--green);color:var(--green);background:#fff;border-radius:10px;padding:0 12px;cursor:pointer;white-space:nowrap}
+.en:not(.keep){display:none!important}   /* msg 7170: bản tiếng Việt không kèm tiếng Anh; ngôn ngữ khác chọn ở nút trên đầu */
 </style>
 </head>
 <body>
@@ -263,8 +264,8 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
     <p class="tag">Bánh tráng mì nướng · Bún mì · Ruốc biển · Dừa nạo<span class="en">Grilled rice cracker · Noodles · Dried baby shrimp · Grated coconut</span></p>
     <div class="hero-row">
       <img class="photo" src="mon.jpg" alt="Bánh tráng mì ruốc dừa" width="128" height="128">
-      <div class="contact"><div class="hotline"><small>Đặt hàng · Order</small><b>0919 008 571</b></div>
-        <div class="cbtn"><a class="call" href="tel:0919008571">📞 Gọi · Call</a><a class="zalo" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></div></div>
+      <div class="contact"><div class="hotline"><small>Hotline đặt hàng</small><b>0919 008 571</b></div>
+        <div class="cbtn"><a class="call" href="tel:0919008571">📞 Gọi</a><a class="zalo" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a></div></div>
     </div>
   </header>
   <div class="closebn" id="closebn"></div>
@@ -282,13 +283,13 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
   <form id="f" novalidate>
     <div class="mbox" id="mbox"></div>
     <div class="f" data-k="name"><label class="l" for="name">Họ tên <i>*</i><span class="en i">Name</span></label>
-      <input id="name" type="text" autocomplete="name" placeholder="Vd / e.g.: Chị Lan"><div class="err">Vui lòng nhập họ tên · Please enter your name</div></div>
+      <input id="name" type="text" autocomplete="name" placeholder="Vd: Chị Lan"><div class="err">Vui lòng nhập họ tên</div></div>
     <div class="f" data-k="phone"><label class="l" for="phone">Số điện thoại <i>*</i><span class="en i">Phone</span></label>
-      <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Vd: 0903 123 456"><div class="err">Số điện thoại chưa đúng (10 số) · Invalid phone number</div></div>
+      <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Vd: 0903 123 456"><div class="err">Số điện thoại chưa đúng (10 số)</div></div>
     <div class="f" data-k="addr"><label class="l" for="addr">Địa chỉ giao hàng <i>*</i><span class="en i">Delivery address</span></label>
-      <textarea id="addr" autocomplete="street-address" placeholder="Số nhà, đường, phường, quận · House no., street, ward, district"></textarea>
+      <textarea id="addr" autocomplete="street-address" placeholder="Số nhà, đường, phường, quận"></textarea>
       <label class="chk"><input type="checkbox" id="pickup"> Tôi tự đến lấy<span class="en i">I will pick up</span></label>
-      <div class="err">Vui lòng nhập địa chỉ hoặc chọn tự đến lấy · Please enter an address or choose pick-up</div></div>
+      <div class="err">Vui lòng nhập địa chỉ hoặc chọn tự đến lấy</div></div>
     <div class="f" id="shipf" data-k="ship"><label class="l">Phí ship <i>*</i><span class="en i">Delivery fee</span></label>
       <div class="shipbox"><div class="gl"><button type="button" id="calc">🛵 Ước tính phí ship<span class="en">Estimate fee</span></button><button type="button" id="gps" class="ghost">📍 Dùng vị trí của tôi<span class="en">Use my location</span></button></div>
       <div id="shipres" class="note" style="margin:8px 0 0"><b style="color:var(--green)">🎁 Free ship trong bán kính 2 km từ bếp.</b><br>Nhập địa chỉ rồi bấm “Ước tính phí ship”. Ước tính từ bếp ở Nguyễn Văn Khối, Gò Vấp, theo hãng giao hàng giá cao nhất, có tính giờ cao điểm.<span class="en">Free delivery within 2 km. Enter your address and tap Estimate. Based on the priciest delivery app, peak hours included.</span></div></div>
@@ -300,7 +301,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
     <div class="f" data-k="when"><label class="l">Ngày giờ nhận <i>*</i><span class="en i">Date & time</span></label>
       <div class="row2"><input id="date" type="date" aria-label="Ngày nhận"><select id="time" aria-label="Giờ nhận"></select></div>
       <div class="whenhint" id="whenhint"></div>
-      <div class="err" id="whenerr">Vui lòng chọn ngày và giờ nhận · Please choose date & time</div></div>
+      <div class="err" id="whenerr">Vui lòng chọn ngày và giờ nhận</div></div>
     <div class="f"><label class="l">Thanh toán<span class="en i">Payment</span></label>
       <div class="radios"><label><input type="radio" name="pay" value="Chuyển khoản" checked> <span>🏦 Chuyển khoản<span class="en">Bank transfer</span></span></label><label><input type="radio" name="pay" value="Tiền mặt khi nhận"> <span>💵 Tiền mặt khi nhận<span class="en">Cash on delivery</span></span></label></div>
       <p class="note" id="paynote" style="display:block;margin-top:8px">TPBank · 2842 8121 985 — mã QR có sẵn số tiền hiện ra ngay sau khi bấm Đặt hàng.<span class="en">A QR code with the amount appears after you place the order.</span></p></div>
@@ -308,7 +309,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
       <div class="love" id="lovebox">
         <div class="occ" id="occ"></div>
         <div class="chips" id="tpl"></div>
-        <div class="row2"><input id="lto" type="text" maxlength="40" placeholder="Gửi tới · To"><input id="lfrom" type="text" maxlength="40" placeholder="Từ · From"></div>
+        <div class="row2"><input id="lto" type="text" maxlength="40" placeholder="Gửi tới"><input id="lfrom" type="text" maxlength="40" placeholder="Từ"></div>
         <textarea id="lmsg" maxlength="350" placeholder="Viết lời nhắn của bạn…"></textarea>
         <div class="lcount"><span id="lcnt">0</span>/350 · bạn sửa thoải mái, shop gửi kèm đúng lời nhắn này cùng phần bánh</div>
         <div class="card"><div class="ctop" id="cicon">💌</div><div id="cprev"></div></div>
@@ -364,7 +365,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin:28px 0 10px}
   <p class="note" style="margin-top:2px">Lưu link này để xem đơn đang làm hay đang giao, phí ship và số tiền cần trả.<span class="en">Save this link to follow your order.</span></p>
   <div id="bank"></div><pre id="oksum"></pre><p class="note">Shop sẽ gọi xác nhận trong ít phút. Cần gấp: gọi <a href="tel:0919008571">0919 008 571</a> hoặc nhắn <a class="zinline" href="https://zalo.me/0919008571" target="_blank" rel="noopener"><svg class="zl" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0068FF"/><path d="M24 9c-9.4 0-17 6.3-17 14.1 0 4.4 2.4 8.3 6.2 10.9l-1.1 5.2 5.4-2.8c2 .6 4.2.9 6.5.9 9.4 0 17-6.3 17-14.2S33.4 9 24 9z" fill="#fff"/><text x="24" y="27.2" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="10.5" fill="#0068FF">Zalo</text></svg> Zalo</a>.</p>
   <p class="note">🥢 Nhận món rồi xem <a href="#huong-dan" onclick="document.getElementById('ok').classList.remove('show')">hướng dẫn trộn</a> để ăn ngon nhất nhé.<span class="en">See the mixing guide when your order arrives.</span></p>
-  <button type="button" id="okclose">Đóng · Close</button></div></div>
+  <button type="button" id="okclose">Đóng</button></div></div>
 
 <script>
 const NTFY="https://ntfy.sh/",NTFY_TOPIC="bep-btbd-f43024300c84";
@@ -402,14 +403,14 @@ const MENU=[
 const BANK={bin:"TPB",name:"TPBank",acc:"28428121985",accFmt:"2842 8121 985"};
 function bankBox(amount,code){
   const url=`https://img.vietqr.io/image/${BANK.bin}-${BANK.acc}-compact.png?amount=${amount}&addInfo=${encodeURIComponent(code)}`;
-  const row=(l,v,c)=>`<div class="r"><div><span>${l}</span><b>${v}</b></div>${c!=null?`<button type="button" class="cp" data-c="${c}">Sao chép · Copy</button>`:""}</div>`;
+  const row=(l,v,c)=>`<div class="r"><div><span>${l}</span><b>${v}</b></div>${c!=null?`<button type="button" class="cp" data-c="${c}">Sao chép</button>`:""}</div>`;
   return `<div class="bk"><h4>Quét mã để chuyển khoản<span class="en">Scan to pay by bank transfer</span></h4><img class="qr" src="${url}" alt="Mã QR chuyển khoản ${BANK.name}">
-    ${row("Ngân hàng · Bank",BANK.name)}${row("Số tài khoản · Account no.",BANK.accFmt,BANK.acc)}
-    ${row("Số tiền · Amount",vnd(amount),amount)}${row("Nội dung chuyển khoản · Reference",code,code)}
-    <a class="dl" href="${url}" target="_blank" rel="noopener">⬇ Mở ảnh QR để lưu · Save QR</a></div>
+    ${row("Ngân hàng",BANK.name)}${row("Số tài khoản",BANK.accFmt,BANK.acc)}
+    ${row("Số tiền",vnd(amount),amount)}${row("Nội dung chuyển khoản",code,code)}
+    <a class="dl" href="${url}" target="_blank" rel="noopener">⬇ Mở ảnh QR để lưu</a></div>
     <p class="note">Vui lòng ghi đúng nội dung <b>${code}</b> để shop đối chiếu. Phí ship (nếu có) shop báo sau.<span class="en">Please use reference ${code} so we can match your payment.</span></p>`}
 document.addEventListener("click",e=>{const b=e.target.closest(".cp");if(!b)return;
-  (navigator.clipboard?navigator.clipboard.writeText(b.dataset.c):Promise.reject()).then(()=>toast("Đã sao chép · Copied"),()=>toast(b.dataset.c))});
+  (navigator.clipboard?navigator.clipboard.writeText(b.dataset.c):Promise.reject()).then(()=>toast("Đã sao chép"),()=>toast(b.dataset.c))});
 const vnd=n=>n.toLocaleString("vi-VN")+"đ", $=s=>document.querySelector(s);
 const st={}; MENU.forEach(m=>st[m.id]=[]);
 const MAXQ=300; // tối đa mỗi món
@@ -427,7 +428,7 @@ function chips(m,p,i,n){
    ${m.soup?"":`<div class="base"><span class="sl">Trong món có<span class="en">What's in it</span></span>${(m.inc||[]).map(x=>{const k=x[0],v=(p.off||[]).includes(k)?-1:p.tops.includes(k)?1:0;return `<div class="brow"><span class="bn">${k==="muc"?"Mực nướng":TOP[k][0]}</span><span class="seg"><button type="button" class="b" data-inc="${k}" data-v="-1" aria-pressed="${v<0}">Không ăn</button><button type="button" data-inc="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${v>0?`<span class="sqv"><button type="button" data-tm="${k}" aria-label="Bớt">−</button><b>${tc(p,k)}</b><button type="button" data-tp="${k}" aria-label="Thêm">+</button></span>`:`<button type="button" data-inc="${k}" data-v="1" aria-pressed="false">Thêm +${TOP[k][1]/1000}k</button>`}</span></div>`}).join("")}${Object.keys(BASE).filter(k=>!(m.bun&&k==="banh")).map(k=>{const v=(p.base||{})[k]||0;return `<div class="brow"><span class="bn">${k==="banh"?"Bánh tráng":baseN(m,k)}<span class="en i">${BASE[k][1]}</span></span><span class="seg"><button type="button" class="b" data-base="${k}" data-v="-1" aria-pressed="${v<0}">Không ăn</button><button type="button" data-base="${k}" data-v="0" aria-pressed="${v===0}">Bình thường</button>${bp(m,k)?`<button type="button" data-base="${k}" data-v="1" aria-pressed="${v>0}">Thêm +${bp(m,k)/1000}k</button>`:""}</span></div>`}).join("")}</div>`}
    ${m.top.length?`<div class="chips">${m.inc||m.soup?'<span class="sl">Thêm topping<span class="en">Extra toppings</span></span>':""}`:'<div class="chips" style="display:none">'}${m.top.map(k=>{const n=tc(p,k);return n?`<span class="chip" aria-pressed="true">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em>${tqH(k,n)}</span>`:`<button type="button" class="chip" data-top="${k}" aria-pressed="false">+ ${TOP[k][0]}<span class="en i">${TOP[k][2]}</span> <em>${TOP[k][1]/1000}k</em></button>`}).join("")}</div>
    ${m.soup?"":`<div class="chips sauce"><span class="sl">${m.bun?"Sốt trộn":"Nước chấm"}<span class="en">Sauce</span></span>${(m.bun?[]:["Mắm","Nước tương"]).map(s=>`<button type="button" class="chip sm" data-sauce="${s}" aria-pressed="${p.sauce===s}">${s}<span class="en i">${s==="Mắm"?"fish sauce":"soy sauce"}</span></button>`).join("")}</div>`}<div class="chips"><span class="sl">Độ cay<span class="en">Spice</span></span>${["Cay","Không cay"].map(c=>`<button type="button" class="chip sm" data-cay="${c}" aria-pressed="${p.cay===c}">${c==="Cay"?"🌶️ Cay<span class=\"en i\">spicy</span>":"Không cay<span class=\"en i\">mild</span>"}</button>`).join("")}</div>
-   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú · Note (vd/e.g.: ít rau, nhiều cay)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
+   <input class="pnote" type="text" maxlength="80" placeholder="Ghi chú (vd: ít rau, nhiều cay)" value="${p.note.replace(/"/g,"&quot;")}"></div>`}
 function setQ(m,P,i,v){v=Math.max(0,Math.min(MAXQ-cnt(P)+P[i].q,Math.floor(+v||0)));P[i].q=v;if(!v&&P.length>1)P.splice(i,1);else if(!v)P.length=0}
 function renderDish(el){
   const m=MENU.find(x=>x.id===el.dataset.id), P=st[m.id], q=cnt(P), sub=P.reduce((a,p)=>a+unit(m,p)*p.q,0);
@@ -504,10 +505,10 @@ function buildTimes(){
     :`⏱️ Món làm tươi theo đơn, shop cần <b>ít nhất 1 tiếng</b> chuẩn bị${travelMin()?" + ~"+travelMin()+" phút giao":""}. Giờ nhận sớm nhất: <b>${fmtE(e)}</b>.<span class="en">Made fresh to order — we need at least 1 hour${travelMin()?" + delivery time":""}. Earliest: ${fmtE(e)}</span>`;
   return any}
 function whenBad(date,time){const er=$("#whenerr");
-  if(!date||!time){er.textContent="Vui lòng chọn ngày và giờ nhận · Please choose date & time";return true}
+  if(!date||!time){er.textContent="Vui lòng chọn ngày và giờ nhận";return true}
   if(MEMBER)return false;const dt=slotDate(date,time),c=closedAt(dt);
-  if(c){er.textContent=`Shop nghỉ vào thời gian này${c.ly?" ("+c.ly+")":""}, bạn chọn ngày/giờ khác nhé · We're closed then, please pick another time`;return true}
-  const e=earliest();if(dt<e){er.textContent=`Không kịp giao lúc ${time} ${dm(date)}: món làm tươi, shop cần ít nhất 1 tiếng chuẩn bị${travelMin()?" + thời gian giao":""}. Giờ sớm nhất: ${fmtE(e)}. Cần gấp hơn vui lòng gọi 0919 008 571 · Too soon — earliest ${fmtE(e)}`;return true}
+  if(c){er.textContent=`Shop nghỉ vào thời gian này${c.ly?" ("+c.ly+")":""}, bạn chọn ngày/giờ khác nhé`;return true}
+  const e=earliest();if(dt<e){er.textContent=`Không kịp giao lúc ${time} ${dm(date)}: món làm tươi, shop cần ít nhất 1 tiếng chuẩn bị${travelMin()?" + thời gian giao":""}. Giờ sớm nhất: ${fmtE(e)}. Cần gấp hơn vui lòng gọi 0919 008 571`;return true}
   return false}
 function closeBanner(){const t=isoD(new Date()),lim=isoD(new Date(Date.now()+14*864e5)),U=NGHI.filter(n=>n.den>=t&&n.tu<=lim);
   $("#closebn").style.display=U.length?"block":"none";
@@ -523,7 +524,7 @@ const phoneOk=v=>/^(\+?84|0)\d{9}$/.test(v.replace(/[^\d+]/g,""));
 [["name",v=>v.trim()],["phone",phoneOk],["addr",v=>v.trim()]].forEach(([k,ok])=>{const el=$("#"+k);el&&el.addEventListener("input",()=>{const f=el.closest(".f");if(f.classList.contains("bad")&&ok(el.value))f.classList.remove("bad")})});
 $("#f").onsubmit=async e=>{
   e.preventDefault();
-  if(!lines().length){toast("Bạn chưa chọn món nào · Please choose a dish");$("#menu").scrollIntoView({behavior:"smooth"});return}
+  if(!lines().length){toast("Bạn chưa chọn món nào");$("#menu").scrollIntoView({behavior:"smooth"});return}
   const name=$("#name").value.trim(),phone=$("#phone").value.replace(/[^\d+]/g,""),pick=$("#pickup").checked,
     addr=pick?"Tự đến lấy":$("#addr").value.trim(),date=$("#date").value,time=$("#time").value;
   let x=0;x+=bad("name",!name);x+=bad("phone",!/^(\+?84|0)\d{9}$/.test(phone));x+=bad("addr",!addr);x+=bad("when",whenBad(date,time));
@@ -633,7 +634,7 @@ $("#time").addEventListener("change",()=>{if($("#time").value)bad("when",whenBad
 $("#pickup").addEventListener("change",buildTimes);
 setInterval(buildTimes,60000);
 $("#calc").onclick=async()=>{const a=$("#addr").value.trim();if(!a){bad("addr",true);return}
-  $("#shipres").textContent="Đang tìm địa chỉ… · Searching…";
+  $("#shipres").textContent="Đang tìm địa chỉ…";
   try{const q=/hồ chí minh|hcm|sài gòn|saigon/i.test(a)?a:a+", Hồ Chí Minh";
     const g=await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=1&lat=10.80&lon=106.68`).then(r=>r.json());
     const f=g.features&&g.features[0];if(!f)throw 0;const p=f.properties;
@@ -680,6 +681,6 @@ document.querySelectorAll(".hdtabs button").forEach(b=>b.onclick=()=>{document.q
   document.querySelectorAll(".hdp").forEach(p=>p.hidden=p.dataset.t!==b.dataset.t)});
 document.querySelectorAll("input[name=pay]").forEach(r=>r.onchange=()=>{$("#paynote").style.display=r.value==="Chuyển khoản"&&r.checked?"block":"none"});
 </script>
-<script src="i18n.js?v=1"></script>
+<script src="i18n.js?v=2"></script>
 </body>
 </html>
