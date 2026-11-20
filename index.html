@@ -491,8 +491,9 @@ const NGHI=[{tu:"2026-11-20",den:"2026-11-20",gioTu:"10:00",ly:""},{tu:"2026-11-
 const p2=n=>String(n).padStart(2,"0"),isoD=x=>`${x.getFullYear()}-${p2(x.getMonth()+1)}-${p2(x.getDate())}`,hm=x=>`${p2(x.getHours())}:${p2(x.getMinutes())}`,dm=s=>s.split("-").reverse().slice(0,2).join("/");
 const slotDate=(date,t)=>new Date(date+"T"+t+":00");
 function travelMin(){return $("#pickup").checked?0:(geo?Math.max(15,Math.ceil(geo.km*4)):30)}
-function earliest(){return new Date(Date.now()+(PREP+travelMin())*60000)}
-function closedAt(dt){const d=isoD(dt),t=hm(dt);return NGHI.find(n=>d>=n.tu&&d<=n.den&&(!n.gioTu||t>=n.gioTu)&&(!n.gioDen||t<n.gioDen))}
+const BOSUNG=new URLSearchParams(location.search).has("bosung"); // msg 7381: link nội bộ nhập bù đơn — bỏ khoá giờ + lịch nghỉ
+function earliest(){return BOSUNG?new Date(0):new Date(Date.now()+(PREP+travelMin())*60000)}
+function closedAt(dt){if(BOSUNG)return;const d=isoD(dt),t=hm(dt);return NGHI.find(n=>d>=n.tu&&d<=n.den&&(!n.gioTu||t>=n.gioTu)&&(!n.gioDen||t<n.gioDen))}
 function fmtE(e){const n=new Date(Math.ceil(e/18e5)*18e5);return hm(n)+(isoD(n)!==isoD(new Date())?" ngày "+dm(isoD(n)):"")}
 function buildTimes(){
   if(MEMBER)return;const date=$("#date").value,cur=$("#time").value,e=earliest();let o='<option value="">Chọn giờ</option>',any=false,allClosed=true;
