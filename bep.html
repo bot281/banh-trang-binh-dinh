@@ -121,14 +121,14 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
   <div class="filters"><button type="button" id="bell" class="bell">🔕 Bấm để BẬT CHUÔNG báo đơn mới</button><label><input type="checkbox" id="hideDone"> Ẩn đơn đã làm xong (xong / đã giao / đã thu / huỷ)</label></div>
   <details class="busy" id="busy"><summary>📅 Lịch bận — báo trước để quán tắt app khi không ai trực</summary>
     <div class="fr">
-      <label>Tên<select id="bName"><option>Chị Hiền</option><option>Chị Hảo</option><option value="?">Người khác…</option></select></label>
+      <label>Tên<select id="bName"><option>Chị Hiền</option><option>Chị Hảo</option><option>Như</option><option value="?">Người khác…</option></select></label>
       <label>Ngày<input type="date" id="bDate"></label>
       <label>Bận từ<input type="time" id="bFrom" value="07:00" step="1800"></label>
       <label>Đến<input type="time" id="bTo" value="11:00" step="1800"></label>
       <label class="full">Ghi chú (không bắt buộc)<input id="bNote" placeholder="vd đi khám, về quê…"></label>
       <button type="button" class="go" id="bGo">＋ Báo bận</button>
     </div>
-    <div class="hint">Bận cả ngày: chọn 00:00 → 23:30. Khung giờ không còn ai trực, bot sẽ nhắc trong nhóm để tắt app.</div>
+    <div class="hint">Bận cả ngày: chọn 00:00 → 23:59. Quán mở 24/24 khi còn ít nhất 1 người rảnh (chị Hiền · chị Hảo · Như). Khung giờ cả 3 cùng bận, bot nhắc trong nhóm trước 30 phút để TẮT app (GSM, beFood) và nhắc BẬT lại khi có người.</div>
     <div class="bl" id="bList"></div>
   </details>
   <div class="tl" id="tl"></div>
@@ -333,10 +333,16 @@ document.addEventListener("click",()=>{if(bellOn){try{AUD.muted=true;const p=AUD
 $("#hideDone").onchange=()=>{try{localStorage.setItem("bep_hide",$("#hideDone").checked?"1":"0")}catch(e){}render()};
 // LỊCH BẬN (msg 7390): ghi dòng "⚙️ LỊCH BẬN" vào sheet đơn; bot đọc, khung không ai trực thì nhắc tắt app
 const dvn=s=>{const m=s.match(/(\d{2})\/(\d{2})\/(\d{4})/);return m?m[3]+"-"+m[2]+"-"+m[1]:""};
+function closedWin(L,ST){const out=[],days=[...new Set(L.map(x=>x.d))];
+  days.forEach(d=>{const per=ST.map(n=>L.filter(x=>x.d===d&&x.who.trim().toLowerCase()===n));if(per.some(a=>!a.length))return;
+    const pts=[...new Set(L.filter(x=>x.d===d).flatMap(x=>[x.f,x.t]))].sort();
+    for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1];if(per.every(arr=>arr.some(x=>x.f<=a&&x.t>=b))){const l=out[out.length-1];if(l&&l.d===d&&l.t===a)l.t=b;else out.push({d,f:a,t:b})}}});
+  return out}
 function renderBusy(){const today=new Date(),ti=`${today.getFullYear()}-${p2(today.getMonth()+1)}-${p2(today.getDate())}`;
   const L=[...BUSYL,...BLOCAL.filter(x=>!BUSYL.some(y=>y.id===x.id))].filter(x=>!BUSYX.has(x.id)&&dvn(x.d)>=ti).sort((a,b)=>(dvn(a.d)+a.f).localeCompare(dvn(b.d)+b.f));
   const by={};L.forEach(x=>(by[x.d]=by[x.d]||[]).push(x));
-  $("#bList").innerHTML=L.length?Object.keys(by).map(d=>`<div class="bd">${d.slice(0,5)}</div>`+by[d].map(x=>`<div class="bi"><span><b>${esc(x.who)}</b> bận ${x.f}–${x.t}${x.note?" · "+esc(x.note):""}</span><button data-bx="${esc(x.id)}">Huỷ</button></div>`).join("")).join(""):'<div class="hint">Chưa có ai báo bận.</div>';
+  const ST=["chị hiền","chị hảo","như"],gap=closedWin(L,ST);
+  $("#bList").innerHTML=(gap.length?'<div class="bd" style="color:var(--red)">⛔ Khung KHÔNG AI TRỰC — tắt app:</div>'+gap.map(w=>`<div class="bi" style="border-color:var(--red)"><span><b>${w.d.slice(0,5)}</b> ${w.f}–${w.t}</span></div>`).join(""):"")+(L.length?Object.keys(by).map(d=>`<div class="bd">${d.slice(0,5)}</div>`+by[d].map(x=>`<div class="bi"><span><b>${esc(x.who)}</b> bận ${x.f}–${x.t}${x.note?" · "+esc(x.note):""}</span><button data-bx="${esc(x.id)}">Huỷ</button></div>`).join("")).join(""):'<div class="hint">Chưa có ai báo bận.</div>');
   $("#bList").querySelectorAll("[data-bx]").forEach(b=>b.onclick=()=>busyCancel(b.dataset.bx))}
 async function busyPost(items,id){const n=new Date(),when=`${p2(n.getDate())}/${p2(n.getMonth()+1)}/${n.getFullYear()} ${p2(n.getHours())}:${p2(n.getMinutes())}`;
   const fd=new URLSearchParams();[[E.name,BUSY],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,items],[E.total,"0"],[E.code,id],[E.pay,"Tiền mặt khi nhận"],[E.note,"Lịch bận từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
