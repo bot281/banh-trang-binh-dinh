@@ -108,30 +108,68 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .busy .bi{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 9px;margin:4px 0}
 .busy .bi span{flex:1}.busy .bi button{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:4px 8px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--muted)}
 .busy .hint{font-size:12.5px;color:var(--muted);margin-top:6px}
+.tabs{display:flex;gap:6px;margin:0 0 12px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:4px}
+.tabs button{flex:1;border:0;background:transparent;border-radius:10px;padding:10px 6px;font:inherit;font-weight:800;font-size:15px;color:var(--muted);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--red);color:#fff;box-shadow:0 2px 8px rgba(198,40,40,.3)}
+.nowst{border-radius:16px;padding:14px;margin-bottom:10px;font-weight:800;font-size:16px;display:flex;gap:10px;align-items:center}
+.nowst.ok{background:#E8F5E9;color:#1B5E20;border:2px solid #A5D6A7}.nowst.no{background:#FFEBEE;color:var(--red);border:2px solid #EF9A9A}
+.nowst .big{font-size:30px;line-height:1}.nowst small{display:block;font-weight:600;font-size:13px;opacity:.85;margin-top:2px}
+.legend{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700}
+.legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.day{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:10px 10px 8px;margin-bottom:10px}
+.day.today{border-color:var(--red);box-shadow:0 0 0 3px rgba(198,40,40,.08)}
+.day h4{margin:0 0 6px;font-size:15px;display:flex;align-items:center;gap:8px}
+.day h4 .tag{margin-left:auto;font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 8px}
+.tag.ok{background:#E8F5E9;color:#1B5E20}.tag.no{background:var(--red);color:#fff}
+.lane{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:6px;margin:3px 0}
+.lane .nm{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk{position:relative;height:22px;background:repeating-linear-gradient(90deg,#fff 0,#fff calc(100%/8 - 1px),#F1E3C3 calc(100%/8 - 1px),#F1E3C3 calc(100%/8));border-radius:7px;overflow:hidden}
+.blk{position:absolute;top:2px;bottom:2px;border-radius:5px;box-shadow:inset -1px 0 0 #fff;color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;cursor:pointer;min-width:3px}
+.blk.def{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.18) 0 4px,transparent 4px 8px)}
+.trk.shop{background:#C8E6C9;height:16px}
+.trk.shop .blk{background:var(--red);top:0;bottom:0;border-radius:0;font-size:10px}
+.scale{display:grid;grid-template-columns:52px 1fr;gap:6px}.scale div{position:relative;height:14px;font-size:10px;color:var(--muted)}
+.scale span{position:absolute;transform:translateX(-50%)}.scale span:first-child{transform:none}.scale span:last-child{transform:translateX(-100%)}
+.nowl{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);z-index:2}
+.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:999}
+.dlg .bx{background:#fff;border-radius:16px 16px 0 0;padding:16px;width:100%;max-width:480px}
+.dlg h3{margin:0 0 6px}.dlg .g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.dlg button{padding:12px;border-radius:10px;border:1.5px solid #ddd;background:#fff;font:inherit;font-weight:800;cursor:pointer}
+.dlg button.rm{background:var(--red);color:#fff;border-color:var(--red)}
 </style>
 </head>
 <body>
 <div class="top"><div class="in"><h1>🍳 Bếp — Tiến độ đơn</h1><div class="days" id="days"></div><div class="clock" id="clock">--:--</div></div></div>
 <div class="wrap">
   <div id="err"></div>
+  <div class="tabs" id="tabs"><button type="button" data-t="don" aria-pressed="true">🍳 Đơn hàng</button><button type="button" data-t="lich" aria-pressed="false">📅 Lịch trực</button></div>
+  <div id="tDon">
   <div id="miss"></div>
   <div class="stats" id="stats"></div>
   <div class="prep" id="prep"></div>
   <div class="newbar" id="newbar"></div><div class="newbar warnbar" id="warnbar"></div>
   <div class="filters"><button type="button" id="bell" class="bell">🔕 Bấm để BẬT CHUÔNG báo đơn mới</button><label><input type="checkbox" id="hideDone"> Ẩn đơn đã làm xong (xong / đã giao / đã thu / huỷ)</label></div>
-  <details class="busy" id="busy"><summary>📅 Lịch bận — báo trước để quán tắt app khi không ai trực</summary>
-    <div class="fr">
-      <label>Tên<select id="bName"><option>Chị Hiền</option><option>Chị Hảo</option><option>Như</option><option value="?">Người khác…</option></select></label>
-      <label>Ngày<input type="date" id="bDate"></label>
-      <label>Bận từ<input type="time" id="bFrom" value="07:00" step="1800"></label>
-      <label>Đến<input type="time" id="bTo" value="11:00" step="1800"></label>
-      <label class="full">Ghi chú (không bắt buộc)<input id="bNote" placeholder="vd đi khám, về quê…"></label>
-      <button type="button" class="go" id="bGo">＋ Báo bận</button>
-    </div>
-    <div class="hint">Bận cả ngày: chọn 00:00 → 23:59. Quán mở 24/24 khi còn ít nhất 1 người rảnh (chị Hiền · chị Hảo · Như). Khung giờ cả 3 cùng bận, bot nhắc trong nhóm trước 30 phút để TẮT app (GSM, beFood) và nhắc BẬT lại khi có người.</div>
-    <div class="bl" id="bList"></div>
-  </details>
   <div class="tl" id="tl"></div>
+  </div>
+  <div id="tLich" hidden>
+    <div class="nowst" id="nowst"></div>
+    <div class="legend" id="legend"></div>
+    <details class="busy" id="busy"><summary>＋ Báo bận</summary>
+      <div class="fr">
+        <label>Tên<select id="bName"><option>Chị Hiền</option><option>Chị Hảo</option><option>Như</option><option value="?">Người khác…</option></select></label>
+        <label>Ngày<input type="date" id="bDate"></label>
+        <label>Bận từ<input type="time" id="bFrom" value="07:00" step="1800"></label>
+        <label>Đến<input type="time" id="bTo" value="11:00" step="1800"></label>
+        <label class="full">Ghi chú (không bắt buộc)<input id="bNote" placeholder="vd đi khám, về quê…"></label>
+        <button type="button" class="go" id="bGo">＋ Báo bận</button>
+      </div>
+      <div class="hint">Bận cả ngày: 00:00 → 23:59. Huỷ: bấm vào thanh màu trên lịch.</div>
+    </details>
+    <div id="grid"></div>
+    <div class="hint" style="text-align:center;margin-top:8px">Quán mở 24/24 khi còn ≥1 người rảnh. Khung <b style="color:var(--red)">đỏ</b> = cả 3 cùng bận → bot nhắc trước 30 phút TẮT app GSM, beFood và nhắc BẬT lại khi có người.</div>
+    <div id="bList" hidden></div>
+  </div>
   <div class="foot" id="foot">Tự cập nhật mỗi 20 giây</div>
 </div>
 <div class="toast" id="toast"></div>
@@ -344,12 +382,40 @@ function closedWin(L,ST){const out=[],days=[...new Set(L.map(x=>x.d))];
     const pts=[...new Set(L.filter(x=>x.d===d).flatMap(x=>[x.f,x.t]))].sort();
     for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1];if(per.every(arr=>arr.some(x=>x.f<=a&&x.t>=b))){const l=out[out.length-1];if(l&&l.d===d&&l.t===a)l.t=b;else out.push({d,f:a,t:b})}}});
   return out}
-function renderBusy(){const today=new Date(),ti=`${today.getFullYear()}-${p2(today.getMonth()+1)}-${p2(today.getDate())}`;
-  const L=[...recBusy(),...BUSYL,...BLOCAL.filter(x=>!BUSYL.some(y=>y.id===x.id))].filter(x=>!BUSYX.has(x.id)&&dvn(x.d)>=ti).sort((a,b)=>(dvn(a.d)+a.f).localeCompare(dvn(b.d)+b.f));
-  const by={};L.forEach(x=>(by[x.d]=by[x.d]||[]).push(x));
-  const ST=["chị hiền","chị hảo","như"],gap=closedWin(L,ST);
-  $("#bList").innerHTML=(gap.length?'<div class="bd" style="color:var(--red)">⛔ Khung KHÔNG AI TRỰC — tắt app:</div>'+gap.map(w=>`<div class="bi" style="border-color:var(--red)"><span><b>${w.d.slice(0,5)}</b> ${w.f}–${w.t}</span></div>`).join(""):"")+(L.length?Object.keys(by).map(d=>`<div class="bd">${d.slice(0,5)}</div>`+by[d].map(x=>`<div class="bi"><span><b>${esc(x.who)}</b> bận ${x.f}–${x.t}${x.note?" · "+esc(x.note):""}</span><button data-bx="${esc(x.id)}">Huỷ</button></div>`).join("")).join(""):'<div class="hint">Chưa có ai báo bận.</div>');
-  $("#bList").querySelectorAll("[data-bx]").forEach(b=>b.onclick=()=>busyCancel(b.dataset.bx))}
+const PEOPLE=[["Chị Hiền","#8E24AA"],["Chị Hảo","#EF6C00"],["Như","#1E88E5"]];
+const TH=["CN","T2","T3","T4","T5","T6","T7"],mn=x=>x==="23:59"?1440:(+x.slice(0,2))*60+(+x.slice(3,5));
+function allBusy(){return [...recBusy(),...BUSYL,...BLOCAL.filter(x=>!BUSYL.some(y=>y.id===x.id))].filter(x=>!BUSYX.has(x.id))}
+function renderBusy(){const L=allBusy(),ST=PEOPLE.map(p=>p[0].toLowerCase()),gaps=closedWin(L,ST),now=new Date(),nm=now.getHours()*60+now.getMinutes();
+  const dstr=d=>`${p2(d.getDate())}/${p2(d.getMonth()+1)}/${d.getFullYear()}`,today=dstr(now);
+  // trạng thái bây giờ
+  const busyNow=PEOPLE.filter(([n])=>L.some(x=>x.d===today&&x.who.toLowerCase()===n.toLowerCase()&&mn(x.f)<=nm&&mn(x.t)>nm)).map(p=>p[0]);
+  const free=PEOPLE.map(p=>p[0]).filter(n=>!busyNow.includes(n));
+  const nxt=gaps.map(g=>{const [dd,mm,yy]=g.d.split("/");return {...g,at:new Date(+yy,+mm-1,+dd,...g.f.split(":").map(Number))}}).filter(g=>g.at>now).sort((a,b)=>a.at-b.at)[0];
+  $("#nowst").className="nowst "+(free.length?"ok":"no");
+  $("#nowst").innerHTML=free.length?`<span class="big">✅</span><div>Quán đang có người trực<small>Rảnh: ${free.join(", ")}${nxt?` · Khung không ai trực tới: ${nxt.d.slice(0,5)} ${nxt.f}–${nxt.t}`:" · 7 ngày tới luôn có người"}</small></div>`
+    :`<span class="big">⛔</span><div>KHÔNG AI TRỰC — tắt app GSM, beFood<small>Cả 3 đang bận</small></div>`;
+  $("#legend").innerHTML=PEOPLE.map(([n,c])=>`<span><i style="background:${c}"></i>${n}</span>`).join("")+`<span><i style="background:var(--red)"></i>Không ai trực</span><span><i style="background:#C8E6C9"></i>Quán mở</span>`;
+  const pct=m=>(m/1440*100).toFixed(2)+"%";let h="";
+  for(let k=0;k<7;k++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+k),ds=dstr(d),g=gaps.filter(x=>x.d===ds),isT=k===0;
+    const nl=isT?`<div class="nowl" style="left:${pct(nm)}"></div>`:"";
+    h+=`<div class="day${isT?" today":""}"><h4>${isT?"Hôm nay":TH[d.getDay()]} ${ds.slice(0,5)}<span class="tag ${g.length?"no":"ok"}">${g.length?"⛔ "+g.length+" khung không ai trực":"✅ luôn có người"}</span></h4>`;
+    h+=`<div class="scale"><div></div><div>${[0,6,12,18,24].map(x=>`<span style="left:${x/24*100}%">${x}h</span>`).join("")}</div></div>`;
+    PEOPLE.forEach(([n,c])=>{const bs=L.filter(x=>x.d===ds&&x.who.toLowerCase()===n.toLowerCase());
+      h+=`<div class="lane"><div class="nm">${n.replace("Chị ","C.")}</div><div class="trk">${nl}${bs.map(x=>{const a=mn(x.f),b=mn(x.t),w=b-a;
+        return `<div class="blk${x.id.startsWith("MD-")?" def":""}" data-id="${esc(x.id)}" style="left:${pct(a)};width:${pct(w)};background:${c}" title="${esc(n)} ${x.f}–${x.t}">${w>=330?x.f+"–"+x.t:w>=200?x.f:""}</div>`}).join("")}</div></div>`});
+    h+=`<div class="lane"><div class="nm" style="color:var(--ink)">Quán</div><div class="trk shop">${nl}${g.map(x=>{const a=mn(x.f),w=mn(x.t)-a;return `<div class="blk" style="left:${pct(a)};width:${pct(w)}">${w>=270?"TẮT APP":w>=60?"⛔":""}</div>`}).join("")}</div></div></div>`}
+  const others=L.filter(x=>!PEOPLE.some(p=>p[0].toLowerCase()===x.who.toLowerCase()));
+  if(others.length)h+=`<div class="hint">Người khác báo bận: ${others.map(x=>esc(x.who)+" "+x.d.slice(0,5)+" "+x.f+"–"+x.t).join(" · ")}</div>`;
+  $("#grid").innerHTML=h;
+  $("#grid").querySelectorAll(".blk[data-id]").forEach(b=>b.onclick=()=>busyInfo(L.find(x=>x.id===b.dataset.id)))}
+function busyInfo(x){if(!x)return;const d=document.createElement("div");d.className="dlg";
+  d.innerHTML=`<div class="bx"><h3>${esc(x.who)} bận</h3><div>${x.d} · <b>${x.f}–${x.t}</b>${x.note?"<br>"+esc(x.note):""}</div>${x.id.startsWith("MD-")?'<div class="hint">Lịch mặc định hằng tuần — Huỷ chỉ bỏ buổi này.</div>':""}
+   <div class="g"><button data-c>Đóng</button><button class="rm" data-r>Huỷ lịch này</button></div></div>`;
+  d.querySelector("[data-c]").onclick=()=>d.remove();d.onclick=e=>{if(e.target===d)d.remove()};
+  d.querySelector("[data-r]").onclick=()=>{d.remove();busyCancel(x.id)};document.body.appendChild(d)}
+function showTab(t){$("#tDon").hidden=t!=="don";$("#tLich").hidden=t!=="lich";document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.t===t));
+  try{localStorage.setItem("bep_tab",t)}catch(e){}if(t==="lich")renderBusy()}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.t));
 async function busyPost(items,id){const n=new Date(),when=`${p2(n.getDate())}/${p2(n.getMonth()+1)}/${n.getFullYear()} ${p2(n.getHours())}:${p2(n.getMinutes())}`;
   const fd=new URLSearchParams();[[E.name,BUSY],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,items],[E.total,"0"],[E.code,id],[E.pay,"Tiền mặt khi nhận"],[E.note,"Lịch bận từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
   try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});return true}catch(e){toast("Lỗi mạng — bấm lại giúp");return false}}
@@ -358,9 +424,11 @@ async function busyAdd(){let who=$("#bName").value;if(who==="?"){who=(prompt("T�
   if(!d||!f||!t){toast("Chọn ngày và giờ");return}if(t<=f){toast("Giờ kết thúc phải sau giờ bắt đầu");return}
   const dd=d.split("-").reverse().join("/"),id="LB"+Date.now().toString(36).toUpperCase();
   if(await busyPost(`Bận: ${who} · ${dd} ${f}–${t}`+(note?" · "+note:""),id)){BLOCAL.push({id,who,d:dd,f,t,note});$("#bNote").value="";renderBusy();toast("Đã báo bận — cảm ơn!")}}
-async function busyCancel(id){if(!confirm("Huỷ lịch bận này?"))return;if(await busyPost("Huỷ: "+id,id)){BUSYX.add(id);renderBusy();toast("Đã huỷ")}}
+async function busyCancel(id){if(await busyPost("Huỷ: "+id,id)){BUSYX.add(id);renderBusy();toast("Đã huỷ")}}
 (()=>{const n=new Date();$("#bDate").value=`${n.getFullYear()}-${p2(n.getMonth()+1)}-${p2(n.getDate())}`;$("#bDate").min=$("#bDate").value})();
 $("#bGo").onclick=busyAdd;
+try{if(/tab=lich/.test(location.hash)||localStorage.getItem("bep_tab")==="lich")showTab("lich")}catch(e){}
+setInterval(()=>{if(!$("#tLich").hidden)renderBusy()},60000);
 setInterval(()=>{const n=new Date();$("#clock").textContent=p2(n.getHours())+":"+p2(n.getMinutes())},1000);
 setInterval(render,60000);setInterval(load,20000);load();
 </script>
