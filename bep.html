@@ -96,6 +96,18 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 .pm .g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .pm button{padding:12px 6px;border-radius:10px;border:1.5px solid #ddd;background:#fff;font:inherit;font-weight:700;cursor:pointer;color:#222}
 .pm button.on{background:var(--s-paid);color:#fff;border-color:var(--s-paid)}.pm button:disabled{opacity:.4}
+.busy{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:14px}
+.busy summary{font-weight:800;font-size:15px;cursor:pointer}
+.busy .fr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.busy label{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.busy input,.busy select{font:inherit;font-size:15px;padding:8px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);min-width:0}
+.busy .full{grid-column:1/-1}
+.busy .go{grid-column:1/-1;border:0;border-radius:12px;padding:11px;font:inherit;font-weight:800;font-size:15px;color:#fff;background:var(--red);cursor:pointer}
+.busy .bl{margin-top:10px;font-size:13.5px}
+.busy .bd{font-weight:800;margin:8px 0 4px}
+.busy .bi{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 9px;margin:4px 0}
+.busy .bi span{flex:1}.busy .bi button{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:4px 8px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--muted)}
+.busy .hint{font-size:12.5px;color:var(--muted);margin-top:6px}
 </style>
 </head>
 <body>
@@ -107,6 +119,18 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
   <div class="prep" id="prep"></div>
   <div class="newbar" id="newbar"></div><div class="newbar warnbar" id="warnbar"></div>
   <div class="filters"><button type="button" id="bell" class="bell">🔕 Bấm để BẬT CHUÔNG báo đơn mới</button><label><input type="checkbox" id="hideDone"> Ẩn đơn đã làm xong (xong / đã giao / đã thu / huỷ)</label></div>
+  <details class="busy" id="busy"><summary>📅 Lịch bận — báo trước để quán tắt app khi không ai trực</summary>
+    <div class="fr">
+      <label>Tên<select id="bName"><option>Chị Hiền</option><option>Chị Hảo</option><option value="?">Người khác…</option></select></label>
+      <label>Ngày<input type="date" id="bDate"></label>
+      <label>Bận từ<input type="time" id="bFrom" value="07:00" step="1800"></label>
+      <label>Đến<input type="time" id="bTo" value="11:00" step="1800"></label>
+      <label class="full">Ghi chú (không bắt buộc)<input id="bNote" placeholder="vd đi khám, về quê…"></label>
+      <button type="button" class="go" id="bGo">＋ Báo bận</button>
+    </div>
+    <div class="hint">Bận cả ngày: chọn 00:00 → 23:30. Khung giờ không còn ai trực, bot sẽ nhắc trong nhóm để tắt app.</div>
+    <div class="bl" id="bList"></div>
+  </details>
   <div class="tl" id="tl"></div>
   <div class="foot" id="foot">Tự cập nhật mỗi 20 giây</div>
 </div>
@@ -114,7 +138,8 @@ body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--ink)
 <script>
 const FORM="https://docs.google.com/forms/d/e/1FAIpQLSd3Z--C-uV6XJTzCdUzjuWeOQz8hOhmRHwPUtUA-ojLWfNP7w/formResponse";
 const E={name:"entry.1617320443",phone:"entry.1296680432",addr:"entry.1127379480",when:"entry.325322427",items:"entry.1094612916",total:"entry.682908208",code:"entry.1726601081",pay:"entry.1691158886",note:"entry.1448708004"};
-const UPD="⚙️ CẬP NHẬT TRẠNG THÁI",UPD2="⚙️ CẬP NHẬT ĐƠN";   // UPD2: phí ship / nhắn khách — khách thấy ở track.html
+const UPD="⚙️ CẬP NHẬT TRẠNG THÁI",UPD2="⚙️ CẬP NHẬT ĐƠN",BUSY="⚙️ LỊCH BẬN";   // BUSY: lịch bận người trực (msg 7390)
+let BUSYL=[],BUSYX=new Set(),BLOCAL=[];   // UPD2: phí ship / nhắn khách — khách thấy ở track.html
 const TRACK="https://bot281.github.io/banh-trang-binh-dinh/track.html?c=";
 const KEY=(location.hash.match(/k=([\w-]{20,})/)||[])[1];
 const FLOW=["Mới","Đang làm","Đã xong","Đã giao","Đã thu tiền"];
@@ -154,9 +179,11 @@ async function load(){
     const cols=j.table.cols.map(c=>c.label.trim());const idx=n=>cols.findIndex(c=>c.startsWith(n));
     const I={ts:0,name:idx("Họ tên"),phone:idx("Số điện thoại"),addr:idx("Địa chỉ"),when:idx("Ngày giờ nhận"),items:idx("Món đặt"),qty:idx("Tổng số phần"),total:idx("Tổng tiền"),code:idx("Mã đơn"),pay:idx("Thanh toán"),note:idx("Ghi chú cho shop"),grp:idx("Mã nhóm"),km:idx("Khoảng cách"),ship:idx("Phí ship"),shipby:idx("Cách trả"),grand:idx("Tổng phải thu"),love:idx("Lời nhắn"),st:idx("Trạng thái")};
     const rows=j.table.rows.map(r=>r.c);const g=(c,k)=>I[k]<0?"":cellVal(c[I[k]]);
-    const ev={},ev2={};const out=[];
+    const ev={},ev2={};const out=[];const bz=[];BUSYX=new Set();
     rows.forEach((c,i)=>{if(!c)return;const nm=String(g(c,"name"));
       if(nm===UPD){const code=String(g(c,"code"));const st=String(g(c,"items")).replace(/^Trạng thái:\s*/,"");(ev[code]=ev[code]||[]).push([i,st]);return}
+      if(nm===BUSY){const t=String(g(c,"items")),id=String(g(c,"code"));
+        if(/^Huỷ:/.test(t))BUSYX.add(id);else{const m=t.match(/^Bận:\s*(.+?) · (\d{2}\/\d{2}\/\d{4}) (\d{2}:\d{2})–(\d{2}:\d{2})(?: · (.*))?$/);if(m)bz.push({id,who:m[1],d:m[2],f:m[3],t:m[4],note:m[5]||""})}return}
       if(nm===UPD2){const code=String(g(c,"code")),t=String(g(c,"items")),e=ev2[code]=ev2[code]||{};
         if(/^Phí ship:/.test(t))e.ship=num(t);else if(/^Nhắn khách:/.test(t))e.msg=t.replace(/^Nhắn khách:\s*/,"");else if(/^(Đã|Chưa) nhận thanh toán/.test(t)){e.paid=/^Đã/.test(t);e.how=e.paid?(t.split(" · ").slice(1).join(" · ")):""}return}
       if(!nm||/^⚙/.test(nm))return;
@@ -170,7 +197,7 @@ async function load(){
     const codes=out.map(o=>o.code);
     if(SEEN){const fresh=out.filter(o=>!SEEN.has(o.code));if(fresh.length)notifyNew(fresh)}
     SEEN=new Set(codes);
-    ORDERS=out;$("#err").innerHTML="";render();checkMiss();$("#foot").textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · tự làm mới mỗi 20 giây";
+    BUSYL=bz;renderBusy();ORDERS=out;$("#err").innerHTML="";render();checkMiss();$("#foot").textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · tự làm mới mỗi 20 giây";
   }catch(e){$("#err").innerHTML='<div class="err">Không đọc được danh sách đơn (mạng yếu hoặc sheet chưa mở quyền xem). Thử tải lại trang.</div>'}
 }
 // Chốt chặn (22/10 msg 6395): đơn đã báo chuông ntfy mà KHÔNG vào sheet (Google từ chối im lặng) → cảnh báo đỏ
@@ -304,6 +331,24 @@ $("#warnbar").onclick=()=>$("#warnbar").classList.remove("show");
 $("#newbar").onclick=()=>{NEW.clear();$("#newbar").classList.remove("show");document.title="Bếp — Bánh Tráng Mì Ruốc Dừa";render()};
 document.addEventListener("click",()=>{if(bellOn){try{AUD.muted=true;const p=AUD.play();p&&p.then(()=>{AUD.pause();AUD.muted=false;AUD.currentTime=0}).catch(()=>{AUD.muted=false})}catch(e){}}},{once:true});   // iPhone: mở khoá âm thanh bằng lần chạm đầu
 $("#hideDone").onchange=()=>{try{localStorage.setItem("bep_hide",$("#hideDone").checked?"1":"0")}catch(e){}render()};
+// LỊCH BẬN (msg 7390): ghi dòng "⚙️ LỊCH BẬN" vào sheet đơn; bot đọc, khung không ai trực thì nhắc tắt app
+const dvn=s=>{const m=s.match(/(\d{2})\/(\d{2})\/(\d{4})/);return m?m[3]+"-"+m[2]+"-"+m[1]:""};
+function renderBusy(){const today=new Date(),ti=`${today.getFullYear()}-${p2(today.getMonth()+1)}-${p2(today.getDate())}`;
+  const L=[...BUSYL,...BLOCAL.filter(x=>!BUSYL.some(y=>y.id===x.id))].filter(x=>!BUSYX.has(x.id)&&dvn(x.d)>=ti).sort((a,b)=>(dvn(a.d)+a.f).localeCompare(dvn(b.d)+b.f));
+  const by={};L.forEach(x=>(by[x.d]=by[x.d]||[]).push(x));
+  $("#bList").innerHTML=L.length?Object.keys(by).map(d=>`<div class="bd">${d.slice(0,5)}</div>`+by[d].map(x=>`<div class="bi"><span><b>${esc(x.who)}</b> bận ${x.f}–${x.t}${x.note?" · "+esc(x.note):""}</span><button data-bx="${esc(x.id)}">Huỷ</button></div>`).join("")).join(""):'<div class="hint">Chưa có ai báo bận.</div>';
+  $("#bList").querySelectorAll("[data-bx]").forEach(b=>b.onclick=()=>busyCancel(b.dataset.bx))}
+async function busyPost(items,id){const n=new Date(),when=`${p2(n.getDate())}/${p2(n.getMonth()+1)}/${n.getFullYear()} ${p2(n.getHours())}:${p2(n.getMinutes())}`;
+  const fd=new URLSearchParams();[[E.name,BUSY],[E.phone,"0000000000"],[E.addr,"-"],[E.when,when],[E.items,items],[E.total,"0"],[E.code,id],[E.pay,"Tiền mặt khi nhận"],[E.note,"Lịch bận từ trang Bếp"]].forEach(([k,v])=>fd.append(k,v));
+  try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});return true}catch(e){toast("Lỗi mạng — bấm lại giúp");return false}}
+async function busyAdd(){let who=$("#bName").value;if(who==="?"){who=(prompt("Tên người báo bận:")||"").trim();if(!who)return}
+  const d=$("#bDate").value,f=$("#bFrom").value,t=$("#bTo").value,note=$("#bNote").value.trim().replace(/·/g,"-");
+  if(!d||!f||!t){toast("Chọn ngày và giờ");return}if(t<=f){toast("Giờ kết thúc phải sau giờ bắt đầu");return}
+  const dd=d.split("-").reverse().join("/"),id="LB"+Date.now().toString(36).toUpperCase();
+  if(await busyPost(`Bận: ${who} · ${dd} ${f}–${t}`+(note?" · "+note:""),id)){BLOCAL.push({id,who,d:dd,f,t,note});$("#bNote").value="";renderBusy();toast("Đã báo bận — cảm ơn!")}}
+async function busyCancel(id){if(!confirm("Huỷ lịch bận này?"))return;if(await busyPost("Huỷ: "+id,id)){BUSYX.add(id);renderBusy();toast("Đã huỷ")}}
+(()=>{const n=new Date();$("#bDate").value=`${n.getFullYear()}-${p2(n.getMonth()+1)}-${p2(n.getDate())}`;$("#bDate").min=$("#bDate").value})();
+$("#bGo").onclick=busyAdd;
 setInterval(()=>{const n=new Date();$("#clock").textContent=p2(n.getHours())+":"+p2(n.getMinutes())},1000);
 setInterval(render,60000);setInterval(load,20000);load();
 </script>
