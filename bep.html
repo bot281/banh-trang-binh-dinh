@@ -333,13 +333,19 @@ document.addEventListener("click",()=>{if(bellOn){try{AUD.muted=true;const p=AUD
 $("#hideDone").onchange=()=>{try{localStorage.setItem("bep_hide",$("#hideDone").checked?"1":"0")}catch(e){}render()};
 // LỊCH BẬN (msg 7390): ghi dòng "⚙️ LỊCH BẬN" vào sheet đơn; bot đọc, khung không ai trực thì nhắc tắt app
 const dvn=s=>{const m=s.match(/(\d{2})\/(\d{2})\/(\d{4})/);return m?m[3]+"-"+m[2]+"-"+m[1]:""};
+// LỊCH BẬN MẶC ĐỊNH (lặp hằng tuần, msg 7394) — getDay: 1=T2 … 6=T7, 0=CN. Huỷ 1 buổi = bấm Huỷ trên dòng đó. Sửa ở đây NHỚ sửa cả assets/nhac-lich-ban.py (REC)
+const REC=[["Chị Hiền",[1,2,3,4,5],"06:00","08:00"],["Chị Hiền",[1,2,3,4,5],"16:00","18:00"],["Chị Hiền",[3,5],"18:00","20:30"],["Chị Hiền",[6],"07:00","11:00"]];
+function recBusy(){const out=[],t0=new Date();t0.setHours(0,0,0,0);
+  for(let k=0;k<14;k++){const d=new Date(t0.getTime()+k*864e5),dd=`${p2(d.getDate())}/${p2(d.getMonth()+1)}/${d.getFullYear()}`,ymd=`${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}`;
+    REC.forEach(([who,wd,f,t],i)=>{if(wd.includes(d.getDay()))out.push({id:`MD-${ymd}-${i}`,who,d:dd,f,t,note:"lịch mặc định"})})}
+  return out}
 function closedWin(L,ST){const out=[],days=[...new Set(L.map(x=>x.d))];
   days.forEach(d=>{const per=ST.map(n=>L.filter(x=>x.d===d&&x.who.trim().toLowerCase()===n));if(per.some(a=>!a.length))return;
     const pts=[...new Set(L.filter(x=>x.d===d).flatMap(x=>[x.f,x.t]))].sort();
     for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1];if(per.every(arr=>arr.some(x=>x.f<=a&&x.t>=b))){const l=out[out.length-1];if(l&&l.d===d&&l.t===a)l.t=b;else out.push({d,f:a,t:b})}}});
   return out}
 function renderBusy(){const today=new Date(),ti=`${today.getFullYear()}-${p2(today.getMonth()+1)}-${p2(today.getDate())}`;
-  const L=[...BUSYL,...BLOCAL.filter(x=>!BUSYL.some(y=>y.id===x.id))].filter(x=>!BUSYX.has(x.id)&&dvn(x.d)>=ti).sort((a,b)=>(dvn(a.d)+a.f).localeCompare(dvn(b.d)+b.f));
+  const L=[...recBusy(),...BUSYL,...BLOCAL.filter(x=>!BUSYL.some(y=>y.id===x.id))].filter(x=>!BUSYX.has(x.id)&&dvn(x.d)>=ti).sort((a,b)=>(dvn(a.d)+a.f).localeCompare(dvn(b.d)+b.f));
   const by={};L.forEach(x=>(by[x.d]=by[x.d]||[]).push(x));
   const ST=["chị hiền","chị hảo","như"],gap=closedWin(L,ST);
   $("#bList").innerHTML=(gap.length?'<div class="bd" style="color:var(--red)">⛔ Khung KHÔNG AI TRỰC — tắt app:</div>'+gap.map(w=>`<div class="bi" style="border-color:var(--red)"><span><b>${w.d.slice(0,5)}</b> ${w.f}–${w.t}</span></div>`).join(""):"")+(L.length?Object.keys(by).map(d=>`<div class="bd">${d.slice(0,5)}</div>`+by[d].map(x=>`<div class="bi"><span><b>${esc(x.who)}</b> bận ${x.f}–${x.t}${x.note?" · "+esc(x.note):""}</span><button data-bx="${esc(x.id)}">Huỷ</button></div>`).join("")).join(""):'<div class="hint">Chưa có ai báo bận.</div>');
